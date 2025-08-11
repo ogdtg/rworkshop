@@ -1,0 +1,51 @@
+---
+title: "R Workshop"
+author: "Felix lorenz"
+date: '12. Dezember 2022'
+amt: "Staatskanzlei"
+stelle: "Dienststelle für Statistik"
+output: 
+  xaringan::moon_reader:
+    highlightStyle: github
+    highlightlines: true
+    highlightSpans: true
+    css: ["default","styles_x.css"]
+
+
+---
+```{r xaringan-logo, echo=FALSE}
+xaringanExtra::use_logo(
+  image_url = "./img/tg.jpg"
+)
+```
+
+```{r xaringan-banner, echo=FALSE}
+xaringanExtra::use_banner(
+  bottom_center = paste0("\U00A9 ",rmarkdown::metadata$amt),
+  top_left = paste0("<h6>",rmarkdown::metadata$amt,"</h6><h7>",rmarkdown::metadata$stelle,"</h7>"),
+  bottom_left = rmarkdown::metadata$date,
+  exclude = "title-slide"
+)
+```
+
+```{r xaringan-panelset, echo=FALSE}
+xaringanExtra::use_panelset(TRUE)
+```
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,dpi=300)
+options(knitr.duplicate.label = 'allow')
+
+```
+
+
+```{r, echo=FALSE, message=FALSE}
+library(dplyr)
+library(tidyr)
+```
+
+
+```{r child='funktionen.Rmd'}
+```
+

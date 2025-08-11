@@ -1,0 +1,342 @@
+---
+title: "Daten einlesen"
+author: "Felix lorenz"
+date: '12. Dezember 2022'
+amt: "Staatskanzlei"
+stelle: "Dienststelle für Statistik"
+output: 
+  xaringan::moon_reader:
+    highlightStyle: github
+    highlightlines: true
+    highlightSpans: true
+    css: ["default","styles_x.css"]
+
+
+---
+
+
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,dpi=300)
+```
+
+
+----
+## Daten einlesen
+
+
+<figure class="logo-fig logo-title1">
+  <a href='https://readr.tidyverse.org' target="_blank">
+    <img src='https://readr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title2">
+  <a href='https://readxl.tidyverse.org' target="_blank">
+    <img src='https://readxl.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title3">
+  <a href='https://haven.tidyverse.org' target="_blank">
+    <img src='https://haven.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title4">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title5">
+  <a href='https://tidyr.tidyverse.org' target="_blank">
+    <img src='https://tidyr.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title6">
+  <a href='https://stringr.tidyverse.org' target="_blank">
+    <img src='https://stringr.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title7">
+  <a href='https://lubridate.tidyverse.org' target="_blank">
+    <img src='https://lubridate.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title8">
+  <a href='https://magrittr.tidyverse.org' target="_blank">
+    <img src='https://magrittr.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title9">
+  <a href='https://forcats.tidyverse.org' target="_blank">
+    <img src='https://forcats.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+
+<figure class="logo-fig logo-title10">
+  <a href='https://ggplot2.tidyverse.org' target="_blank">
+    <img src='https://ggplot2.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+---
+----
+## Daten einlesen
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://readr.tidyverse.org' target="_blank">
+    <img src='https://readr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-fig-small2">
+  <a href='https://readxl.tidyverse.org' target="_blank">
+    <img src='https://readxl.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-fig-small3">
+  <a href='https://haven.tidyverse.org' target="_blank">
+    <img src='https://haven.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+
+R kann prinzipiell jede Form von Daten einlesen:
+
+- für Standard Formate wie csv oder txt wird das `readr` package benutzt.
+
+- für Dateitypen aus anderen Statistik Tools wie SAS, SPSS oder STATA kann `haven` benutzt werden.
+
+- Excel Files können mit dem `readxl` package eingelesen werden
+
+Generell gibt es sehr viele verschiedene Einlesefunktionen und -packages, die alle das gleiche Ergebnis liefern.
+
+Sie unterscheiden sich jedoch in ihrer Perfomance.
+
+---
+----
+## Daten einlesen
+
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://readr.tidyverse.org' target="_blank">
+    <img src='https://readr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-fig-small2">
+  <a href='https://readxl.tidyverse.org' target="_blank">
+    <img src='https://readxl.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-fig-small3">
+  <a href='https://haven.tidyverse.org' target="_blank">
+    <img src='https://haven.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+.panelset[
+.panel[.panel-name[CSV]
+```{r , echo = TRUE, eval=FALSE}
+library(readr)
+# Comma separated
+df_comma <- read_csv("path/to/comma_separated.csv")
+
+# Semicolon separated
+df_semicolon <- read_csv2("path/to/semicolon_separated.csv")
+
+# Tab separated
+df_tab <- read_tsv("path/to/tab_separated.csv")
+```
+]
+.panel[.panel-name[Excel]
+```{r , echo = TRUE, eval=FALSE}
+library(readxl)
+df_excel <- read_excel("path/to/excel_file.xlsx")
+
+```
+]
+.panel[.panel-name[SAS]
+```{r , echo = TRUE, eval=FALSE}
+library(haven)
+df_sas <- read_sas("path/to/sas_file.sas7bdat")
+```
+]
+.panel[.panel-name[fwf]
+- *"fixed width file"* wie teilweise vom BFS erhalten
+```{r , echo = TRUE, eval=FALSE}
+library(readr)
+df_fwf <- read_fwf("path/to/fwf_data.txt",
+                 fwf_positions(start=vec_start_col,
+                               end=vec_end_col,
+                               col_names = vec_names_col)
+                 )
+```
+]
+.panel[.panel-name[rds/rda]
+- `rds` und `rda` sind die R-internen Datenfromate
+- sie sind optimiert für R, können schnell geladen werden und sind speichereffizient
+```{r , echo = TRUE, eval=FALSE}
+# speichern
+saveRDS(dataset, "data.rds")
+
+# laden
+dataset <- readRDS("data.rds")
+```
+]
+]
+
+
+
+---
+----
+## Hands-On: Daten einlesen (Zeit: 10 Minuten)
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://readr.tidyverse.org' target="_blank">
+    <img src='https://readr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-fig-small2">
+  <a href='https://readxl.tidyverse.org' target="_blank">
+    <img src='https://readxl.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-fig-small3">
+  <a href='https://haven.tidyverse.org' target="_blank">
+    <img src='https://haven.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<ol type="a">
+  <li><b>EXCEL</b><br>
+  Lies die Datei <b>bevölkerung.xlsx</b> als data.frame ein.<br>
+  Nenne den data.frame "bev".<br>
+  </li>
+  <li><b>CSV</b><br>
+  Lies die Datei <b>bevölkerung.csv</b> als data.frame ein.<br>
+  Nenne den data.frame "bev_csv"<br>
+  </li>
+  <li><b>SAS</b><br>
+  Lies die Datei <b>bevnatgeb2021.sas7bdat</b> als data.frame ein.<br>
+  Nenne den data.frame "bevnat".<br>
+  </li>
+  <li><b>EXCEL (Bonus)</b><br>
+  Lies das Tabellenblatt <b>"altersklassen"</b> aus der Datei <b>bevölkerung.xlsx</b> als data.frame ein.<br>
+  Nenne den data.frame "alter" und speichere ihn als <b>alter.csv</b> in deinem Output Ordner.<br>
+  </li>
+</ol>
+
+Benutze jeweils die `head()` Funktion um **die ersten 3 Zeilen** des Datensatzes anzeigen zu lassen. 
+
+```{r}
+countdown::countdown(minutes=10)
+```
+
+---
+----
+## Hands-On: Daten einlesen (Zeit: 10 Minuten)
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://readr.tidyverse.org' target="_blank">
+    <img src='https://readr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-fig-small2">
+  <a href='https://readxl.tidyverse.org' target="_blank">
+    <img src='https://readxl.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-fig-small3">
+  <a href='https://haven.tidyverse.org' target="_blank">
+    <img src='https://haven.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+.panelset[
+.panel[.panel-name[Lösung a)]
+
+
+```{r echo = TRUE, eval=FALSE}
+library(readr)
+df <- read_csv("Data/Geburten.csv")
+head(df,3)
+```
+]
+
+.panel[.panel-name[Lösung b)]
+
+
+```{r echo = TRUE, eval=FALSE}
+library(haven)
+df <- read_sas("bevnatgeb2020.sas7bdat")
+head(df,3)
+```
+]
+
+.panel[.panel-name[Lösung c)]
+
+
+```{r echo = TRUE, eval=FALSE}
+library(readxl)
+df <- read_excel("Daten/test.xlsx")
+head(df,3)
+```
+]
+.panel[.panel-name[Lösung d)]
+
+```{r echo = TRUE, eval=FALSE}
+df <- read_excel("Daten/test.xlsx",sheet="Bonus")
+head(df,3)
+write_csv(df,"Felix/Output/alter.csv", na ="")
+```
+]
+]
+
+---
+----
+## Daten einlesen: Good to know 
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://readr.tidyverse.org' target="_blank">
+    <img src='https://readr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-fig-small2">
+  <a href='https://readxl.tidyverse.org' target="_blank">
+    <img src='https://readxl.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-fig-small3">
+  <a href='https://haven.tidyverse.org' target="_blank">
+    <img src='https://haven.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<p style="margin-top:70px;"><p/>
+Sollen mehrere Files aus einem Ordner eingelesen werden, kann die `list.files()` Funktion verwendet werden. Mit dieser Funktion werden alle Files mit einer spezifischen Endung innerhalb eines Ordners aufgelistet. Diese können dann mit einem `for`-Loop oder einer der `apply` Funktionen schnell eingelesen werden.
+```{r, eval=FALSE, echo=TRUE}
+# Listet alle CSV Files im Ordner
+list.files(path = "path/to/directory", pattern = "*.csv")
+```
+
+Bei grossen Files kann es manchmal zu Problemen beim Einlesen kommen, aufgrund der internen Logik von R.
+<br>
+Im hier verlinkten [Tutorial](https://inbo.github.io/tutorials/tutorials/r_large_data_files_handling/) werden entsprechende Lösungsansätze aufgezeigt.

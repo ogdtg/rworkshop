@@ -1,0 +1,270 @@
+---
+title: "Conditional Statements"
+author: "Felix lorenz"
+date: '12. Dezember 2022'
+amt: "Staatskanzlei"
+stelle: "Dienststelle für Statistik"
+output: 
+  xaringan::moon_reader:
+    highlightStyle: github
+    highlightlines: true
+    highlightSpans: true
+    css: ["default","styles_x.css"]
+
+
+---
+
+
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,dpi=300)
+```
+
+----
+
+## Conditional Statements
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+- `Conditional Statements` (Bedingungen) sind hilfreich, wenn es z.B. darum geht numerische Daten in Kategorien einzuteilen
+
+- "Wenn x dann y sonst z"
+
+- in `dplyr`-Pipelines kann dazu entweder das klassische `ifelse()` oder die `case_when()` Funktion verwendet werden
+
+
+---
+----
+
+## ifelse
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+.panelset[
+.panel[.panel-name[Syntax]
+
+```{r, eval=FALSE,echo=TRUE}
+# Genereller Syntax
+ifelse(Bedingung,wenn_wahr,wenn_falsch)
+```
+Mehrere `ifelse` Funktionen können auch verschachtelt werden. Anstelle eines `wenn_falsch` Wert wird dann ein weiteres `ifelse` Statement eingefügt.
+```{r, eval=FALSE,echo=TRUE}
+ifelse(Bedingung1,wenn_wahr1,
+       ifelse(Bedingung2, wenn_wahr2, wenn_falsch))
+```
+
+]
+.panel[.panel-name[Anwendung]
+```{r, echo=TRUE}
+geburten %>% 
+  select(age_m) %>% 
+  mutate(age_class = ifelse(age_m<18,"unter 18",
+                            ifelse(age_m>=18, "18 oder älter", "unbekannt"))) %>% 
+  head(3)
+
+```
+]
+.panel[.panel-name[Problem]
+
+Bei vielen verschachtelten `ifelse` Funktionen wird der Code unübersichtlich (zu viele Klammern, schwer zu bearbeiten)
+
+```{r, echo=TRUE,eval=FALSE}
+geburten %>% 
+  select(age_m) %>% 
+  mutate(age_class = ifelse(age_m < 20,"unter 20",
+                            ifelse(age_m>=20 & age_m<25, "20 bis 24", 
+                                   ifelse(age_m>=25 & age_m<30, "25 bis 29", 
+                                          ifelse(age_m>=30 & age_m<35, "30 bis 34", 
+                                                 ifelse(age_m>=35 & age_m<40, "35 bis 39", 
+                                                        ifelse(age_m>=40, "40 und älter", "unbekannt"))))))) 
+```
+]
+]
+
+
+---
+----
+
+## dplyr::case_when
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+`case_when` bietet die Möglichkeit den Code in einer übersichtlicheren Form darzustellen.
+
+.panelset[
+.panel[.panel-name[Syntax]
+
+- das Tilde-Symbol (`~`) kann mit `Ctrl+Alt+^` (zweimal drücken) erzeugt werden
+
+```{r, eval=FALSE,echo=TRUE}
+# Genereller Syntax
+case_when(Bedingung ~ wenn_wahr,
+          TRUE ~ wenn_falsch)
+```
+Mehrere Bedingungen werden einfach mit Komma getrennt. `TRUE ~ x` kennzeichnet den Wert der zurückgegeben wird, wenn keine Bedingung zutrifft.
+```{r, eval=FALSE,echo=TRUE}
+case_when(Bedingung1 ~ wenn_wahr1,
+          Bedingung2 ~ wenn_wahr2,
+          TRUE ~ wenn_falsch)
+```
+
+]
+.panel[.panel-name[Anwendung]
+```{r, echo=TRUE}
+geburten %>% 
+  select(age_m) %>% 
+  mutate(age_class = case_when(age_m<18 ~"unter 18",
+                               age_m>=18 ~ "18 oder älter",
+                               TRUE ~ "unbekannt")) %>% 
+  head(3)
+```
+]
+.panel[.panel-name[Vorteil ggü. ifelse]
+
+Mehrere Bedingungen können einfach unterinander geschrieben werden, ohne das jedes Mal eine neue Klammer geöffnet werden muss.
+
+Der Code wird leichter lesbar und einfacher zu bearbeiten.
+```{r, echo=TRUE}
+geburten %>% 
+  select(age_m) %>% 
+  mutate(age_class = case_when(age_m < 20 ~ "unter 20",
+                               age_m>=20 & age_m<25 ~ "20 bis 24",
+                               age_m>=25 & age_m<30 ~ "25 bis 29",
+                               age_m>=30 & age_m<35 ~ "30 bis 34",
+                               age_m>=35 & age_m<40 ~ "35 bis 39",
+                               age_m>=40 ~ "40 und älter",
+                               TRUE ~ "unbekannt"))
+                            
+```
+]
+]
+
+---
+----
+## Hands-On: Conditional Statements: case_when und ifelse
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+Erstelle den Datensatz `geburten_nat_eltern` aus dem `geburten` Datensatz:
+- **Spalten auswählen:** behalte nur stat_jahr, nat_m und nat_V
+- **Filtern:** nur Daten behalten die keine NAs in nat_m oder nat_V enthalten (Staatsangehörigkeit Mutter und Vater) besitzen
+
+Verwende Conditional Statements um die neue Variable `eltern_nat_type` zu erstellen:
+- Wenn **beide Elternteile Ausländer** sind, soll **"beide Elternteile Ausländer"** eingetragen werden  
+- Wenn **beide Elternteile Schweizer** sind, soll **"beide Elternteile Schweizer"** eingetragen werden    
+- Wenn der **Vater Ausländer** ist, soll **"Vater Ausländer"** eingetragen werden                       
+- Wenn die **Mutter Ausländerin** ist, soll **"Mutter Ausländer"** eingetragen werden                           
+- Wenn **keine der Kategorien zutrifft** soll **"unbekannt"** eingetragen werden (Kontrolle) 
+
+
+---
+----
+
+## baseR: if...else
+
+- eine andere Form von `Conditional Statements` ist die in anderen Sprachen oft verwendete `if...else` Notierung
+- diese wird vor allem in Loops und Funktionen  verwendet
+- ein `if` braucht in R nicht zwingend ein `else` 
+
+.panelset[
+.panel[.panel-name[mit else]
+
+```{r, echo=TRUE}
+x = 3
+
+if (x %% 2 == 0){
+  print("x ist eine gerade Zahl")
+} else {
+  print("x ist eine ungerade Zahl")
+}
+```
+
+]
+.panel[.panel-name[ohne else]
+```{r, echo=TRUE}
+x = 4
+
+if (x %% 2 == 0){
+  print("x ist eine gerade Zahl")
+}
+```
+]
+]
+
+
+
+---
+----
+
+## baseR: if...else
+
+.panelset[
+.panel[.panel-name[Bsp. 1]
+Ein `else` Statement ist nicht unbedingt notwendig, wenn nur in einem einzigen Prüffall etwas unternommen werden soll
+```{r, message=FALSE, echo = TRUE}
+x = 3
+
+if (x %% 2 != 0){
+  x <- x+1
+} 
+
+x
+```
+
+]
+.panel[.panel-name[Bsp. 2]
+Wenn mehrere, sich gegenseitig ausschliessende Bedingungen abgeprüft werden sollen, kann die spezielle `else if` Schreibweise verwendet werden
+
+```{r, echo=TRUE}
+alter <- 45
+
+if (alter >= 70) {
+  altersklasse <- "70 und älter"
+} else if (alter >= 50) {
+  altersklasse <- "50 bis 69"
+} else if (alter >= 30) {
+  altersklasse <- "30 bis 49"
+}
+print(altersklasse)
+```
+]
+
+.panel[.panel-name[Bsp. 3]
+Für kompliziertere Prüfungen können `if` statements auch verschachtelt werden
+```{r, echo=TRUE, eval=FALSE}
+dienstjahre <- 5
+bewertung <- "Gut"
+
+if (bewertung == "Sehr gut"){
+  bonus <- 5000
+} else if (bewertung == "Gut"){
+  if (dienstjahre>=10){
+    bonus <- 3000
+  } else {
+    bonus <- 2500
+  }
+} else {
+  bonus <- 0
+}
+```
+
+]
+]

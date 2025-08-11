@@ -1,0 +1,111 @@
+---
+title: "tidyr"
+author: "Felix lorenz"
+date: '12. Dezember 2022'
+amt: "Staatskanzlei"
+stelle: "Dienststelle für Statistik"
+output: 
+  xaringan::moon_reader:
+    highlightStyle: github
+    highlightlines: true
+    highlightSpans: true
+    css: ["default","styles_x.css"]
+
+
+---
+
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,dpi=300)
+```
+
+
+
+
+----
+## tidyr
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://tidyr.tidyverse.org' target="_blank">
+    <img src='https://tidyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+Das `tidyr` package dient dazu Daten ins Tidy Format zu bringen und liefert dazu mehrere nützliche Funktionen
+
+Für detailliertere Informationen findet sich [hier](https://github.com/rstudio/cheatsheets/blob/main/tidyr.pdf) ein empfehlenswertes Cheatsheet
+
+**Die drei meist genutzten Funktionen sind:**
+- `pivot_longer`: fasst mehrere Spalten zusammen und "verlängert" den Datensatz
+- `pivot_wider`: fasst Zeilen zusammen und "verbreitert" den Datensatz
+- `separate`: teilt eine Spalte in mehrere Spalten auf (Gegenstück ist `unite`)
+
+---
+----
+## tidyr
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://tidyr.tidyverse.org' target="_blank">
+    <img src='https://tidyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+.panelset[
+.panel[.panel-name[Ausgangsdaten]
+```{r}
+df_tidy_m <- df_tidy %>% 
+  select(-death_rate)
+df_tidy_m
+```
+]
+.panel[.panel-name[pivot_longer]
+Fasst mehrere Spalten zusammen und "verlängert" den Datensatz
+```{r, echo=TRUE}
+df_tidy_m %>% 
+  tidyr::pivot_longer(cols = c("cases","deaths"), names_to = c("indicator"))
+```
+]
+.panel[.panel-name[pivot_wider]
+"Verbreitert" den Datensatz
+```{r, echo=TRUE}
+df_tidy_m %>% 
+  tidyr::pivot_wider(names_from = "kanton", values_from = c("cases","deaths"))
+```
+]
+.panel[.panel-name[separate]
+Spalten können mit `separate` in mehrere Spalten aufgeteilt werden.
+```{r, echo=TRUE}
+df_tidy_m %>% 
+  tidyr::separate(col="date",sep = "-", into = c("year","month","day"))
+```
+]
+]
+
+---
+----
+## Hands-On: Tidy Data mit tidyr
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://tidyr.tidyverse.org' target="_blank">
+    <img src='https://tidyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+```{r, echo=TRUE, eval=FALSE}
+library(tidyr)
+
+abstimmungen <- readRDS("Daten/Abstimmungen.rds")
+```
+
+1. Bringe die Abstimmungsdaten in eine sinnvolle Form im Sinne von Tidy Data (Wide format)<br>
+  Alle Werte in der "Ergebnis" Spalte sollen eine einzelne Spalte sein.<br>
+  Ihnen soll jeweils der entsprechende Wert aus der Spalte "Volksabstimmungen (Ergebnisse Ebene Kanton seit 1866)" untergeordnet werden
+
+2. Bringe die Daten wieder in die Ursprungsform (long format)<br>
+  Speichere das Ergebnis unter "abstimmungen_not_tidy" 
+  
+```{r}
+countdown::countdown(minutes=10)
+```

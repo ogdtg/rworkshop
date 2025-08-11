@@ -1,0 +1,160 @@
+---
+title: "Magrittr"
+author: "Felix lorenz"
+date: '12. Dezember 2022'
+amt: "Staatskanzlei"
+stelle: "Dienststelle für Statistik"
+output: 
+  xaringan::moon_reader:
+    highlightStyle: github
+    highlightlines: true
+    highlightSpans: true
+    css: ["default","styles_x.css"]
+
+
+---
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,dpi=300)
+```
+
+
+
+----
+## Data Manipulation
+
+<figure class="logo-fig logo-title1">
+  <a href='https://readr.tidyverse.org' target="_blank">
+    <img src='https://readr.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title2">
+  <a href='https://readxl.tidyverse.org' target="_blank">
+    <img src='https://readxl.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title3">
+  <a href='https://haven.tidyverse.org' target="_blank">
+    <img src='https://haven.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title4">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo' />
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title5">
+  <a href='https://tidyr.tidyverse.org' target="_blank">
+    <img src='https://tidyr.tidyverse.org/logo.png' class='logo' />
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title6">
+  <a href='https://stringr.tidyverse.org' target="_blank">
+    <img src='https://stringr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title7">
+  <a href='https://lubridate.tidyverse.org' target="_blank">
+    <img src='https://lubridate.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title8">
+  <a href='https://magrittr.tidyverse.org' target="_blank">
+    <img src='https://magrittr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title9">
+  <a href='https://forcats.tidyverse.org' target="_blank">
+    <img src='https://forcats.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+
+<figure class="logo-fig logo-title10">
+  <a href='https://ggplot2.tidyverse.org' target="_blank">
+    <img src='https://ggplot2.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+
+---
+----
+## magrittr:: %>%
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://magrittr.tidyverse.org' target="_blank">
+    <img src='https://magrittr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+- Mit dem `magrittr` package und dem darin enthaltenen Pipeline Operator `%>%` wird euer Code viel einfacher lesbar.
+- Der Code wird durch die Nutzung der Pipe weniger verschachtelt und so einfacher zu debuggen.
+
+
+.panelset[
+.panel[.panel-name[Ohne Pipe]
+Innerste Klammer wird zuerst usgeführt
+```{r, echo=TRUE, eval=FALSE}
+h(g(f(df)))
+```
+]
+.panel[.panel-name[Mit Pipe]
+Code wird nacheinander ausgeführt (f() dann g() dann h())
+```{r, echo=TRUE, eval=FALSE}
+df %>% 
+  f() %>% 
+  g() %>% 
+  h()
+```
+]
+.panel[.panel-name[Ohne Platzhalter]
+```{r, echo=TRUE, eval=FALSE}
+langer_variablenname %>%  f(y, z = langer_variablenname)
+```
+]
+.panel[.panel-name[Mit Platzhalter]
+Innerhalb der Pipeline kann anstelle der Variable, auf welche die Operationen angewendet werden auch der `.` als Platzhalter verwendet werden.
+```{r, echo=TRUE, eval=FALSE}
+langer_variablenname %>%  f(y, z = .)
+```
+]
+]
+
+---
+----
+## Hands-On: Piping mit magrittr:: %>%
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://magrittr.tidyverse.org' target="_blank">
+    <img src='https://magrittr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+```{r, echo=TRUE, eval=FALSE}
+num_vec <- c(5,4,6,1,4)
+
+round(sqrt(sum(num_vec)),1)
+```
+`num_vec` soll aufsummiert und anschliessend soll die Wurzel aus der Summe gezogen werden. 
+Das Ergebnis soll auf eine Nachkommastelle gerundet werden
+Die oben stehende Codezeile führt diese Operationen aus. 
+
+<ol type="a">
+  <li>
+  Verwende den <b>%>%</b> Operator um die oben stehende Codezeile in eine Pipe im Stile von dplyr umzuwandeln<br>
+  Wandle die Zeile in EINE Pipe um OHNE Zwischenergebnisse zu speichern. Verwende den Namen des Vektors nur EINMAL.
+  </li>
+</ol>
+
+```{r}
+countdown::countdown(minutes=10)
+```

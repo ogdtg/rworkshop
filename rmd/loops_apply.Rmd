@@ -1,0 +1,815 @@
+---
+title: "Loops & Apply"
+author: "Felix lorenz"
+date: '12. Dezember 2022'
+amt: "Staatskanzlei"
+stelle: "Dienststelle für Statistik"
+output: 
+  xaringan::moon_reader:
+    nature:
+        highlightStyle: github
+        highlightLines: true
+        highlightSpans: true
+    css: ["default","styles_x.css"]
+
+
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,dpi=300)
+
+```
+
+
+
+
+
+
+----
+## baseR: loops und apply
+
+- grundlegender Baustein in allen Programmiersprachen
+
+- wird verwendet um Code wiederholt auszuführen (Loop = Schleife)
+
+- ist dort nützlich, wo es vieler Iterationen bedarf
+
+- in allen Programmiersprachen gibt es `for` und `while` Loops
+
+- R bietet zusätzlich noch die Funktionen aus der `apply` Familie, die ein ähnliches Ergebnis liefern
+
+- Wenn man einen Loop erstellen möchte, beginnt man am besten damit, den gewünschten Arbeitsablauf auf *ein* Listenelement anzuwenden.
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+library(dplyr)
+library(tidyr)
+library(purrr)
+
+```
+---
+----
+
+## baseR: for-loop
+
+.pull-left[
+**Für jedes Element `i` in Vektor `x` führe Hauptteil aus**
+<br>
+<br>
+`for` Loops bestehen aus zwei Bestandteilen:
+  1. eine Kopfzeile, die die Anzahl an Iterationen angibt (in runden Klammern `()`)
+  2. einen Hauptteil, der einen Codeblock enthält, der bei jeder Iteration einmal ausgeführt wird (in geschweiften Klammern `{}`)
+
+
+```{r, message=FALSE, echo=TRUE,eval=FALSE}
+for (i in x){ # Kopfzeile
+   # Hauptteil
+  do_something()
+}
+```
+  
+]
+.pull-right[
+```{r, out.width="70%",fig.align='center',fig.cap="https://universeofdatascience.com/wp-content/uploads/2021/06/Loops_in_R-1024x576.png"}
+knitr::include_graphics("img/forloop.png")
+```
+
+]
+
+
+---
+----
+
+## baseR: for-loop
+
+.panelset[
+.panel[.panel-name[Bsp. 1]
+- Zuweisungen sind essentiell bei Loops
+- Wenn Daten nicht zugewiesen werden sind sie nachher nicht im  Environment verfügbar
+- Zuweisungen die ausschliesslich innerhalb des loops geschehen sind nicht im globalen environment verfügbar
+```{r, message=FALSE, echo = TRUE}
+for (i in 1:3){
+  temp <- paste0("Iteration Nr. ",i)
+}
+temp
+```
+
+]
+.panel[.panel-name[Bsp. 2]
+- Elemente können auch direkt verwendet werden
+```{r, echo=TRUE}
+new_list <- list()
+for (elem in c("A","B","C")){
+  new_list[[elem]] <- tolower(elem)
+}
+new_list
+```
+]
+.panel[.panel-name[Bsp. 3]
+- mit `seq_along` werden die Indizes (=Positionen) für einen Vektor gebildet
+
+```{r, echo=TRUE}
+vec <- c("A","B","C")
+for (i in seq_along(vec)){
+  print(paste0(vec[i],i))
+}
+```
+]
+]
+
+---
+----
+
+## baseR: while-loop
+
+.pull-left[
+**Solange `i` kleiner gleich `y`  führe Hauptteil aus und erhöhe `i` anschliessend um 1**
+<br>
+<br>
+- `while` Loops können, wenn fehlerhaft programmiert, unendlich lange laufen
+- der Parameter `i` muss in diesem Fall vor dem Loop initialisiert werden
+
+
+
+```{r, message=FALSE, echo=TRUE,eval=FALSE}
+i = 1
+while (i <= y){
+  do_something()
+  i=i+1
+}
+```
+  
+]
+.pull-right[
+```{r, out.width="70%",fig.align='center',fig.cap="https://universeofdatascience.com/wp-content/uploads/2021/06/Loops_in_R-1024x576.png"}
+knitr::include_graphics("img/whileloop.png")
+```
+
+]
+
+---
+----
+## baseR: while-loop
+
+.panelset[
+.panel[.panel-name[Bsp. 1]
+Wie oft wird `"Hello World"` im unten stehenden while Loop ausgegeben?
+```{r, message=FALSE, echo = TRUE, eval=FALSE}
+y = 3
+i = 1
+
+while (i <= y){
+  print("Hello World")
+}
+
+```
+
+]
+.panel[.panel-name[Lösung. 1]
+Abbruchbedingungen müssen korrekt initialisert werden um einen unendlichen Loop zu vermeiden
+```{r, echo=TRUE}
+y = 3
+i = 1
+
+while (i <= y){
+  print("Hello World")
+  i <- i+1
+}
+```
+]
+]
+
+
+---
+----
+## baseR: Loops und Conditional Statements
+- kombiniert sind Loops und Conditional Statements mächtige Werkzeuge in R
+- elementar sind dafür die Befehle `break` und `next`
+
+.panelset[
+.panel[.panel-name[break]
+Mit `break` kann ein Loop an einer bestimmten Stelle (z.B. bei Erfüllung einer bestimmten Bedingung) vorzeitigabgebrochen werden.
+```{r, message=FALSE, echo = TRUE}
+for (i in c(1,3,6,8)){
+  if (i %% 2 == 0){
+    print(i)
+    break
+  }
+}
+```
+
+]
+.panel[.panel-name[next]
+Mit `next` kann zur nächsten Iteration gesprungen werden ohne den gesamten Codebody auszuführen
+```{r, echo=TRUE}
+for (i in c(1,2,3,5)){
+  if (i %% 2 == 0){
+    next # alles nach dieser Zeile wird übersprungen
+  }
+  print(i)
+}
+```
+]
+
+]
+
+---
+----
+
+## Hands-On: Loops und Conditional Statements
+
+
+.panelset[
+.panel[.panel-name[Aufgabe]
+Lade den Datensatz `Daten/firma.rds` und berechne die jährlichen Auszahlungsbeträge pro Mitarbeiter inklusive Boni:
+
+- Mitarbeiter mit einem Monatslohn über 10000 bekommen keinen Bonus
+- **Sehr Gut** bewertete Mitarbeiter bekommen einen Bonus in Höhe von **70% ihres Monatseinkommens**
+- **Gut** bewertete Mitarbeiter bekommen einen Bonus von **40% ihres Monatseinkommens**, bei **10 oder mehr Dienstjahren** bekommen sie **50%**
+- Bewertungen, die weder `Gut` noch `Sehr Gut` sind bekommen den Standardbonus von **300 CHF**
+
+<p>Schreibe einen Loop, welcher eine Liste befüllt mit dem String "NAME erhält AUSZAHLUNG CHF im Jahr inkl. Bonus" für jede/n MitarbeiterIn im Datensatz.</p>
+<p>Sollte ein/e MitarbiertIn keinen Bonus erhalten, sollte der String wie folgt aussehen: "NAME erhält AUSZAHLUNG CHF im Jahr. NAME erhält keinen Bonus"</p>
+
+]
+.panel[.panel-name[Tipps]
+**Tipps:**
+- Nutze einen for loop
+- Arbeite die Bedingungen der Reihe nach ab
+- Verwende verschachtelte if Statements, wenn mehrere bedingungen erfüllt sein müssen
+]
+
+.panel[.panel-name[Ergebnis]
+```{r, echo=FALSE}
+firma <- readRDS("Daten/firma.rds")
+
+
+lohn_list <- list()
+
+for (i in seq_along(firma$name)) {
+  # Monatslohn über 10000?
+  if (firma$monatslohn[i]>10000){
+    jahreslohn <- firma$monatslohn[i]*12
+    lohn_list[[i]] <- paste0(firma$name[i], " erhält ",jahreslohn," CHF im Jahr. ",firma$name[i]," erhält keinen Bonus.")
+    next # Weiter zur nächsten Iteration
+  }
+  # bewertung sehr gut -> 70% des Monatslohns
+  if (firma$bewertung[i]=="Sehr gut"){
+    bonus <- firma$monatslohn[i]*0.7
+  }else if (firma$bewertung[i]=="Gut") {
+    if (firma$dienstjahre[i]>=10){
+      bonus <- firma$monatslohn[i]*0.5 # Gut und 10 oder mehr Dienstjahre
+    } else {
+      bonus <- firma$monatslohn[i]*0.4 # Gut und weniger als 10 Jahre
+    }
+  } else {
+    bonus <- 300 # Standardbonus
+  }
+  # Auszahlungsbetrag pro Jahr berechnen
+  jahreslohn <- firma$monatslohn[i]*12 + bonus
+  
+  # String erstellen
+  lohn_list[[i]] <- paste0(firma$name[i], " erhält ",jahreslohn," CHF im Jahr inkl. Bonus.")
+}
+
+lohn_list
+```
+]
+]
+
+
+---
+----
+## apply vs. loops
+
+Die apply-Famile bietet eine Alternative zu klassischen loops.
+
+
+.panelset[
+.panel[.panel-name[Vorteile]
+
+- man benötigt deutlich weniger Code (keine Zuweisungen, Counter, Abbruchbedingungen etc.)
+
+- beugt dem Erzeugen von "Spaghetti-Code" vor, da leichter lesbar
+
+- Variablen innerhalb der Funktion werden nicht im Global Environment gespeichert (keine Gefahr der versehentlichen Überschreibung)
+
+]
+.panel[.panel-name[Nachteile]
+
+- kompliziertere Abläufe können mit den apply Funktionen nicht nativ realisiert werden
+
+- klassische Loops können viel feiner definiert werden
+
+- Es können Iterationen erzeugt werden, bei denen das Ergebnis auf der vorigen Iteration beruht
+
+**Ein generelles Ablehnen von Loops, wie es von manchen Autoren propagiert wird ist mMn Quatsch!**
+]
+]
+
+---
+----
+## Die apply-Familie
+
+Aus der Erfahrung sind `lapply, sapply` und `apply` die am meisten genutzen Funktionen.
+
+.panelset[
+.panel[.panel-name[lapply]
+Anwendung einer Funktion auf jedes Element einer Liste/eines Vektors und gibt eine Liste zurück.
+
+```{r, echo=TRUE}
+num_list <- list(a = c(3,8,6), b = c(1,15,3), c = c(32,15,16))
+
+lapply(num_list, mean)
+```
+
+]
+.panel[.panel-name[sapply]
+Gleiche Funktionsweise wie `lapply`, gibt aber - wenn möglich - einen Vektor und sonst eine Matrix als Ergebnis zurück.
+
+```{r, echo=TRUE}
+sapply(num_list, mean)
+```
+]
+.panel[.panel-name[tapply & aggregate]
+Berechnung einer Kennzahl (mean, median, min, max, etc.) für jede Faktor-Variable in einem Vektor.
+```{r, echo=TRUE}
+df <- data.frame(fac = c("a","a","b","b","c","c"),
+                num = c(4,8,6,5,7,9))
+
+tapply(df$num, as.factor(df$fac),mean)
+```
+
+]
+.panel[.panel-name[mapply]
+Anwendung einer Funktion auf die korrespondierenden Elemente von mehreren Listen.
+```{r, echo=TRUE}
+num_list <- list(a = c(3,8,6), b = c(1,15,3), c = c(32,15,16))
+num_list2 <- list(a = c(1,2,3), b = c(4,5,6), c = c(7,8,9))
+
+mapply(sum, num_list, num_list2)
+```
+
+]
+.panel[.panel-name[apply]
+Anwendung einer Funktion auf die Elemente eines data.frames oder einer Matrix. Gibt Vektor oder Liste zurück.
+Apply kann entweder reihenweise, spaltenweise oder elementweise operieren.
+```{r, echo=TRUE}
+df <- data.frame(fac = c("a","a","b","b","c","c"),
+                num = c(4,8,6,5,7,9))
+
+apply(df, 1, paste0, collapse="_")
+```
+]
+]
+
+---
+----
+## Die apply-Familie: Syntax
+
+In allen Funktionen aus der `apply`-Familie können Funktionen mit oder ohne Parameter oder eigene sog. [anonymus functions](https://coolbutuseless.github.io/2019/03/13/anonymous-functions-in-r-part-1/) verwednet werden.
+.panelset[
+.panel[.panel-name[Generell]
+Bei allen `apply`-Funktionen muss ein Objekt (oder mehrere) sowie eine Funktion angegeben werden, welche auf die Elemente des Objekts angewendet wird.
+
+Bei `lapply` kann dies eine Liste oder ein Vektor sein, welche als erstes Argument an die Funktion mitgegeben wird. Das zweite Argument ist die Funktion.
+
+```{r, echo=TRUE, eval=FALSE}
+# Generell
+lapply(vec_or_list, func)
+
+```
+]
+.panel[.panel-name[Ohne Args.]
+Wenn keine zusätzlichen Argumente für diei Funktion benötigt werden (z.B. `mean()`), kann die Funktion einfach **ohne Klammern** als Argument mitgegeben werden.
+
+```{r, echo=TRUE}
+# Keine Argumente
+lapply(num_list, mean)
+
+```
+]
+.panel[.panel-name[Mit Args.]
+Argumente, welche normalerweise in die Klammer hinter der Funktion geschrieben werden (`mean(.,na.rm=TRUE)`), werden im Falle von `apply`-Funktionen mit Komma getrennt aufgelistet (`mean,na.rm=TRUE`)
+
+```{r, echo=TRUE}
+# Mit Argumenten
+lapply(num_list[1:2], mean,na.rm=TRUE)
+
+```
+]
+.panel[.panel-name[Anonym. (1)]
+[Anonymus Functions](https://coolbutuseless.github.io/2019/03/13/anonymous-functions-in-r-part-1/) (auch *lambda expression* genannt) sind Funktionen, denen kein Name zugeordnet wird und die nur im Zusammehang der apply Funktion existieren
+
+```{r, echo=TRUE}
+# Mit Argumenten
+lapply(num_list[1:2], function(x){
+  temp <- paste0("Die Summe ist ",sum(x))
+  return(temp)
+})
+```
+]
+.panel[.panel-name[Anonym. (2)]
+Um den Code übersichtlicher zu gestalten und die ungewohnte Schreibweise mit der Kommatrenung zu vermeiden, können auch andere Funktionen als `Anonymus Functions` notiert werden.  
+
+```{r, echo=TRUE}
+# Mit Argumenten
+lapply(num_list[1:2], function(x){
+  mean(x,na.rm=TRUE)
+})
+```
+
+]
+]
+---
+----
+## Anwendungsbeispiel: Mehrere Files einlesen
+
+
+```{r, echo=FALSE, message=FALSE}
+library(readr)
+```
+
+```{r, echo=TRUE, message=FALSE}
+abstimmungen_path <- "Daten/Ebene_Gemeinden" 
+csv_files <- list.files(path = abstimmungen_path, pattern = "*.csv", full.names = T) 
+```
+Alle gezeigten Beispiele liefern dasselbe Ergebnis
+
+.panelset[
+.panel[.panel-name[for-loop]
+```{r, echo=TRUE, message=FALSE,eval=FALSE}
+for_list <- list()
+for(file in csv_files){
+  for_list[[file]] <- read_csv2(file,
+                  locale = locale(encoding = "latin1"),
+                  col_types = cols(.default = "c"))
+}
+```
+
+]
+.panel[.panel-name[while-loop]
+```{r, echo=TRUE, message=FALSE,eval=FALSE}
+while_list <- list()
+i = 1
+while(i <= length(csv_files)){
+  while_list[[i]] <- read_csv2(csv_files[i],
+                  locale = locale(encoding = "latin1"),
+                  col_types = cols(.default = "c"))
+  i = i + 1
+}
+```
+
+]
+.panel[.panel-name[lapply]
+```{r, echo=TRUE, message=FALSE,eval=FALSE}
+lapply_list <- lapply(csv_files,function(file){
+  df <- read_csv2(file,
+                  locale = locale(encoding = "latin1"),
+                  col_types = cols(.default = "c"))
+  return(df)
+})
+```
+
+]
+]
+---
+----
+## Hands-On: apply-Funktionen
+
+*Gegeben ist ein Auszug aus dem Mikrezensus Mobilität und Verkehr 2021 (haush_sample.rds) sowie eine Liste von Fahrzeugklassen*
+
+Für jede Fahrzeuklasse soll ein Datensatz erstellt werden, welcher den Mittelwert und die Gesamtnzahl der Fahrzeuge in der entsprechenden Fahrzeugklasse pro Bezirk enthält. Verwende eine passende apply Funktion.
+
+**Erläuterung:**
+- Reihen bei denen die Anzahl kleiner 0 ist sind `NAs` und müssen entfernt werden
+- filtere die entsprechende Fahrzeugklasse
+- gruppiere die Daten nach Bezirk
+- nutze summarise um die Kennzahlen zu errechnen
+
+**TIPP:** Wenn man Funktionen in einem Loop oder einer apply Funktion verwenden möchte, beginnt man am besten damit, die Funktion auf *ein* Listenelement anzuwenden. Anschliessend kann man den Arbeitsablauf in eine Schleife packen. 
+
+
+
+---
+----
+## purrr: Iterationen im tidyverse
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://purrr.tidyverse.org' target="_blank">
+    <img src='https://purrr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+- Mit den `map` Funktionen aus dem `purrr` Package können ebenfalls schleifenartige Iterationen durchgeführt werden (wie `apply`).
+
+- Der Vorteil gegenüber `apply` Funktionen und klassischen Loops liegt darin, dass `map` Funktionen in eine mit `%>%` oder `|>` erzeugte Pipeline integriert werden können
+
+- Link zum [Cheatsheet](https://raw.githubusercontent.com/rstudio/cheatsheets/main/purrr.pdf)
+
+.panelset[
+.panel[.panel-name[for-loop]
+```{r, echo=TRUE, message=FALSE,eval=FALSE}
+for_list <- list()
+for(file in csv_files){
+  for_list[[file]] <- read_csv2(file,
+                  locale = locale(encoding = "latin1"),
+                  col_types = cols(.default = "c"))
+}
+```
+
+]
+.panel[.panel-name[while-loop]
+```{r, echo=TRUE, message=FALSE,eval=FALSE}
+while_list <- list()
+i = 1
+while(i <= length(csv_files)){
+  while_list[[i]] <- read_csv2(csv_files[i],
+                  locale = locale(encoding = "latin1"),
+                  col_types = cols(.default = "c"))
+  i = i + 1
+}
+```
+
+]
+.panel[.panel-name[lapply]
+```{r, echo=TRUE, message=FALSE,eval=FALSE}
+lapply_list <- lapply(csv_files,function(file){
+  df <- read_csv2(file,
+                  locale = locale(encoding = "latin1"),
+                  col_types = cols(.default = "c"))
+  return(df)
+})
+```
+
+]
+.panel[.panel-name[map]
+```{r, echo=TRUE, message=FALSE,eval=FALSE}
+map_list <- csv_files %>% 
+  map(read_csv2,
+      locale = locale(encoding = "latin1"),
+      col_types = cols(.default = "c"))
+```
+]
+]
+
+---
+----
+## purr: Tilde-Punkt Notierung für Funktionen
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://purrr.tidyverse.org' target="_blank">
+    <img src='https://purrr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+- Um den Code übersichtlicher zu gestalten, kann die die Tilde-Punkt-Verknüpfung für anonyme Funktionen verwenden 
+
+**Aus**
+```{r, echo=TRUE, message=FALSE,eval=FALSE}
+function(x){
+  sum(x)
+}
+```
+
+**wird** 
+
+```{r, echo=TRUE, message=FALSE,eval=FALSE}
+~{sum(.x)}
+```
+
+Diese Schreibweise ist kein Muss, wird aber bei `purrr` oft verwendet. Es ist daher wichtig zu verstehen, was diese Schreibweise bedeutet, um nachher z.B. Beiträge auf `StackOverflow` verstehen zu können.
+
+---
+----
+## purrr::map()
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://purrr.tidyverse.org' target="_blank">
+    <img src='https://purrr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+- je nach gewünschtem Output unterscheiden sich die `map` Funktionen
+
+.panelset[
+.panel[.panel-name[map]
+- `map` ist im Prinzip äquivalent zu `lapply`
+```{r, echo=TRUE, message=FALSE,eval=TRUE}
+# Liste von CSV files einlesen
+# Wir erhalten eine Liste von data.frames bzw. tibbles
+map_list <- csv_files %>% 
+  map(read_csv2,
+      locale = locale(encoding = "latin1"),
+      col_types = cols(.default = "c"))
+
+class(map_list)
+```
+
+]
+.panel[.panel-name[map_df (1)]
+```{r, echo=TRUE, message=FALSE,eval=TRUE}
+# Ja Anteil nach Bezirk berechnen und alles in einen zusammenhängenden Datensatz schreiben
+map_dataframe <- map_list %>% 
+  map_df(~ .x %>% 
+           group_by(DATUM_ABSTIMMUNG,VORLAGE_BEZEICHNUNG,BEZIRK_NAME) %>% 
+           summarise(eing_stimmen = sum(as.numeric(EINGELEGTE_STIMMEN)),
+                     ja = sum(as.numeric(JA_STIMMEN))) %>% 
+           mutate(ja_vote = ja/eing_stimmen))
+
+class(map_dataframe)
+```
+
+]
+.panel[.panel-name[map_df (2)]
+```{r, echo=TRUE, message=FALSE,eval=TRUE}
+head(map_dataframe,5)
+```
+
+]
+.panel[.panel-name[map_chr]
+- bei `map_chr` muss das Ergebnis der Funktion innerhalb von `map_chr` immer die Länge `1` haben. Sonst kann kein Vektor erstellt werden
+```{r, echo=TRUE, message=FALSE,eval=TRUE}
+# Namen der einzelnen Vorlagen extrahieren als vektor
+map_character <- map_list %>% 
+  map_chr(~ .x[["VORLAGE_BEZEICHNUNG"]] %>% unique())
+
+map_character[c(1:4)]
+```
+]
+.panel[.panel-name[map_dbl]
+- bei `map_dbl` muss das Ergebnis der Funktion innerhalb von `map_dbl` immer ein einzelner `double` (Fliesskommazahl oder Integer) sein.
+```{r, echo=TRUE, message=FALSE,eval=TRUE}
+# Gesamtanzahl der Stimmberechtigten bei den jeweiligen Abstimmungen
+map_double <- map_list %>% 
+  map_dbl(~ sum(as.numeric(.x$STIMMBERECHTIGTE)))
+
+map_double
+```
+]
+]
+---
+----
+## purrr: Weitere nützliche Funktionen
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://purrr.tidyverse.org' target="_blank">
+    <img src='https://purrr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+- `purrr` beinhaltet noch einige weitere nützliche Funktionen, vor allem im Umgang mit `Listen`
+
+.panelset[
+.panel[.panel-name[keep]
+`keep` behält nur die Elemente, die eine bestimmte Bedingung erfüllen 
+```{r, echo=TRUE, message=FALSE,eval=TRUE}
+# Abstimmungen mit im Schnitt mehr als 50% Stimmbeteiligung pro gGemeinde
+hohe_beteiligung <- map_list %>% 
+  keep(~{mean(as.numeric(.x[["STIMMBETEILIGUNG"]]))>50})
+length(map_list)
+length(hohe_beteiligung)
+```
+]
+.panel[.panel-name[discard]
+`discard` bildet das gegenstück zu `keep`
+```{r, echo=TRUE, message=FALSE,eval=TRUE}
+# Abstimmungen mit im Schnitt 50% oder weniger Stimmbeteiligung pro Gemeinde
+niedrige_beteiligung <- map_list %>% 
+  discard(~{mean(as.numeric(.x[["STIMMBETEILIGUNG"]]))>50})
+length(hohe_beteiligung)
+length(niedrige_beteiligung)
+
+```
+
+]
+.panel[.panel-name[every]
+Trifft Bedingung auf **jedes** Element der Liste zu?
+```{r, echo=TRUE, message=FALSE,eval=TRUE}
+# Ist die durchschnittliche Stimmbeteilung in den Gemeinden immer über 30%?
+map_list %>% 
+  some(~{mean(as.numeric(.x[["STIMMBETEILIGUNG"]]))>30})
+```
+
+]
+.panel[.panel-name[some]
+Trifft Bedingung auf **mindestens ein** Element der Liste zu?
+```{r, echo=TRUE, message=FALSE,eval=TRUE}
+# Gibt es Abstimmungen mit durchschnittlicher Stimmbeteilung in den Gemeinden von über 70%?
+map_list %>% 
+  some(~{mean(as.numeric(.x[["STIMMBETEILIGUNG"]]))>70})
+```
+]
+]
+
+---
+----
+## purrr: Weitere nützliche Funktionen
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://purrr.tidyverse.org' target="_blank">
+    <img src='https://purrr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+- `purrr` beinhaltet noch einige weitere nützliche Funktionen, vor allem im Umgang mit `Listen`
+
+.panelset[
+.panel[.panel-name[pluck (1)]
+`pluck` hilft dabei auf Elemente in einer Liste zuzugreifen. Besonders hilfreich ist dies wenn Listen stark verschachtelt sind
+```{r, echo=TRUE, message=FALSE,eval=TRUE}
+nested_list <-
+  list(
+    a = list(1, 2, 3),
+    b = list(b1 = c("a","b"), 
+             b2 = TRUE),
+    c = list(c1 = list(c1_1 = c(1, 2, 3, 4), 
+                       c1_2 = c("h", "i", "j")
+    ))
+  )
+```
+]
+.panel[.panel-name[pluck (2)]
+Es kann Ebene für Ebene das Element nach Namen ausgewählt werden
+```{r, echo=TRUE, message=FALSE,eval=TRUE}
+nested_list %>% 
+  pluck("b","b1")
+# Gleich wie nested_list[["b"]][["b1"]]
+```
+]
+.panel[.panel-name[pluck (3)]
+Ebenso können auch die Indizes der einzelnen Listen verwendet werden
+```{r, echo=TRUE, message=FALSE,eval=TRUE}
+nested_list %>% 
+  pluck(2,1)
+# Gleich wie nested_list[[2]][[1]]
+```
+]
+.panel[.panel-name[pluck (4)]
+Wenn ein Element nicht existiert, wird kein `Error`, sondern `NULL` zurückgegeben (Vorteil wenn man es z.B. in Funktionen verwendet)
+```{r, echo=TRUE, message=FALSE,eval=TRUE}
+nested_list %>% 
+  pluck(2,1)
+# Gleich wie nested_list[[2]][[1]]
+```
+]
+.panel[.panel-name[pluck (5)]
+Listen Werte können auch gesetzt werden
+```{r, echo=TRUE, message=FALSE,eval=TRUE}
+#set
+pluck(nested_list,2,1) <- "test"
+#get
+nested_list %>% 
+  pluck(2,1) 
+```
+]
+]
+
+---
+----
+
+## Hands-On: purrr¨
+
+**Aufgabe:**
+
+Im Aufgaben-File befinden sich ein `apply`-Workflow und ein Workflow, der einen `for-loop` beinhaltet.
+Betrachte deren Ergebnisse.
+Konvertiere die beiden Workflows in eine Pipeline unter Verwendung der `map` Funktionen. Achte darauf die passenden `map` Funktionen zu verwenden und keine unnötigen Zusatzschritte zu unternehmen.
+
+
+**Aufgabe:**
+
+Gegeben ist die Liste `gr_data_bezirke`. Sie enthält Daten zu den Kandidatenstimmen bei den Grossratswahlen 2012-2020. Jedes der 15 Listenelmente stellt das Ergebnis eines Bezirks in einem bestimmten Jahr dar. 
+
+Erstelle einen zusammenhängenden Datensatz, der den/die Kandidierende/n für jedes Jahr und jeden Bezirk mit den Meisten Stimmen enthält. Der Datensatz soll ausserdem den Bezirknamen und das Jahr enthalten, damit man das Ergebnis später nachvollzihen kann. Verwende die passende map Funktion.
+
+Der Datensatz `meiste_stimmen_bezirk` enthält das Ergebnis
+
+---
+----
+## Nice to know: purrr
+<figure class="logo-fig logo-fig-small">
+  <a href='https://purrr.tidyverse.org' target="_blank">
+    <img src='https://purrr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+Weiterführende Informationen zum `purr` Package:
+
+- [Blogbeitrag von Rebecca Barter](https://www.rebeccabarter.com/blog/2019-08-19_purrr)
+
+- [Vergleich purrr vs. apply](https://jtr13.github.io/spring19/ss5593&fq2150.html)
+
+- [purrr-Tutorial auf R-bloggers](https://www.r-bloggers.com/2020/05/one-stop-tutorial-on-purrr-package-in-r/)
+
+- [Blog von Fatih Emre Ozturk](https://medium.com/@ozturkfemre/purr-in-r-a-powerful-tool-for-iteration-d4eb6c0b2d20)
+
+- [Das purrr-Cookbook von Statistik Dresden (deutsch)](https://jkruppa.github.io/programing-purrr-furrr.html#sec-purrr)
+
+
+
+
+
+
+
+
+

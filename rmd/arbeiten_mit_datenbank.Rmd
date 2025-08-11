@@ -1,0 +1,230 @@
+---
+title: "Arbeiten mit der Datenbank (2)"
+author: "Felix lorenz"
+date: '12. Dezember 2022'
+amt: "Staatskanzlei"
+stelle: "Dienststelle für Statistik"
+output: 
+  xaringan::moon_reader:
+    nature:
+      highlightStyle: github
+      highlightlines: true
+      #highlightSpans: true
+    css: ["default","styles_x.css"]
+    #css: ["default"]
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, dpi = 300, message = FALSE, warning = FALSE)
+```
+
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dbi.r-dbi.org/' target="_blank">
+    <img src='https://dbi.r-dbi.org/reference/figures/logo-name.svg' class='logo' style="height:60px;"/>
+  </a>
+</figure>
+
+## Verbindung herstellen (SQLite, öffentlich)
+
+Wir nutzen eine frei verfügbare **SQLite**-Beispieldatenbank (`survey.db`) aus dem Software‑Carpentry‑Kurs.  
+Sie wird **einmalig heruntergeladen** und lokal genutzt – kein interner Zugriff nötig.
+
+```{r}
+# Pakete
+library(DBI)
+library(RSQLite)
+library(dplyr)
+library(dbplyr)
+
+
+# Verbindung aufbauen
+con <- dbConnect(RSQLite::SQLite(), "Daten/survey.db")
+con
+```
+
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dbi.r-dbi.org/' target="_blank">
+    <img src='https://dbi.r-dbi.org/reference/figures/logo-name.svg' class='logo' style="height:60px;"/>
+  </a>
+</figure>
+
+## Vorhandene Tabellen anzeigen
+
+```{r}
+dbListTables(con)
+```
+
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dbi.r-dbi.org/' target="_blank">
+    <img src='https://dbi.r-dbi.org/reference/figures/logo-name.svg' class='logo' style="height:60px;"/>
+  </a>
+</figure>
+
+## Felder einer Tabelle anzeigen
+
+```{r}
+dbListFields(con, "Survey")
+dbListFields(con, "Person")
+```
+
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dbi.r-dbi.org/' target="_blank">
+    <img src='https://dbi.r-dbi.org/reference/figures/logo-name.svg' class='logo' style="height:60px;"/>
+  </a>
+</figure>
+<figure class="logo-fig logo-fig-small2">
+  <a href='https://www.tidyverse.org/' target="_blank">
+    <img src='https://tidyverse.tidyverse.org/logo.png' class='logo' style="height:60px;"/>
+  </a>
+</figure>
+
+## tidyverse und Datenbanken (dbplyr)
+
+.panelset[
+.panel[.panel-name[Erklärung]
+- `tbl(con, "tabelle")` erstellt einen **Pointer** (Lazy Table) – noch kein Download.  
+- `dplyr`‑Verkettungen werden **in SQL übersetzt** und auf der DB ausgeführt.  
+- Mit `show_query()` siehst du das erzeugte SQL.  
+- Mit `collect()` holst du die Ergebnisse als lokalen `data.frame`.
+]
+.panel[.panel-name[Query erstellen]
+```{r}
+surveys_tbl <- tbl(con, "Survey")
+
+query <- surveys_tbl |>
+  filter(year == 2002) |>
+  group_by(species_id) |>
+  summarise(n = n(), .groups = "drop") |>
+  arrange(desc(n))
+
+query
+```
+]
+.panel[.panel-name[SQL anzeigen]
+```{r}
+query |> show_query()
+```
+]
+.panel[.panel-name[Query ausführen]
+```{r}
+data_2002 <- query |> collect()
+head(data_2002, 10)
+```
+]
+.panel[.panel-name[Direktes SQL]
+```{r}
+sql_query <- "
+  SELECT species_id, COUNT(*) AS n
+  FROM surveys
+  WHERE year = 2002
+  GROUP BY species_id
+  ORDER BY n DESC"
+dbGetQuery(con, sql_query) |> head(10)
+```
+]
+]
+
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dbi.r-dbi.org/' target="_blank">
+    <img src='https://dbi.r-dbi.org/reference/figures/logo-name.svg' class='logo' style="height:60px;"/>
+  </a>
+</figure>
+<figure class="logo-fig logo-fig-small2">
+  <a href='https://www.tidyverse.org/' target="_blank">
+    <img src='https://tidyverse.tidyverse.org/logo.png' class='logo' style="height:60px;"/>
+  </a>
+</figure>
+
+## Joins: DB‑Tabellen + Lookup (ohne interne Quellen)
+
+Wir joinen die `surveys` mit der Lookup‑Tabelle `species`, um Kürzel (`species_id`) in Klartext zu übersetzen.
+
+.panelset[
+.panel[.panel-name[Erklärung]
+- Zwei DB‑Tabellen via `left_join()` (dbplyr übersetzt das zu SQL).  
+- **Kein lokaler Upload** nötig.
+]
+.panel[.panel-name[Query]
+```{r}
+species_tbl <- tbl(con, "species")
+
+joined <- surveys_tbl |>
+  filter(year == 2002) |>
+  inner_join(species_tbl, by = "species_id") |>
+  group_by(species_id, genus, species) |>
+  summarise(n = n(), .groups = "drop") |>
+  arrange(desc(n))
+
+joined
+```
+]
+.panel[.panel-name[SQL anzeigen]
+```{r}
+joined |> show_query()
+```
+]
+.panel[.panel-name[collect]
+```{r}
+joined_2002 <- joined |> collect()
+head(joined_2002, 10)
+```
+]
+]
+
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dbi.r-dbi.org/' target="_blank">
+    <img src='https://dbi.r-dbi.org/reference/figures/logo-name.svg' class='logo' style="height:60px;"/>
+  </a>
+</figure>
+<figure class="logo-fig logo-fig-small2">
+  <a href='https://www.tidyverse.org/' target="_blank">
+    <img src='https://tidyverse.tidyverse.org/logo.png' class='logo' style="height:60px;"/>
+  </a>
+</figure>
+
+## Hands On: Kennzahl pro Jahr (öffentlich & lokal nutzbar)
+
+**Aufgabe:**  
+Berechne die **durchschnittliche Körpermasse (`weight`) pro Jahr** für die Jahre **2000 bis 2002** (je **ein Wert pro Jahr**).  
+Das Ergebnis soll am Ende **lokal** als normaler `data.frame` vorliegen.
+
+```{r}
+avg_weight_by_year <- surveys_tbl |>
+  filter(year %in% 2000:2002) |>
+  group_by(year) |>
+  summarise(mean_weight = mean(weight, na.rm = TRUE), .groups = "drop") |>
+  arrange(year) |>
+  collect()
+
+avg_weight_by_year
+```
+
+*(Hinweis: Falls du lieber `hindfoot_length` nutzen willst, ersetze einfach die Kennzahl.)*
+
+---
+----
+## Aufräumen
+
+```{r}
+dbDisconnect(con)
+```
+
+---
+
+### Hinweise für den Einsatz in „echten“ DBs
+
+- Die gezeigten Befehle funktionieren analog mit **PostgreSQL**, **SQL Server**, **DuckDB**, etc.  
+  (nur `dbConnect()` unterscheidet sich).  
+- Für Produktivsysteme: Zugangsdaten als **Umgebungsvariablen** speichern (`.Renviron`) und **niemals** im Code commiten.  
+- `collect()` nur dann verwenden, wenn Ergebnisse wirklich lokal benötigt werden (sonst auf der DB arbeiten lassen).

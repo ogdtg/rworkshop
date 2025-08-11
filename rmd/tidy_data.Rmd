@@ -1,0 +1,116 @@
+---
+title: "Tidy Data"
+author: "Felix lorenz"
+date: '12. Dezember 2022'
+amt: "Staatskanzlei"
+stelle: "Dienststelle für Statistik"
+output: 
+  xaringan::moon_reader:
+    highlightStyle: github
+    highlightlines: true
+    highlightSpans: true
+    css: ["default","styles_x.css"]
+
+
+---
+
+
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,dpi=300)
+```
+
+
+
+----
+## Recap: Tidy Data
+
+- Jede Spalte eine Variable
+- Jede Zeile eine Beobachtung
+- Jede Zelle ein einzelner Wert
+
+**Vorteile von Tidy Data**
+
+1. Konsistente Struktur &#10140; es ist leichter, Tools auf verschiedene Datensätze anzuwenden, wenn diese der gleichen Struktur folgen
+
+2. Tidy Data entspricht der inneren Arbeitslogik von R &#10140; Funktionen lassen sich leichter auf Tidy Data anwenden
+
+**Merke:** Tidy Data ist zwar erstrebenswert, aber sollte kein Selbstzweck sein.
+
+---
+----
+
+## Recap: Tidy Data
+```{r echo=FALSE}
+kanton = c("TG","TG","BS","BS")
+cases =  c(140474,140484,102405,102405)
+date = c(as.Date("2022-12-10"),as.Date("2022-12-11"),as.Date("2022-12-10"),as.Date("2022-12-11"))
+deaths = c(723,723,372,372)
+
+df_tidy <- tibble::tibble(date,kanton,cases,deaths) %>% 
+  mutate(death_rate = deaths/cases)
+
+df_not_tidy1 <- tibble::tibble(date,kanton,cases,deaths) %>% 
+  mutate(death_rate = paste0(deaths,"/",cases))
+
+df_not_tidy2 <- tibble::tibble(date,kanton,cases,deaths) %>% 
+    tidyr::pivot_longer(cols = c("cases","deaths"), names_to = c("indicator"))
+
+df_not_tidy3 <- tibble::tibble(date,kanton,cases,deaths) %>% 
+  select(-deaths) %>% 
+  tidyr::pivot_wider(names_from = date, values_from = c("cases"))
+```
+**Beispiel:** COVID Fallzahlen
+
+```{r echo = FALSE}
+df_not_tidy1
+```
+
+--
+
+<p class="check-no">&#10060;</p>
+
+---
+----
+
+## Recap: Tidy Data
+
+**Beispiel:** COVID Fallzahlen
+
+```{r echo = FALSE}
+df_not_tidy2
+```
+
+--
+
+<p class="check-no">&#10060;</p>
+---
+----
+
+## Recap: Tidy Data
+
+**Beispiel:** COVID Fallzahlen
+
+```{r echo = FALSE}
+df_tidy
+```
+
+--
+
+<p class="check-yes">&#10003;</p>
+---
+----
+
+## Recap: Tidy Data
+
+**Beispiel:** COVID Fallzahlen
+
+```{r echo = FALSE}
+df_not_tidy3
+```
+
+--
+
+<p class="check-no">&#10060;</p>

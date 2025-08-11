@@ -1,0 +1,433 @@
+---
+title: "Daten einlesen (2)"
+author: "Felix lorenz"
+date: '12. Dezember 2022'
+amt: "Staatskanzlei"
+stelle: "Dienststelle für Statistik"
+output: 
+  xaringan::moon_reader:
+    highlightStyle: github
+    highlightlines: true
+    highlightSpans: true
+    css: ["default","styles_x.css"]
+
+
+---
+```{r setup, include=FALSE,message=FALSE}
+knitr::opts_chunk$set(echo = FALSE,dpi=300)
+library(tidyverse)
+```
+
+
+----
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://readr.tidyverse.org' target="_blank">
+    <img src='https://readr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+## Einlesen von CSV-Dateien
+
+
+- CSV-Dateien sind ein häufiges Format für Datenaustausch.
+- Typische Probleme beim Einlesen:
+  - **Kodierung** (z.B. `UTF-8`, `latin1`, Umlaute).
+  - Unterschiedliche **Trennzeichen** (z.B. `,`, `;`, `\t`).
+  - **Unklare Struktur** (fehlende Header, unregelmäßige Daten).
+
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://readr.tidyverse.org' target="_blank">
+    <img src='https://readr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+## Kodierung und Trennzeichen
+
+**Problem:** 
+- Falsche Darstellung von Zeichen wie Umlauten (`ä`, `ö`, `ü`)
+- Unterschiedliche Trennzeichen (z.B. `,`, `;`, `\t`)
+
+**Grund:**
+- Das Encoding beim einlesen ist nicht korrekt gesetzt. Oft ensteht dies, wenn csv Dateien direkt aus Excel heraus erstellt werden. Diese csv-Dateien sind dann oft in `latin1` und nicht im Standardformat `utf-8` kodiert.
+- Beim Export aus Excel wird in der Regel ein Semikolon (`;`) anstelle des üblichen Kommas (`,`) als Trennezichen gesetzt
+
+**Lösung:**
+Encoding und Trennzeichen können manuell eingestellt werden
+
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://readr.tidyverse.org' target="_blank">
+    <img src='https://readr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+## Exkurs: Encoding
+
+.panelset[
+.panel[.panel-name[Idee]
+
+- Encoding übersetzt Zeichen in Zahlen (Bytes), die der Computer speichern und verarbeiten kann.
+
+- Verschiedene Encodings nutzen unterschiedliche Zahlenfolgen, um dasselbe Zeichen darzustellen.
+
+- Verschiedene Encodings liegen unterschieldliche Lookup Tabellen zu Grunde aus denen das jeweils dargestellte Zeichen mit dem entsrechenden Code entnommen wird
+]
+.panel[.panel-name[Encodingvarianten]
+
+
+  - **ASCII**: Basis-Lookup-Tabelle (nur englische Buchstaben, Zahlen, Symbole).
+    - `A` = `65`, `B` = `66`.
+  - **latin1** (ISO-8859-1): Erweiterung von ASCII, unterstützt europäische Sonderzeichen.
+    - `ä` = `0xE4`.
+  - **UTF-8**: Modernes Unicode-Encoding, speichert Zeichen mit 1-4 Bytes.
+    - `ä` = `0xC3 0xA4`.
+  - **UTF-16**: Unicode mit 2 Bytes für viele Zeichen.
+    - `ä` = `0x00E4`.
+
+]
+.panel[.panel-name[Beispiel]
+  
+**Speichern das Wort `München` in einer Datei:**
+- Bytes in **UTF-8**: `0x4D 0xC3 0xBC 0x6E 0x63 0x68 0x65 0x6E`.
+- Bytes in **latin1**: `0x4D 0xFC 0x6E 0x63 0x68 0x65 0x6E`.
+
+Wird die Datei mit falschem Encoding gelesen:
+  - **UTF-8** gelesen als latin1: `MÃ¼nchen` statt `München`.
+]
+]
+
+
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://readr.tidyverse.org' target="_blank">
+    <img src='https://readr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+## Kodierung und Trennzeichen: Ausgangsdaten
+
+.panelset[
+.panel[.panel-name[Variante 1]
+
+**UTF-8 und Komma als Trennzeichen**
+
+- Umlaute werden in Excel nicht korrekt angezeigt
+- Excel hat Probleme damit CSVs anzuzeigen, die in `utf-8` kodiert sind
+
+![CSV Variante 1](img/csv_v1.png)
+]
+.panel[.panel-name[Variante 2]
+
+**latin1 und Komma als Trennzeichen**
+
+- Trennzeichen wird nicht korrekt interpretiert
+
+![CSV Variante 2](img/csv_v2.png)
+]
+.panel[.panel-name[Variante 3]
+
+**UTF-8 und Semikolon als Trennzeichen**
+
+- Umlaute werden in Excel nicht korrekt angezeigt
+
+![CSV Variante 3](img/csv_v3.png)
+]
+.panel[.panel-name[Variante 4]
+
+**latin1-8 und Semikolon als Trennzeichen**
+
+- korrekte Darstellung
+
+![CSV Variante 4](img/csv_v4.png)
+]
+]
+
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://readr.tidyverse.org' target="_blank">
+    <img src='https://readr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+## Kodierung und Trennzeichen: Daten einlesen
+
+.panelset[
+.panel[.panel-name[Variante 1]
+
+**UTF-8 und Komma als Trennzeichen**
+
+```{r , echo = TRUE, eval=TRUE}
+library(readr)
+csv_v1 <- read_csv("Daten/geb_csv1.csv")
+```
+]
+.panel[.panel-name[Variante 2]
+
+**latin1 und Komma als Trennzeichen**
+
+```{r , echo = TRUE, eval=TRUE}
+library(readr)
+csv_v2 <- read_csv("Daten/geb_csv2.csv")
+```
+]
+.panel[.panel-name[Variante 3]
+
+**UTF-8 und Semikolon als Trennzeichen**
+
+```{r , echo = TRUE, eval=TRUE}
+library(readr)
+csv_v3 <- read_csv("Daten/geb_csv3.csv")
+```
+]
+.panel[.panel-name[Variante 4]
+
+**latin1-8 und Semikolon als Trennzeichen**
+
+```{r , echo = TRUE, eval=TRUE}
+library(readr)
+csv_v4 <- read_csv("Daten/geb_csv4.csv")
+```
+]
+]
+
+
+
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://readr.tidyverse.org' target="_blank">
+    <img src='https://readr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+## Kodierung und Trennzeichen: Daten anschauen
+
+.panelset[
+.panel[.panel-name[Variante 1]
+
+**UTF-8 und Komma als Trennzeichen**
+
+```{r , echo = TRUE, eval=TRUE}
+head(csv_v1,3)
+```
+]
+.panel[.panel-name[Variante 2]
+
+**latin1 und Komma als Trennzeichen**
+
+```{r , echo = TRUE, eval=TRUE}
+head(csv_v2,3)
+```
+]
+.panel[.panel-name[Variante 3]
+
+**UTF-8 und Semikolon als Trennzeichen**
+
+```{r , echo = TRUE, eval=TRUE}
+head(csv_v3,3)
+```
+]
+.panel[.panel-name[Variante 4]
+
+**latin1-8 und Semikolon als Trennzeichen**
+
+```{r , echo = TRUE, eval=TRUE}
+head(csv_v4,3)
+```
+]
+]
+
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://readr.tidyverse.org' target="_blank">
+    <img src='https://readr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+## Kodierung und Trennzeichen: Einleseprozess korrigieren
+
+.panelset[
+.panel[.panel-name[Variante 1]
+
+**UTF-8 und Komma als Trennzeichen**
+- keine Anpassung nötig, da Daten bereits korrekt eingelesen sind
+
+```{r , echo = TRUE, eval=TRUE}
+csv_v1 <- read_csv("Daten/geb_csv1.csv",show_col_types = FALSE)
+head(csv_v1,3)
+```
+]
+.panel[.panel-name[Variante 2]
+
+**latin1 und Komma als Trennzeichen**
+- Anpassung des Encodings mithilfe der `locale()` Funktion
+
+```{r , echo = TRUE, eval=TRUE}
+csv_v2 <- read_csv("Daten/geb_csv2.csv", locale = locale(encoding = "latin1"),show_col_types = FALSE)
+head(csv_v2,3)
+```
+]
+.panel[.panel-name[Variante 3]
+
+**UTF-8 und Semikolon als Trennzeichen**
+- Anpassung des Trennzeichens.
+- `read_delim` ist die Basisfunktion für alle `read_`-Funktionen. Hier können sämtliche Optionen selbst definiert werden
+
+```{r , echo = TRUE, eval=TRUE}
+csv_v3 <- read_delim("Daten/geb_csv3.csv", delim = ";",show_col_types = FALSE)
+head(csv_v3,3)
+
+```
+]
+.panel[.panel-name[Variante 4]
+
+**latin1-8 und Semikolon als Trennzeichen**
+- Anpassung des Trennzeichens und des Encodings.
+
+```{r , echo = TRUE, eval=TRUE}
+csv_v4 <- read_delim("Daten/geb_csv4.csv", delim = ";",locale = locale(encoding = "latin1"),show_col_types = FALSE)
+head(csv_v4,3)
+
+```
+]
+]
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://readr.tidyverse.org' target="_blank">
+    <img src='https://readr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+## Kodierung und Trennzeichen: Zu beachten
+
+- Das Encoding sollte nach dem Einlesen direkt überprüft werden.
+
+- Problematisch wird es dann, wenn falsch kodierte Daten erneut in anderer Kodierung abgespeichert werden. In diesem Fall kann das Encoding beim Einlesen nicht mehr ohne weiteres geändert werden, da die falsch kodierten Zeichen dann als tatsächlich interpretierte Zeichen interpretiert werden.
+
+- Beim Abspeichern gibt R allerdings bereits eine Warnmeldung aus 
+
+
+
+
+
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://readr.tidyverse.org' target="_blank">
+    <img src='https://readr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+## Kodierung und Trennzeichen: Zu beachten
+
+.panelset[
+.panel[.panel-name[Einlesen mit falscher Kodierung]
+
+- in `latin1` kodierte Daten ohne Umwandlung als `utf-8` abspeichern
+
+```{r , echo = TRUE, eval=TRUE}
+csv_v2 <- read_csv("Daten/geb_csv2.csv",show_col_types = FALSE)
+write.csv(csv_v2,"Daten/geb_csv2_falsch.csv",fileEncoding = "utf-8",row.names = F)
+```
+]
+.panel[.panel-name[Einlesen (1)]
+
+- Einlesen im beim Zwischenspeichern definierten `utf-8` 
+
+```{r , echo = TRUE, eval=TRUE}
+csv_v2_falsch <- read_csv("Daten/geb_csv2_falsch.csv",show_col_types = FALSE)
+head(csv_v2_falsch,3)
+```
+]
+.panel[.panel-name[Einlesen (2)]
+
+- Einlesen im ursprünglich richtigen `latin1`
+- Daten sind falsch abgelegt. Das Ändern des Encodings hat nun keine Auswirkung mehr
+
+```{r , echo = TRUE, eval=TRUE}
+csv_v2_falsch <- read_csv("Daten/geb_csv2_falsch.csv",locale = locale(encoding = "latin1"),show_col_types = FALSE)
+head(csv_v2_falsch,3)
+```
+]
+]
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://readr.tidyverse.org' target="_blank">
+    <img src='https://readr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+## Kodierung und Trennzeichen: SONDERFÄLLE
+
+- in der Regel reicht es, zwischen `utf-8` und `latin-1` zu wählen, da so die meisten Fälle abgedeckt werden
+
+- SAS exportiert csv Dateien per Default im `Windows-1512`-Encoding, da das default Encoding vom Betriebssystem und der Konfiguration der SAS-Sitzung abhängt. Dieses Encoding basiert zwar auf `latin1`, enthält aber zusätzlich weitere Zeichen aus westlichen Sprachen.
+
+- Ein Problem ergibt sich zum Beispiel, wenn der **Halbgeviertstrich (–)** (nicht zu verwechseln mit dem Bindestrich (-)) verwendet wird. Dieser existiert nicht in der `latin1` Kodierungstabelle und wird daher falsch interpretiert 
+
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://readr.tidyverse.org' target="_blank">
+    <img src='https://readr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+## Kodierung und Trennzeichen: SONDERFÄLLE
+
+
+.panelset[
+.panel[.panel-name[Einlesen in utf-8]
+
+
+```{r , echo = TRUE, eval=TRUE}
+csv_sas <- read_delim("Daten/1_Sozialhilfequote_Bezüger_Dossiers_Gde_2023.csv",delim = ";",show_col_types = F)
+csv_sas |> slice(42) |> select(GdenameTG,Quote_Kategorie)
+```
+]
+.panel[.panel-name[Einlesen mit latin1]
+
+
+```{r , echo = TRUE, eval=TRUE}
+csv_sas_lat <- read_delim("Daten/1_Sozialhilfequote_Bezüger_Dossiers_Gde_2023.csv",delim = ";",locale = locale(encoding = "latin1"),show_col_types = F)
+csv_sas_lat |> slice(42) |> select(GdenameTG,Quote_Kategorie)
+```
+]
+.panel[.panel-name[Einlesen mit Windows-1252]
+
+
+```{r , echo = TRUE, eval=TRUE}
+csv_sas_win <- read_delim("Daten/1_Sozialhilfequote_Bezüger_Dossiers_Gde_2023.csv",delim = ";",locale = locale(encoding = "Windows-1252"),show_col_types = F)
+csv_sas_win |> slice(42) |> select(GdenameTG,Quote_Kategorie)
+```
+]
+]
+
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://readr.tidyverse.org' target="_blank">
+    <img src='https://readr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+## Daten Zwischenspeichern
+
+- in R sollten Zwischenspeihcerungen die nur in R weiterverwendet werden sollen **IMMER** im RDS-Format abgespeichert werden.
+
+- Dieses R-eigene Format ist speichereffizient und speichert alle R-Objekte genau so wie sie sind
+
+- Wenn csv geladen wird, sollte `readr::read_csv()` anstatt von `read.csv()` benutzt werden, da es besonders bei grossen Datensätzen (>100MB) ca. 5 mal schneller ist.
+
+- Weiterführende Infos zum effizienten einlesen [hier](https://bookdown.org/csgillespie/efficientR/input-output.html)
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://readr.tidyverse.org' target="_blank">
+    <img src='https://readr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+## Daten Zwischenspeichern
+
+```{r, echo=FALSE, eval=TRUE, include=TRUE, fig.width=12, fig.height=6}
+plot_csv_rds <- readRDS("Daten/csv_rds_plot.rds")
+plot_csv_rds
+```

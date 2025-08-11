@@ -1,0 +1,4308 @@
+---
+title: "R Workshop"
+author: "Felix lorenz"
+date: '12. Dezember 2022'
+amt: "Staatskanzlei"
+stelle: "Dienststelle für Statistik"
+output: 
+  xaringan::moon_reader:
+    highlightStyle: github
+    highlightlines: true
+    highlightSpans: true
+    css: ["default","styles_x.css"]
+
+
+---
+<!--html_preserve--><div>
+<style type="text/css">.xaringan-extra-logo {
+width: 110px;
+height: 128px;
+z-index: 0;
+background-image: url(./img/tg.jpg);
+background-size: contain;
+background-repeat: no-repeat;
+position: absolute;
+top:1em;right:1em;
+}
+</style>
+<script>(function () {
+  let tries = 0
+  function addLogo () {
+    if (typeof slideshow === 'undefined') {
+      tries += 1
+      if (tries < 10) {
+        setTimeout(addLogo, 100)
+      }
+    } else {
+      document.querySelectorAll('.remark-slide-content:not(.title-slide):not(.inverse):not(.hide_logo)')
+        .forEach(function (slide) {
+          const logo = document.createElement('div')
+          logo.classList = 'xaringan-extra-logo'
+          logo.href = null
+          slide.appendChild(logo)
+        })
+    }
+  }
+  document.addEventListener('DOMContentLoaded', addLogo)
+})()</script>
+</div><!--/html_preserve-->
+
+<!--html_preserve--><script>document.addEventListener('DOMContentLoaded',function(){new xeBanner(JSON.parse('{"left":"<h6><\/h6><h7><\/h7>","exclude":["title-slide"],"position":"top"}'))})</script>
+<script>document.addEventListener('DOMContentLoaded',function(){new xeBanner(JSON.parse('{"center":"© ","exclude":["title-slide"],"position":"bottom"}'))})</script><!--/html_preserve-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----
+## Ziele des Workshops
+
+
+1. Richtiges Mindset schaffen, um Programmieren zu lernen
+
+2. Möglichst breiten Blick auf die Möglichkeiten von R schaffen, um Grundstein für selbstständiges Lernen zu bilden.
+
+3. Beispiele aus der Praxis in der Dienststelle für Statistik zum besseren Verständnis
+
+
+---
+----
+## R und RStudio
+
+.pull-left[
+**R**
+- R ist eine freie (open-source) Programmiersprache, erschienen in 1993
+- R ist eine Arbeitsumgebung für statistische Analysen und Grafiken (und vieles mehr)
+- R kann mit *packages* erweitert werden
+]
+--
+.pull-right[
+
+**RStudio**
+
+- RStudio ist eine grafische Benutzeroberfläche, welche auch integrierte Entwicklunsumgebung (i.e. IDE - integrated development environment) genannt wird
+
+]
+
+---
+----
+## Die R und tidyverse-Bibel
+
+<img src="https://pictures.abebooks.com/isbn/9781491910399-de.jpg" alt="https://pictures.abebooks.com/isbn/9781491910399-de.jpg" width="30%" />
+
+Das Buch ist kostenlos [hier](https://r4ds.had.co.nz/index.html) zu finden und ist ideal für Einsteiger.
+
+
+
+
+
+---
+----
+## Aufbau RStudio
+<img src="./Unterlagen/Rstudio.jpg" alt="plot of chunk unnamed-chunk-17" width="100%" />
+
+
+---
+----
+## R Projects
+
+- Daten, Scripts etc. werden in einem Ordner gebündelt
+- erleichtert die Strukturierung und erhöht die Übersichtlichkeit
+
+**Derzeitige Ordnung im Y widerspricht dieser Logik**
+
+
+<img src="./Unterlagen/03_projects.png" alt="plot of chunk unnamed-chunk-18" width="60%" />
+---
+----
+## R Projects
+
+In der Regel folgen Projekte dem untenstehenden Aufbau. Dies ist jedoch kein Muss und kann variiert werden.
+
+
+```r
+# Project
+- data
+  -> dataset.csv
+- code
+  -> data_preparation.R
+- output
+  -> output.xlsx
+```
+
+---
+----
+## Hands On: R Projects und initiale Einstellungen
+
+- Unnötiges Speichern/Laden von Daten ausstellen
+
+- Global Options kennenlernen
+
+- Projekte erstellen
+
+---
+----
+
+## Funktionen, Objekte und Packages
+
+"Jedes Element in R ist entweder ein Objekt oder eine Funktion"
+
+
+---
+----
+
+## Objekte
+
+R besitzt verschiedene Basisobjekte, die ihr bereits im *DataCamp* Kurs kennengelernt habt. Die meistgenutzten sind:
+
+.panelset[
+.panel[.panel-name[Variablen]
+- grundlegenstes und kleinstes R Objekt
+- kann `numeric`, `character` oder `logical` sein
+
+```r
+x <- 10
+y  = "Das ist ein String"
+x
+```
+
+```
+## [1] 10
+```
+
+```r
+y
+```
+
+```
+## [1] "Das ist ein String"
+```
+]
+.panel[.panel-name[Vektoren]
+- eindimensionales Objekt. Alle Elemente müssen den gleichen Datentyp haben.
+- kann `numeric`, `character` oder `logical` sein
+
+```r
+vec_num <- c(1,5,2)
+vec_char <- c("one","five",NA)
+var_log <- c(FALSE,TRUE,TRUE)
+vec_num
+```
+
+```
+## [1] 1 5 2
+```
+
+```r
+vec_char
+```
+
+```
+## [1] "one"  "five" NA
+```
+]
+.panel[.panel-name[Data Frames]
+- vergleichbar mit klassischer Tabelle (alle Spalten müssen gleich lang sein)
+- einzelne Spalten sind im Prinzip Vektoren und besitzen die gleichen Eigenschaften
+
+```r
+df <- data.frame(col_1 = c(1,5,2),col_2 = vec_char)
+df
+```
+
+```
+##   col_1 col_2
+## 1     1   one
+## 2     5  five
+## 3     2  <NA>
+```
+]
+
+.panel[.panel-name[Listen]
+- Boxen die unterschiedlichste Objekte enthalten können
+- in einer Liste kann prinzipiell alles gespeichert werden
+
+```r
+temp_list <- list(x,y,vec_num, vec_char,df)
+temp_list[[5]]
+```
+
+```
+##   col_1 col_2
+## 1     1   one
+## 2     5  five
+## 3     2  <NA>
+```
+]
+
+]
+
+
+
+---
+----
+## Funktionen
+- Funktionen sind wichtige Bestandteile im Arbeiten mit R. Einzelne Tasks können mit einer Funktion zusammengefasst und reproduzierbar gemacht werden
+
+
+.panelset[
+.panel[.panel-name[built-in]
+
+R besitzt viele "built-in" Funktionen, wie z. B. mathematischen Grundlagen (`mean()`,`sum()`,`sqrt()`, etc.)
+
+```r
+values <- c(3,9,6,8)
+mean(values)
+```
+
+```
+## [1] 6.5
+```
+]
+.panel[.panel-name[Aus package]
+
+Einzelne Funktionen aus packages können mit voransgestelltem `packagename::` aufgerufen werden. 
+
+Die `library` Funktion lädt alle Funktionen des Packages. Der vorangestellte package Name kann dann weggeleassen werden.
+
+```r
+library(dplyr)
+```
+
+```r
+dplyr::dense_rank(values)
+```
+
+```
+## [1] 1 4 2 3
+```
+]
+.panel[.panel-name[Eigene Funktion]
+
+Funktionen können auch vom User selbst ersetellt werden
+
+
+```r
+greetings <- function(name){
+  result <- paste0("Hello ",name,". Nice to meet you.")
+  print(result)
+}
+```
+
+```r
+greetings(name="Joe")
+```
+
+
+]
+.panel[.panel-name[Ergebnis]
+
+```
+## [1] "Hello Joe. Nice to meet you."
+```
+]
+]
+---
+----
+
+## Packages
+
+- Erweiterungen, die reproduzierbare Funktionen enthalten und kostenfrei genutzt werden können
+- Packages können direkt von [CRAN (Comrehensive R Archive Network)](https://cran.r-project.org/) installiert werden
+- Packages können auch von GitHub, GitLab o.ä. installiert werden
+- Jede/r kann Packages entwickeln 
+
+
+```r
+# CRAN
+install.packages("package_name")
+install.packages("dplyr")
+
+# GITHUB
+devtools::install_github("username/package_name")
+devtools::install_github("ogdtg/tgAPI")
+
+# GITLAB
+devtools::install_gitlab("username/packagename")
+
+# uvm...
+```
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----
+## "Programmierweisheiten"
+
+--
+
+**1. Jedes Problem hatte irgendjemand anders schon einmal...**
+
+--
+
+**2. "Richtiges" Googlen ist die halbe Miete beim Programmieren.**
+
+--
+
+**3. Man kann oft mehr automatisieren, als man im ersten Moment denkt.**
+
+--
+
+**4. Automatisierung bring *immer* einen Mehrwert.**
+
+--
+
+**5. Viele Wege führen nach Rom.**
+
+---
+----
+## Jedes Problem hatte irgendjemand anders schon einmal...
+
+...die Lösung ist daher meistens auch irgendwo zu finden.
+
+- Code übernehmen und reproduzieren, anstatt das Rad jedes Mal neu erfinden
+
+- [Stack Overflow](https://stackoverflow.com/) hilft (fast) immer. (*"Every data scientist has a tab open to Stack Overflow"*)
+
+- Unzählige weitere Hilfeseiten z.B. [Rbloggers](https://www.r-bloggers.com/), [Geeks for Geeks](https://www.geeksforgeeks.org/r-programming-language-introduction/), etc.
+
+<br>
+<img src="https://upload.wikimedia.org/wikipedia/commons/0/02/Stack_Overflow_logo.svg" alt="https://upload.wikimedia.org/wikipedia/commons/0/02/Stack_Overflow_logo.svg" width="40%" style="display: block; margin: auto;" />
+
+
+---
+----
+## "Richtiges" Googlen ist die halbe Miete
+
+- Programmieren ist ein englischsprachiges Feld &#10140; auf Englisch googlen bringt die besten Ergebnisse
+
+- Bei Fehlermeldungen kann als erster Schritt einfach der Text der Meldung gegooglet werden &#10140; bringt meistens schon ersten Anhaltspunkt
+
+---
+----
+## Man kann oft mehr automatisieren als man im ersten Moment denkt
+<br>
+- Prozesse als Ganzes betrachten! Kann ich vielleicht noch mehr automatisieren, als diesen einen spezifischen Prozessschritt?
+
+- Kann ich meine Arbeit skalieren und für andere Prozesse nutzen?
+
+- Wie kann ich meinen Code so generisch wie möglich schreiben?
+
+---
+----
+## Automatisierung bring immer einen Mehrwert
+
+--
+
+- Automatisierung spart oft Zeit
+
+--
+
+- Automatisierung reduziert meistens die Fehleranfälligkeit
+
+--
+
+- Automatisierung bringt **immer** einen Lerneffekt
+
+--
+
+<img src="https://marcgg.com/assets/blog/automation-win.png" alt="https://marcgg.com/assets/blog/automation-win.png" width="55%" style="display: block; margin: auto;" />
+
+
+---
+----
+## Viele Wege führen nach Rom
+
+- Es gibt niemals "die eine Lösung"
+
+- Probleme können auf die unterschiedlichste Art, mit den unterschiedlichsten Funktionen und den unterschiedlichsten Packages gelöst werden
+<br>
+<br>
+<h2 align="center"><i>"Der beste Code ist der, der verlässlich funktioniert" </i></p>
+
+---
+----
+## Programmieren lernt man nur durch Anwendung!
+
+<img src="./Unterlagen/how_much_I_think_I_know_about_R.PNG" alt="https://tidyverse.tidyverse.org/logo.png" style="display: block; margin: auto;" />
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----
+## Das tidyverse 
+.pull-left[
+tidyverse ist eine Sammlung von zusammenhängenden R-Paketen. Sie basiert auf der Idee von tidy Data, wo jede Spalte eine Variable, jede Zeile eine Beobachtung und jede Zelle einen einzelnen Wert darstellt.
+
+Das tidyverse umfasst Pakete für die Datenmanipulation, Visualisierung und Modellierung. Alle Packages basieren auf einer konsistenten "Grammatik".
+
+]
+.pull-right[
+<img src="https://tidyverse.tidyverse.org/logo.png" alt="https://tidyverse.tidyverse.org/logo.png" style =top: 0; right: 0; display: block; margin-left: auto; />
+]
+
+---
+----
+## Das tidyverse
+<figure class="logo-fig logo-title1">
+  <a href='https://readr.tidyverse.org' target="_blank">
+    <img src='https://readr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title2">
+  <a href='https://readxl.tidyverse.org' target="_blank">
+    <img src='https://readxl.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title3">
+  <a href='https://haven.tidyverse.org' target="_blank">
+    <img src='https://haven.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title4">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo' />
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title5">
+  <a href='https://tidyr.tidyverse.org' target="_blank">
+    <img src='https://tidyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title6">
+  <a href='https://stringr.tidyverse.org' target="_blank">
+    <img src='https://stringr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title7">
+  <a href='https://lubridate.tidyverse.org' target="_blank">
+    <img src='https://lubridate.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title8">
+  <a href='https://magrittr.tidyverse.org' target="_blank">
+    <img src='https://magrittr.tidyverse.org/logo.png' class='logo' />
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title9">
+  <a href='https://forcats.tidyverse.org' target="_blank">
+    <img src='https://forcats.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+
+<figure class="logo-fig logo-title10">
+  <a href='https://ggplot2.tidyverse.org' target="_blank">
+    <img src='https://ggplot2.tidyverse.org/logo.png' class='logo' />
+  </a>
+</figure>
+
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----
+## Daten einlesen
+
+
+<figure class="logo-fig logo-title1">
+  <a href='https://readr.tidyverse.org' target="_blank">
+    <img src='https://readr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title2">
+  <a href='https://readxl.tidyverse.org' target="_blank">
+    <img src='https://readxl.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title3">
+  <a href='https://haven.tidyverse.org' target="_blank">
+    <img src='https://haven.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title4">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title5">
+  <a href='https://tidyr.tidyverse.org' target="_blank">
+    <img src='https://tidyr.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title6">
+  <a href='https://stringr.tidyverse.org' target="_blank">
+    <img src='https://stringr.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title7">
+  <a href='https://lubridate.tidyverse.org' target="_blank">
+    <img src='https://lubridate.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title8">
+  <a href='https://magrittr.tidyverse.org' target="_blank">
+    <img src='https://magrittr.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title9">
+  <a href='https://forcats.tidyverse.org' target="_blank">
+    <img src='https://forcats.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+
+<figure class="logo-fig logo-title10">
+  <a href='https://ggplot2.tidyverse.org' target="_blank">
+    <img src='https://ggplot2.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+---
+----
+## Daten einlesen
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://readr.tidyverse.org' target="_blank">
+    <img src='https://readr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-fig-small2">
+  <a href='https://readxl.tidyverse.org' target="_blank">
+    <img src='https://readxl.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-fig-small3">
+  <a href='https://haven.tidyverse.org' target="_blank">
+    <img src='https://haven.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+
+R kann prinzipiell jede Form von Daten einlesen:
+
+- für Standard Formate wie csv oder txt wird das `readr` package benutzt.
+
+- für Dateitypen aus anderen Statistik Tools wie SAS, SPSS oder STATA kann `haven` benutzt werden.
+
+- Excel Files können mit dem `readxl` package eingelesen werden
+
+Generell gibt es sehr viele verschiedene Einlesefunktionen und -packages, die alle das gleiche Ergebnis liefern.
+
+Sie unterscheiden sich jedoch in ihrer Perfomance.
+
+---
+----
+## Daten einlesen
+
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://readr.tidyverse.org' target="_blank">
+    <img src='https://readr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-fig-small2">
+  <a href='https://readxl.tidyverse.org' target="_blank">
+    <img src='https://readxl.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-fig-small3">
+  <a href='https://haven.tidyverse.org' target="_blank">
+    <img src='https://haven.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+.panelset[
+.panel[.panel-name[CSV]
+
+```r
+library(readr)
+# Comma separated
+df_comma <- read_csv("path/to/comma_separated.csv")
+
+# Semicolon separated
+df_semicolon <- read_csv2("path/to/semicolon_separated.csv")
+
+# Tab separated
+df_tab <- read_tsv("path/to/tab_separated.csv")
+```
+]
+.panel[.panel-name[Excel]
+
+```r
+library(readxl)
+df_excel <- read_excel("path/to/excel_file.xlsx")
+```
+]
+.panel[.panel-name[SAS]
+
+```r
+library(haven)
+df_sas <- read_sas("path/to/sas_file.sas7bdat")
+```
+]
+.panel[.panel-name[fwf]
+- *"fixed width file"* wie teilweise vom BFS erhalten
+
+```r
+library(readr)
+df_fwf <- read_fwf("path/to/fwf_data.txt",
+                 fwf_positions(start=vec_start_col,
+                               end=vec_end_col,
+                               col_names = vec_names_col)
+                 )
+```
+]
+.panel[.panel-name[rds/rda]
+- `rds` und `rda` sind die R-internen Datenfromate
+- sie sind optimiert für R, können schnell geladen werden und sind speichereffizient
+
+```r
+# speichern
+saveRDS(dataset, "data.rds")
+
+# laden
+dataset <- readRDS("data.rds")
+```
+]
+]
+
+
+
+---
+----
+## Hands-On: Daten einlesen (Zeit: 10 Minuten)
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://readr.tidyverse.org' target="_blank">
+    <img src='https://readr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-fig-small2">
+  <a href='https://readxl.tidyverse.org' target="_blank">
+    <img src='https://readxl.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-fig-small3">
+  <a href='https://haven.tidyverse.org' target="_blank">
+    <img src='https://haven.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<ol type="a">
+  <li><b>EXCEL</b><br>
+  Lies die Datei <b>bevölkerung.xlsx</b> als data.frame ein.<br>
+  Nenne den data.frame "bev".<br>
+  </li>
+  <li><b>CSV</b><br>
+  Lies die Datei <b>bevölkerung.csv</b> als data.frame ein.<br>
+  Nenne den data.frame "bev_csv"<br>
+  </li>
+  <li><b>SAS</b><br>
+  Lies die Datei <b>bevnatgeb2021.sas7bdat</b> als data.frame ein.<br>
+  Nenne den data.frame "bevnat".<br>
+  </li>
+  <li><b>EXCEL (Bonus)</b><br>
+  Lies das Tabellenblatt <b>"altersklassen"</b> aus der Datei <b>bevölkerung.xlsx</b> als data.frame ein.<br>
+  Nenne den data.frame "alter" und speichere ihn als <b>alter.csv</b> in deinem Output Ordner.<br>
+  </li>
+</ol>
+
+Benutze jeweils die `head()` Funktion um **die ersten 3 Zeilen** des Datensatzes anzeigen zu lassen. 
+
+<!--html_preserve--><div class="countdown" id="timer_9940eaba" data-update-every="1" tabindex="0" style="right:0;bottom:0;">
+<div class="countdown-controls"><button class="countdown-bump-down">&minus;</button><button class="countdown-bump-up">&plus;</button></div>
+<code class="countdown-time"><span class="countdown-digits minutes">10</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
+</div><!--/html_preserve-->
+
+---
+----
+## Hands-On: Daten einlesen (Zeit: 10 Minuten)
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://readr.tidyverse.org' target="_blank">
+    <img src='https://readr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-fig-small2">
+  <a href='https://readxl.tidyverse.org' target="_blank">
+    <img src='https://readxl.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-fig-small3">
+  <a href='https://haven.tidyverse.org' target="_blank">
+    <img src='https://haven.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+.panelset[
+.panel[.panel-name[Lösung a)]
+
+
+
+```r
+library(readr)
+df <- read_csv("Data/Geburten.csv")
+head(df,3)
+```
+]
+
+.panel[.panel-name[Lösung b)]
+
+
+
+```r
+library(haven)
+df <- read_sas("bevnatgeb2020.sas7bdat")
+head(df,3)
+```
+]
+
+.panel[.panel-name[Lösung c)]
+
+
+
+```r
+library(readxl)
+df <- read_excel("Daten/test.xlsx")
+head(df,3)
+```
+]
+.panel[.panel-name[Lösung d)]
+
+
+```r
+df <- read_excel("Daten/test.xlsx",sheet="Bonus")
+head(df,3)
+write_csv(df,"Felix/Output/alter.csv", na ="")
+```
+]
+]
+
+---
+----
+## Daten einlesen: Good to know 
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://readr.tidyverse.org' target="_blank">
+    <img src='https://readr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-fig-small2">
+  <a href='https://readxl.tidyverse.org' target="_blank">
+    <img src='https://readxl.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-fig-small3">
+  <a href='https://haven.tidyverse.org' target="_blank">
+    <img src='https://haven.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<p style="margin-top:70px;"><p/>
+Sollen mehrere Files aus einem Ordner eingelesen werden, kann die `list.files()` Funktion verwendet werden. Mit dieser Funktion werden alle Files mit einer spezifischen Endung innerhalb eines Ordners aufgelistet. Diese können dann mit einem `for`-Loop oder einer der `apply` Funktionen schnell eingelesen werden.
+
+```r
+# Listet alle CSV Files im Ordner
+list.files(path = "path/to/directory", pattern = "*.csv")
+```
+
+Bei grossen Files kann es manchmal zu Problemen beim Einlesen kommen, aufgrund der internen Logik von R.
+<br>
+Im hier verlinkten [Tutorial](https://inbo.github.io/tutorials/tutorials/r_large_data_files_handling/) werden entsprechende Lösungsansätze aufgezeigt.
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----
+## Data Manipulation
+
+<figure class="logo-fig logo-title1">
+  <a href='https://readr.tidyverse.org' target="_blank">
+    <img src='https://readr.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title2">
+  <a href='https://readxl.tidyverse.org' target="_blank">
+    <img src='https://readxl.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title3">
+  <a href='https://haven.tidyverse.org' target="_blank">
+    <img src='https://haven.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title4">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo' />
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title5">
+  <a href='https://tidyr.tidyverse.org' target="_blank">
+    <img src='https://tidyr.tidyverse.org/logo.png' class='logo' />
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title6">
+  <a href='https://stringr.tidyverse.org' target="_blank">
+    <img src='https://stringr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title7">
+  <a href='https://lubridate.tidyverse.org' target="_blank">
+    <img src='https://lubridate.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title8">
+  <a href='https://magrittr.tidyverse.org' target="_blank">
+    <img src='https://magrittr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title9">
+  <a href='https://forcats.tidyverse.org' target="_blank">
+    <img src='https://forcats.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+
+<figure class="logo-fig logo-title10">
+  <a href='https://ggplot2.tidyverse.org' target="_blank">
+    <img src='https://ggplot2.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+
+---
+----
+## magrittr:: %>%
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://magrittr.tidyverse.org' target="_blank">
+    <img src='https://magrittr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+- Mit dem `magrittr` package und dem darin enthaltenen Pipeline Operator `%>%` wird euer Code viel einfacher lesbar.
+- Der Code wird durch die Nutzung der Pipe weniger verschachtelt und so einfacher zu debuggen.
+
+
+.panelset[
+.panel[.panel-name[Ohne Pipe]
+Innerste Klammer wird zuerst usgeführt
+
+```r
+h(g(f(df)))
+```
+]
+.panel[.panel-name[Mit Pipe]
+Code wird nacheinander ausgeführt (f() dann g() dann h())
+
+```r
+df %>% 
+  f() %>% 
+  g() %>% 
+  h()
+```
+]
+.panel[.panel-name[Ohne Platzhalter]
+
+```r
+langer_variablenname %>%  f(y, z = langer_variablenname)
+```
+]
+.panel[.panel-name[Mit Platzhalter]
+Innerhalb der Pipeline kann anstelle der Variable, auf welche die Operationen angewendet werden auch der `.` als Platzhalter verwendet werden.
+
+```r
+langer_variablenname %>%  f(y, z = .)
+```
+]
+]
+
+---
+----
+## Hands-On: Piping mit magrittr:: %>%
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://magrittr.tidyverse.org' target="_blank">
+    <img src='https://magrittr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+```r
+num_vec <- c(5,4,6,1,4)
+
+round(sqrt(sum(num_vec)),1)
+```
+`num_vec` soll aufsummiert und anschliessend soll die Wurzel aus der Summe gezogen werden. 
+Das Ergebnis soll auf eine Nachkommastelle gerundet werden
+Die oben stehende Codezeile führt diese Operationen aus. 
+
+<ol type="a">
+  <li>
+  Verwende den <b>%>%</b> Operator um die oben stehende Codezeile in eine Pipe im Stile von dplyr umzuwandeln<br>
+  Wandle die Zeile in EINE Pipe um OHNE Zwischenergebnisse zu speichern. Verwende den Namen des Vektors nur EINMAL.
+  </li>
+</ol>
+
+<!--html_preserve--><div class="countdown" id="timer_1c83c4aa" data-update-every="1" tabindex="0" style="right:0;bottom:0;">
+<div class="countdown-controls"><button class="countdown-bump-down">&minus;</button><button class="countdown-bump-up">&plus;</button></div>
+<code class="countdown-time"><span class="countdown-digits minutes">10</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
+</div><!--/html_preserve-->
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----
+## Recap: Tidy Data
+
+- Jede Spalte eine Variable
+- Jede Zeile eine Beobachtung
+- Jede Zelle ein einzelner Wert
+
+**Vorteile von Tidy Data**
+
+1. Konsistente Struktur &#10140; es ist leichter, Tools auf verschiedene Datensätze anzuwenden, wenn diese der gleichen Struktur folgen
+
+2. Tidy Data entspricht der inneren Arbeitslogik von R &#10140; Funktionen lassen sich leichter auf Tidy Data anwenden
+
+**Merke:** Tidy Data ist zwar erstrebenswert, aber sollte kein Selbstzweck sein.
+
+---
+----
+
+## Recap: Tidy Data
+
+**Beispiel:** COVID Fallzahlen
+
+
+```
+## # A tibble: 4 × 5
+##   date       kanton  cases deaths death_rate
+##   <date>     <chr>   <dbl>  <dbl> <chr>     
+## 1 2022-12-10 TG     140474    723 723/140474
+## 2 2022-12-11 TG     140484    723 723/140484
+## 3 2022-12-10 BS     102405    372 372/102405
+## 4 2022-12-11 BS     102405    372 372/102405
+```
+
+--
+
+<p class="check-no">&#10060;</p>
+
+---
+----
+
+## Recap: Tidy Data
+
+**Beispiel:** COVID Fallzahlen
+
+
+```
+## # A tibble: 8 × 4
+##   date       kanton indicator  value
+##   <date>     <chr>  <chr>      <dbl>
+## 1 2022-12-10 TG     cases     140474
+## 2 2022-12-10 TG     deaths       723
+## 3 2022-12-11 TG     cases     140484
+## 4 2022-12-11 TG     deaths       723
+## 5 2022-12-10 BS     cases     102405
+## 6 2022-12-10 BS     deaths       372
+## 7 2022-12-11 BS     cases     102405
+## 8 2022-12-11 BS     deaths       372
+```
+
+--
+
+<p class="check-no">&#10060;</p>
+---
+----
+
+## Recap: Tidy Data
+
+**Beispiel:** COVID Fallzahlen
+
+
+```
+## # A tibble: 4 × 5
+##   date       kanton  cases deaths death_rate
+##   <date>     <chr>   <dbl>  <dbl>      <dbl>
+## 1 2022-12-10 TG     140474    723    0.00515
+## 2 2022-12-11 TG     140484    723    0.00515
+## 3 2022-12-10 BS     102405    372    0.00363
+## 4 2022-12-11 BS     102405    372    0.00363
+```
+
+--
+
+<p class="check-yes">&#10003;</p>
+---
+----
+
+## Recap: Tidy Data
+
+**Beispiel:** COVID Fallzahlen
+
+
+```
+## # A tibble: 2 × 3
+##   kanton `2022-12-10` `2022-12-11`
+##   <chr>         <dbl>        <dbl>
+## 1 TG           140474       140484
+## 2 BS           102405       102405
+```
+
+--
+
+<p class="check-no">&#10060;</p>
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----
+## tidyr
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://tidyr.tidyverse.org' target="_blank">
+    <img src='https://tidyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+Das `tidyr` package dient dazu Daten ins Tidy Format zu bringen und liefert dazu mehrere nützliche Funktionen
+
+Für detailliertere Informationen findet sich [hier](https://github.com/rstudio/cheatsheets/blob/main/tidyr.pdf) ein empfehlenswertes Cheatsheet
+
+**Die drei meist genutzten Funktionen sind:**
+- `pivot_longer`: fasst mehrere Spalten zusammen und "verlängert" den Datensatz
+- `pivot_wider`: fasst Zeilen zusammen und "verbreitert" den Datensatz
+- `separate`: teilt eine Spalte in mehrere Spalten auf (Gegenstück ist `unite`)
+
+---
+----
+## tidyr
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://tidyr.tidyverse.org' target="_blank">
+    <img src='https://tidyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+.panelset[
+.panel[.panel-name[Ausgangsdaten]
+
+```
+## # A tibble: 4 × 4
+##   date       kanton  cases deaths
+##   <date>     <chr>   <dbl>  <dbl>
+## 1 2022-12-10 TG     140474    723
+## 2 2022-12-11 TG     140484    723
+## 3 2022-12-10 BS     102405    372
+## 4 2022-12-11 BS     102405    372
+```
+]
+.panel[.panel-name[pivot_longer]
+Fasst mehrere Spalten zusammen und "verlängert" den Datensatz
+
+```r
+df_tidy_m %>% 
+  tidyr::pivot_longer(cols = c("cases","deaths"), names_to = c("indicator"))
+```
+
+```
+## # A tibble: 8 × 4
+##   date       kanton indicator  value
+##   <date>     <chr>  <chr>      <dbl>
+## 1 2022-12-10 TG     cases     140474
+## 2 2022-12-10 TG     deaths       723
+## 3 2022-12-11 TG     cases     140484
+## 4 2022-12-11 TG     deaths       723
+## 5 2022-12-10 BS     cases     102405
+## 6 2022-12-10 BS     deaths       372
+## 7 2022-12-11 BS     cases     102405
+## 8 2022-12-11 BS     deaths       372
+```
+]
+.panel[.panel-name[pivot_wider]
+"Verbreitert" den Datensatz
+
+```r
+df_tidy_m %>% 
+  tidyr::pivot_wider(names_from = "kanton", values_from = c("cases","deaths"))
+```
+
+```
+## # A tibble: 2 × 5
+##   date       cases_TG cases_BS deaths_TG deaths_BS
+##   <date>        <dbl>    <dbl>     <dbl>     <dbl>
+## 1 2022-12-10   140474   102405       723       372
+## 2 2022-12-11   140484   102405       723       372
+```
+]
+.panel[.panel-name[separate]
+Spalten können mit `separate` in mehrere Spalten aufgeteilt werden.
+
+```r
+df_tidy_m %>% 
+  tidyr::separate(col="date",sep = "-", into = c("year","month","day"))
+```
+
+```
+## # A tibble: 4 × 6
+##   year  month day   kanton  cases deaths
+##   <chr> <chr> <chr> <chr>   <dbl>  <dbl>
+## 1 2022  12    10    TG     140474    723
+## 2 2022  12    11    TG     140484    723
+## 3 2022  12    10    BS     102405    372
+## 4 2022  12    11    BS     102405    372
+```
+]
+]
+
+---
+----
+## Hands-On: Tidy Data mit tidyr
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://tidyr.tidyverse.org' target="_blank">
+    <img src='https://tidyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+
+```r
+library(tidyr)
+
+abstimmungen <- readRDS("Daten/Abstimmungen.rds")
+```
+
+1. Bringe die Abstimmungsdaten in eine sinnvolle Form im Sinne von Tidy Data (Wide format)<br>
+  Alle Werte in der "Ergebnis" Spalte sollen eine einzelne Spalte sein.<br>
+  Ihnen soll jeweils der entsprechende Wert aus der Spalte "Volksabstimmungen (Ergebnisse Ebene Kanton seit 1866)" untergeordnet werden
+
+2. Bringe die Daten wieder in die Ursprungsform (long format)<br>
+  Speichere das Ergebnis unter "abstimmungen_not_tidy" 
+  
+<!--html_preserve--><div class="countdown" id="timer_78830f97" data-update-every="1" tabindex="0" style="right:0;bottom:0;">
+<div class="countdown-controls"><button class="countdown-bump-down">&minus;</button><button class="countdown-bump-up">&plus;</button></div>
+<code class="countdown-time"><span class="countdown-digits minutes">10</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
+</div><!--/html_preserve-->
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----
+## dplyr::select()
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+- Mit der `select` können die gewünschten Variablen aus dem Datensatz ausgewählt und/oder entfernt werden.
+
+.panelset[
+.panel[.panel-name[Ausgangsdaten]
+
+```r
+df_tidy
+```
+
+```
+## # A tibble: 4 × 5
+##   date       kanton  cases deaths death_rate
+##   <date>     <chr>   <dbl>  <dbl>      <dbl>
+## 1 2022-12-10 TG     140474    723    0.00515
+## 2 2022-12-11 TG     140484    723    0.00515
+## 3 2022-12-10 BS     102405    372    0.00363
+## 4 2022-12-11 BS     102405    372    0.00363
+```
+]
+.panel[.panel-name[Bsp. 1]
+- Variablennamen können direkt an die `select` Funktion übergeben werden.
+- Genauso können Variablen auch als Vektor mit `c()` angegeben werden.
+
+
+```r
+df_tidy %>% 
+  select(date,cases)
+```
+
+```
+## # A tibble: 4 × 2
+##   date        cases
+##   <date>      <dbl>
+## 1 2022-12-10 140474
+## 2 2022-12-11 140484
+## 3 2022-12-10 102405
+## 4 2022-12-11 102405
+```
+]
+.panel[.panel-name[Bsp. 2]
+Variablen können auch als *range* ausgewählt werden
+
+```r
+df_tidy %>% 
+  select(date:cases)
+```
+
+```
+## # A tibble: 4 × 3
+##   date       kanton  cases
+##   <date>     <chr>   <dbl>
+## 1 2022-12-10 TG     140474
+## 2 2022-12-11 TG     140484
+## 3 2022-12-10 BS     102405
+## 4 2022-12-11 BS     102405
+```
+]
+.panel[.panel-name[Bsp. 3]
+Auswahl per Spaltenindex ist ebenfalls möglich
+
+```r
+df_tidy %>% 
+  select(1,3:5)
+```
+
+```
+## # A tibble: 4 × 4
+##   date        cases deaths death_rate
+##   <date>      <dbl>  <dbl>      <dbl>
+## 1 2022-12-10 140474    723    0.00515
+## 2 2022-12-11 140484    723    0.00515
+## 3 2022-12-10 102405    372    0.00363
+## 4 2022-12-11 102405    372    0.00363
+```
+]
+.panel[.panel-name[Bsp. 4]
+Mit vorangestelltem minus (`-`) können Variablen entfernt werden
+
+```r
+df_tidy %>% 
+  select(-c(date:cases))
+```
+
+```
+## # A tibble: 4 × 2
+##   deaths death_rate
+##    <dbl>      <dbl>
+## 1    723    0.00515
+## 2    723    0.00515
+## 3    372    0.00363
+## 4    372    0.00363
+```
+]
+.panel[.panel-name[Bsp. 5]
+`select` kann z.B. mit `contains`, `ends_with` oder `starts_with`
+
+```r
+df_tidy %>% 
+  select(contains("death"))
+```
+
+```
+## # A tibble: 4 × 2
+##   deaths death_rate
+##    <dbl>      <dbl>
+## 1    723    0.00515
+## 2    723    0.00515
+## 3    372    0.00363
+## 4    372    0.00363
+```
+]
+]
+
+---
+----
+
+## dplyr::filter()
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+- Mit `filter` können die gewünschten Reihen gefiltert werden. So kann ein *subset* des Datensatzes erstellt werden
+- Der Ausdruck innerhalb der `filter()` function muss vom Typ *logical* sein (`TRUE`,`FALSE`)
+
+--
+
+.panelset[
+.panel[.panel-name[Ausgangsdaten]
+
+```r
+df_tidy
+```
+
+```
+## # A tibble: 4 × 5
+##   date       kanton  cases deaths death_rate
+##   <date>     <chr>   <dbl>  <dbl>      <dbl>
+## 1 2022-12-10 TG     140474    723    0.00515
+## 2 2022-12-11 TG     140484    723    0.00515
+## 3 2022-12-10 BS     102405    372    0.00363
+## 4 2022-12-11 BS     102405    372    0.00363
+```
+]
+.panel[.panel-name[Bsp. 1]
+Für `filter` können sog. Operatoren verwendet werden (`==`, `!=`, `>=`, `<=`, `<`, `>`) 
+
+```r
+df_tidy %>% 
+  filter(kanton == "TG")
+```
+
+```
+## # A tibble: 2 × 5
+##   date       kanton  cases deaths death_rate
+##   <date>     <chr>   <dbl>  <dbl>      <dbl>
+## 1 2022-12-10 TG     140474    723    0.00515
+## 2 2022-12-11 TG     140484    723    0.00515
+```
+]
+.panel[.panel-name[Bsp. 2]
+Filteroptionen können mit `&` (*und*) und `|` (*oder*) verbunden werden.
+
+```r
+df_tidy %>% 
+  filter(kanton == "TG" & date== "2022-12-10")
+```
+
+```
+## # A tibble: 1 × 5
+##   date       kanton  cases deaths death_rate
+##   <date>     <chr>   <dbl>  <dbl>      <dbl>
+## 1 2022-12-10 TG     140474    723    0.00515
+```
+]
+.panel[.panel-name[Bsp. 3]
+Für den Abgleich mit einem Vektor kann der `%in%` Operator verwendet werden.
+
+```r
+df_tidy %>% 
+  filter(cases %in% c(140484,102405))
+```
+
+```
+## # A tibble: 3 × 5
+##   date       kanton  cases deaths death_rate
+##   <date>     <chr>   <dbl>  <dbl>      <dbl>
+## 1 2022-12-11 TG     140484    723    0.00515
+## 2 2022-12-10 BS     102405    372    0.00363
+## 3 2022-12-11 BS     102405    372    0.00363
+```
+]
+.panel[.panel-name[Bsp. 4]
+Wie die meisten dplyr Funktionen, können auch `filter` Statements beliebig oft aneinander gereiht werden 
+
+```r
+df_tidy %>% 
+  filter(kanton == "TG") %>% 
+  filter(date == "2022-12-10")
+```
+
+```
+## # A tibble: 1 × 5
+##   date       kanton  cases deaths death_rate
+##   <date>     <chr>   <dbl>  <dbl>      <dbl>
+## 1 2022-12-10 TG     140474    723    0.00515
+```
+]
+]
+
+---
+----
+
+## Hands-On: filter und select (Zeit: 10 Minuten)
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+1. Lies die Datei **bevnatgeb2021.sas7bdat** aus dem Ordner **Daten** als data.frame ein.
+
+2. Wähle nur die Spalten `geb_day`,`geb_mon`,`geb_year`, `sex`, `nat` und `name` aus.
+
+3. Behalte nur Geburten **nach 2010** deren Staatsangehörigkeit **Schweiz** (8100) ist.
+
+4. Speichere das Resultat in der Variable **geburten_ch_2010**
+
+
+<!--html_preserve--><div class="countdown" id="timer_c9c58c7a" data-update-every="1" tabindex="0" style="right:0;bottom:0;">
+<div class="countdown-controls"><button class="countdown-bump-down">&minus;</button><button class="countdown-bump-up">&plus;</button></div>
+<code class="countdown-time"><span class="countdown-digits minutes">10</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
+</div><!--/html_preserve-->
+
+---
+----
+
+## Hands-On: filter und select (Zeit: 10 Minuten)
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+.panelset[
+.panel[.panel-name[Lösung 1]
+
+Lies die Datei **bevnatgeb2021.sas7bdat** aus dem Ordner **Daten** als data.frame ein.
+
+
+```r
+library(haven)
+library(dplyr)
+geburten <- read_sas("Daten/bevnatgeb2021.sas7bdat")
+```
+]
+
+.panel[.panel-name[Lösung 2]
+
+Wähle nur die Spalten `geb_day`,`geb_mon`,`geb_year`, `sex`, `nat` und `name` aus.
+
+
+```r
+geburten_ch_2010 <- geburten %>%
+  select(geb_day,geb_mon,geb_year,sex,nat,name)
+```
+]
+
+.panel[.panel-name[Lösung 3]
+
+Behalte nur Geburten **nach 2010** deren Staatsangehörigkeit **Schweiz** (8100) ist.
+
+
+```r
+geburten_ch_2010 <- geburten %>%
+  select(geb_day,geb_mon,geb_year,sex,nat,name) %>%
+  filter(geb_year > 2010 & nat == 8100)
+head(geburten_ch_2010,3)
+```
+
+```
+## # A tibble: 3 × 6
+##   geb_day geb_mon geb_year   sex   nat name                 
+##     <dbl>   <dbl>    <dbl> <dbl> <dbl> <chr>                
+## 1       6       8     2016     1  8100 Levin                
+## 2       9       8     2016     1  8100 Emilio Bengiamin Luis
+## 3       9       8     2016     1  8100 Nino
+```
+]
+]
+
+
+---
+----
+
+## dplyr::mutate()
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+- Mit `mutate` können neue Spalten z.B. durch Berechnungen erstellt werden
+- `mutate` operiert immer reihenweise
+
+.panelset[
+.panel[.panel-name[Ausgangsdaten]
+
+```r
+df_tidy
+```
+
+```
+## # A tibble: 4 × 5
+##   date       kanton  cases deaths death_rate
+##   <date>     <chr>   <dbl>  <dbl>      <dbl>
+## 1 2022-12-10 TG     140474    723    0.00515
+## 2 2022-12-11 TG     140484    723    0.00515
+## 3 2022-12-10 BS     102405    372    0.00363
+## 4 2022-12-11 BS     102405    372    0.00363
+```
+]
+
+.panel[.panel-name[Bsp. 1]
+
+
+```r
+df_tidy %>% 
+  mutate(kanton_long = case_when(kanton == "TG" ~ "Thurgau",
+                   kanton == "BS" ~ "Basel-Stadt"))
+```
+
+```
+## # A tibble: 4 × 6
+##   date       kanton  cases deaths death_rate kanton_long
+##   <date>     <chr>   <dbl>  <dbl>      <dbl> <chr>      
+## 1 2022-12-10 TG     140474    723    0.00515 Thurgau    
+## 2 2022-12-11 TG     140484    723    0.00515 Thurgau    
+## 3 2022-12-10 BS     102405    372    0.00363 Basel-Stadt
+## 4 2022-12-11 BS     102405    372    0.00363 Basel-Stadt
+```
+]
+
+.panel[.panel-name[Bsp. 2]
+
+
+```r
+df_tidy %>% 
+  mutate(death_percent = deaths/cases *100) %>% 
+  mutate(death_percent = round(death_percent,2)) %>% 
+  mutate(death_percent = paste0(death_percent," %"))
+```
+
+```
+## # A tibble: 4 × 6
+##   date       kanton  cases deaths death_rate death_percent
+##   <date>     <chr>   <dbl>  <dbl>      <dbl> <chr>        
+## 1 2022-12-10 TG     140474    723    0.00515 0.51 %       
+## 2 2022-12-11 TG     140484    723    0.00515 0.51 %       
+## 3 2022-12-10 BS     102405    372    0.00363 0.36 %       
+## 4 2022-12-11 BS     102405    372    0.00363 0.36 %
+```
+]
+]
+
+---
+----
+## mutate(): Good to know
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+Mit `mutate_all` oder `mutate_at` können alle Variablen bzw. alle Variablen mit einem bestimmten Kriterium gleichzeitig bearbeitet werden.
+
+Das ist nützlich, wenn man die gleiche Operation auf mehrere Spalten anwenden will.
+
+
+```r
+df_tidy %>% 
+  mutate_all(as.character) %>% 
+  head(3)
+```
+
+```
+## # A tibble: 3 × 5
+##   date       kanton cases  deaths death_rate         
+##   <chr>      <chr>  <chr>  <chr>  <chr>              
+## 1 2022-12-10 TG     140474 723    0.00514685991713769
+## 2 2022-12-11 TG     140484 723    0.005146493550867  
+## 3 2022-12-10 BS     102405 372    0.00363263512523803
+```
+
+---
+----
+
+## dplyr::group_by
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+- Mit der `group_by` Funktion können Datensätze gruppiert werden. Die Daten an sich werden dadurch allerdings noch nicht verändert.
+- Mächtig wird die Funktion erst in Kombination mit anderen Funktionen, wie z.B. `mutate` oder `summarise`
+
+.panelset[
+.panel[.panel-name[Ausgangsdaten]
+
+```r
+head(geburten_ch_2010,5)
+```
+
+```
+## # A tibble: 5 × 6
+##   geb_day geb_mon geb_year   sex   nat name                 
+##     <dbl>   <dbl>    <dbl> <dbl> <dbl> <chr>                
+## 1       6       8     2016     1  8100 Levin                
+## 2       9       8     2016     1  8100 Emilio Bengiamin Luis
+## 3       9       8     2016     1  8100 Nino                 
+## 4      10       8     2016     1  8100 Tobias Richard       
+## 5      12       8     2016     1  8100 Jonas Heinrich
+```
+]
+
+.panel[.panel-name[Bsp. 1]
+
+Neue Variablen nach Gruppen erstellen mit `group_by` und `mutate`
+
+
+```r
+geburten_ch_2010 %>% 
+  group_by(geb_year,name) %>% 
+  mutate(sum_name_year = n()) %>% head(2)
+```
+
+```
+## # A tibble: 2 × 7
+## # Groups:   geb_year, name [2]
+##   geb_day geb_mon geb_year   sex   nat name                  sum_name_year
+##     <dbl>   <dbl>    <dbl> <dbl> <dbl> <chr>                         <int>
+## 1       6       8     2016     1  8100 Levin                             6
+## 2       9       8     2016     1  8100 Emilio Bengiamin Luis             1
+```
+]
+
+.panel[.panel-name[Bsp. 2]
+
+Daten zusammenfassen mit `group_by` und `summarise`
+
+
+```r
+geburten_ch_2010 %>% 
+  group_by(geb_year) %>% 
+  summarise(geb_per_year = n()) %>% head(2)
+```
+
+```
+## # A tibble: 2 × 2
+##   geb_year geb_per_year
+##      <dbl>        <int>
+## 1     2011         1749
+## 2     2012         1846
+```
+]
+]
+
+---
+----
+
+## dplyr::group_by
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+**ACHTUNG:** Sollten Daten nach einem `group_by` in einer neuen Variable gespeichert werden, dann wird die Gruppierung übernommen.
+Das kann zu Verwirrung im weiteren Verarbeiten der Daten führen. Daher ist zu empfehlen nach einem `group_by` und der angehängten `mutate` die Gruppierung mit `ungroup` wieder aufzulösen.
+
+Nach einem `summarise` ist diese Auflösung nicht nötig.
+
+.panelset[
+.panel[.panel-name[Code 1]
+
+- Ohne `ungroup` 
+
+
+```r
+geburten_group <- geburten_ch_2010 %>% 
+  group_by(geb_year,name) %>% 
+  mutate(sum_name_year = n())
+
+geburten_group %>% 
+  mutate(n = n())
+```
+]
+
+.panel[.panel-name[Output 1]
+
+- Ohne `ungroup` 
+
+
+```
+## # A tibble: 4 × 8
+## # Groups:   geb_year, name [4]
+##   geb_day geb_mon geb_year   sex   nat name                  sum_name_year     n
+##     <dbl>   <dbl>    <dbl> <dbl> <dbl> <chr>                         <int> <int>
+## 1       6       8     2016     1  8100 Levin                             6     6
+## 2       9       8     2016     1  8100 Emilio Bengiamin Luis             1     1
+## 3       9       8     2016     1  8100 Nino                              8     8
+## 4      10       8     2016     1  8100 Tobias Richard                    1     1
+```
+]
+
+.panel[.panel-name[Code 2]
+
+- Mit `ungroup`
+
+
+```r
+geburten_ungroup <- geburten_ch_2010 %>% 
+  group_by(geb_year,name) %>% 
+  mutate(sum_name_year = n()) %>% 
+  ungroup()
+
+geburten_ungroup %>% 
+  mutate(n = n())
+```
+]
+
+.panel[.panel-name[Output 2]
+
+- Mit `ungroup`
+
+
+```
+## # A tibble: 4 × 8
+##   geb_day geb_mon geb_year   sex   nat name                  sum_name_year     n
+##     <dbl>   <dbl>    <dbl> <dbl> <dbl> <chr>                         <int> <int>
+## 1       6       8     2016     1  8100 Levin                             6 22328
+## 2       9       8     2016     1  8100 Emilio Bengiamin Luis             1 22328
+## 3       9       8     2016     1  8100 Nino                              8 22328
+## 4      10       8     2016     1  8100 Tobias Richard                    1 22328
+```
+]
+]
+---
+----
+## Hands-On: mutate(), group_by() und summarise()
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+
+
+
+1. Erstelle für den in der vorherigen Aufgabe erstellten Datensatz geburten_ch_2010 eine neue Spalte `geb_date`.<br>
+Die Spalte soll das Geburtsdatum im Format tt.mm.jjjj enthalten.<br>
+Verwende dazu die `paste0()` Funktion.<br>
+Speichere das Resultat unter dem Namen **geburten_ch_2010_date**   
+
+2. Erstelle eine Variable `age`, welche das Alter des Kindes zum heutigen Tag enthält.<br>
+**Tipp:** das heutige Datum kann mit `Sys.Date()` ermittelt und verwendet werden. Die variable `age` soll das Alter in vollendeten Lebensjahren beinhalten.
+
+3. Zähle die Geburten pro (Geburts-)Jahr im Datensatz<br>
+**Tipp:** Nutze `group_by()` sowie `count()` bzw. `summarise()` und `n()`
+
+<!--html_preserve--><div class="countdown" id="timer_8a27a434" data-update-every="1" tabindex="0" style="right:0;bottom:0;">
+<div class="countdown-controls"><button class="countdown-bump-down">&minus;</button><button class="countdown-bump-up">&plus;</button></div>
+<code class="countdown-time"><span class="countdown-digits minutes">10</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
+</div><!--/html_preserve-->
+---
+----
+
+## dplyr::join()
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+Mit den Funktionen aus der `join` Familie können mehrere Datensaätze miteinander verbunden werden.
+
+Es wird dabei zwischen [Filtering joins](https://dplyr.tidyverse.org/reference/filter-joins.html) und [Mutating joins](https://dplyr.tidyverse.org/reference/mutate-joins.html) unterscheiden.
+
+.panelset[
+.panel[.panel-name[Filtering joins]
+
+...filtern Zeilen aus x auf der Grundlage des Vorhandenseins oder Fehlens von Übereinstimmungen in y
+
+- `semi_join(x,y)`: gibt alle Zeilen von `x` **mit** einem Match in `y` zurück
+- `anti_join(x,y)`: gibt alle Zeilen von `x` **ohne** ein Match in `y` zurük 
+
+]
+.panel[.panel-name[Mutating joins]
+
+...fügen Spalten von y nach x hinzu, wobei die Zeilen anhand der Schlüssel abgeglichen werden
+
+- `inner_join(x,y)`: beinhaltet alle Zeilen in `x` die ein match in `y` haben
+- `left_join(x,y)`: beinhaltet alle Zeilen in `x`
+- `right_join(x,y)`: beinhaltet alle Zeilen in `y`
+- `full_join(x,y`: beinhaltet alle Zeilen in `x` und `y`
+
+]
+]
+
+
+---
+----
+
+## dplyr::join()
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<img src="https://tavareshugo.github.io/r-intro-tidyverse-gapminder/fig/07-dplyr_joins.svg" alt="https://tavareshugo.github.io/r-intro-tidyverse-gapminder/fig/07-dplyr_joins.svg" width="57%" style="display: block; margin: auto;" />
+
+---
+----
+
+## dplyr::join()
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+.pull-left[
+**df1: Beliebte Vornamen**
+
+
+```
+## # A tibble: 7 × 4
+##     sex nat   name          n
+##   <dbl> <chr> <chr>     <int>
+## 1     1 8100  "fabian"    349
+## 2     2 8100  "jasmin"    256
+## 3     1 8218  "alessio"    43
+## 4     2 8218  "alessia"    32
+## 5     1 8239  "emre"       22
+## 6     2 8239  "selin"      19
+## 7     1 8999  ""          586
+```
+
+]
+.pull-right[
+**df2: Länder und Codes**
+
+```
+## # A tibble: 4 × 2
+##   code  country
+##   <chr> <chr>  
+## 1 8100  Schweiz
+## 2 8218  Italien
+## 3 8239  Türkiye
+## 4 8256  Kosovo
+```
+]
+
+
+---
+----
+
+## Mutating joins
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+.panelset[
+.panel[.panel-name[left_join]
+
+
+```r
+df1 %>% 
+  left_join(df2,by=c("nat"="code"))
+```
+
+```
+## # A tibble: 7 × 5
+##     sex nat   name          n country
+##   <dbl> <chr> <chr>     <int> <chr>  
+## 1     1 8100  "fabian"    349 Schweiz
+## 2     2 8100  "jasmin"    256 Schweiz
+## 3     1 8218  "alessio"    43 Italien
+## 4     2 8218  "alessia"    32 Italien
+## 5     1 8239  "emre"       22 Türkiye
+## 6     2 8239  "selin"      19 Türkiye
+## 7     1 8999  ""          586 <NA>
+```
+
+]
+.panel[.panel-name[right_join]
+
+```r
+df1 %>% 
+  right_join(df2,by=c("nat"="code"))
+```
+
+```
+## # A tibble: 7 × 5
+##     sex nat   name        n country
+##   <dbl> <chr> <chr>   <int> <chr>  
+## 1     1 8100  fabian    349 Schweiz
+## 2     2 8100  jasmin    256 Schweiz
+## 3     1 8218  alessio    43 Italien
+## 4     2 8218  alessia    32 Italien
+## 5     1 8239  emre       22 Türkiye
+## 6     2 8239  selin      19 Türkiye
+## 7    NA 8256  <NA>       NA Kosovo
+```
+
+]
+.panel[.panel-name[inner_join]
+
+
+```r
+df1 %>% 
+  inner_join(df2,by=c("nat"="code"))
+```
+
+```
+## # A tibble: 6 × 5
+##     sex nat   name        n country
+##   <dbl> <chr> <chr>   <int> <chr>  
+## 1     1 8100  fabian    349 Schweiz
+## 2     2 8100  jasmin    256 Schweiz
+## 3     1 8218  alessio    43 Italien
+## 4     2 8218  alessia    32 Italien
+## 5     1 8239  emre       22 Türkiye
+## 6     2 8239  selin      19 Türkiye
+```
+]
+.panel[.panel-name[full_join]
+
+
+```r
+df1 %>% 
+  full_join(df2,by=c("nat"="code"))
+```
+
+```
+## # A tibble: 8 × 5
+##     sex nat   name          n country
+##   <dbl> <chr> <chr>     <int> <chr>  
+## 1     1 8100  "fabian"    349 Schweiz
+## 2     2 8100  "jasmin"    256 Schweiz
+## 3     1 8218  "alessio"    43 Italien
+## 4     2 8218  "alessia"    32 Italien
+## 5     1 8239  "emre"       22 Türkiye
+## 6     2 8239  "selin"      19 Türkiye
+## 7     1 8999  ""          586 <NA>   
+## 8    NA 8256   <NA>        NA Kosovo
+```
+
+]
+]
+
+
+
+---
+----
+
+## Filtering joins
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+.panelset[
+.panel[.panel-name[semi_join]
+
+
+```r
+df1 %>% 
+  semi_join(df2,by=c("nat"="code"))
+```
+
+```
+## # A tibble: 6 × 4
+##     sex nat   name        n
+##   <dbl> <chr> <chr>   <int>
+## 1     1 8100  fabian    349
+## 2     2 8100  jasmin    256
+## 3     1 8218  alessio    43
+## 4     2 8218  alessia    32
+## 5     1 8239  emre       22
+## 6     2 8239  selin      19
+```
+
+]
+.panel[.panel-name[anti_join]
+
+```r
+df1 %>% 
+  anti_join(df2,by=c("nat"="code"))
+```
+
+```
+## # A tibble: 1 × 4
+##     sex nat   name      n
+##   <dbl> <chr> <chr> <int>
+## 1     1 8999  ""      586
+```
+
+]
+]
+
+---
+----
+
+## Hands-On: Joins
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+.pull-left[
+**df1**
+
+```
+## # A tibble: 3 × 2
+##   vorname nachname
+##   <chr>   <chr>   
+## 1 Peter   Huber   
+## 2 Maria   Krause  
+## 3 Paul    Gut
+```
+
+]
+.pull-right[
+**df2**
+
+```
+## # A tibble: 3 × 2
+##   nachname alter
+##   <chr>    <dbl>
+## 1 Huber       34
+## 2 Huber       67
+## 3 Meier       18
+```
+]
+.panelset[
+.panel[.panel-name[Frage]
+
+Joint man die beiden Datensätze, wie viele Reihen hat der resultierende Datensatz bei einem...
+- left join?
+- right join?
+- inner join?
+- full join?
+
+]
+.panel[.panel-name[left_join]
+
+```
+## Warning in left_join(., df5): Each row in `x` is expected to match at most 1 row in `y`.
+## ℹ Row 1 of `x` matches multiple rows.
+## ℹ If multiple matches are expected, set `multiple = "all"` to silence this warning.
+```
+
+```
+## # A tibble: 4 × 3
+##   vorname nachname alter
+##   <chr>   <chr>    <dbl>
+## 1 Peter   Huber       34
+## 2 Peter   Huber       67
+## 3 Maria   Krause      NA
+## 4 Paul    Gut         NA
+```
+
+]
+.panel[.panel-name[right_join]
+
+```
+## Warning in right_join(., df5): Each row in `x` is expected to match at most 1 row in `y`.
+## ℹ Row 1 of `x` matches multiple rows.
+## ℹ If multiple matches are expected, set `multiple = "all"` to silence this warning.
+```
+
+```
+## # A tibble: 3 × 3
+##   vorname nachname alter
+##   <chr>   <chr>    <dbl>
+## 1 Peter   Huber       34
+## 2 Peter   Huber       67
+## 3 <NA>    Meier       18
+```
+
+]
+.panel[.panel-name[inner_join]
+
+```
+## Warning in inner_join(., df5): Each row in `x` is expected to match at most 1 row in `y`.
+## ℹ Row 1 of `x` matches multiple rows.
+## ℹ If multiple matches are expected, set `multiple = "all"` to silence this warning.
+```
+
+```
+## # A tibble: 2 × 3
+##   vorname nachname alter
+##   <chr>   <chr>    <dbl>
+## 1 Peter   Huber       34
+## 2 Peter   Huber       67
+```
+
+]
+.panel[.panel-name[full_join]
+
+```
+## Warning in full_join(., df5): Each row in `x` is expected to match at most 1 row in `y`.
+## ℹ Row 1 of `x` matches multiple rows.
+## ℹ If multiple matches are expected, set `multiple = "all"` to silence this warning.
+```
+
+```
+## # A tibble: 5 × 3
+##   vorname nachname alter
+##   <chr>   <chr>    <dbl>
+## 1 Peter   Huber       34
+## 2 Peter   Huber       67
+## 3 Maria   Krause      NA
+## 4 Paul    Gut         NA
+## 5 <NA>    Meier       18
+```
+
+]
+]
+---
+----
+
+## Hands-On: Joins
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+
+
+1. Joine die `geburten_nat` mit dem `codes` Datensatz um den Ländernamen zu den Namensdaten hinzuzufügen<br>
+Nutze dafür `left_join()`<br>
+Schau dir die Datensätze vorher an, um die gemeinsamen Spalten herauszufinden<br>
+Speichere den neuen Datensatz unter dem Namen `geburten_join` 
+
+2. Wie lautet der häufigste männliche Vorname für Kinder mit der Nationalität Nordmazedonien im Datensatz?
+
+<!--html_preserve--><div class="countdown" id="timer_bdaac579" data-update-every="1" tabindex="0" style="right:0;bottom:0;">
+<div class="countdown-controls"><button class="countdown-bump-down">&minus;</button><button class="countdown-bump-up">&plus;</button></div>
+<code class="countdown-time"><span class="countdown-digits minutes">10</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
+</div><!--/html_preserve-->
+---
+----
+## Good to know: Joins
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+Neben den Standard join Operatoren aus dem `dplyr` Package gibt es auch noch das [fuzzyjoin](http://varianceexplained.org/fuzzyjoin/index.html) Package, welches weitere join Möglichkeiten bietet.
+
+Das Package ermöglicht "inexact matching", wie z.B:
+
+- matching ähnlicher strings
+- matching numerischer Werte mit einer gewissen Toleranz
+- matching numerischer Werte auf bestimmte Intervalle
+- u.v.m.
+
+---
+----
+## Weitere nützliche dplyr Funktionen
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+.panelset[
+.panel[.panel-name[arrange]
+
+Mit arrange kann die Reihenfolge der Zeilen nach einer Variable im Datensatz sortiert werden. Standardmässig werden die Daten dann aufsteigend sortiert. 
+
+
+```r
+geburten_ch_2010 %>% 
+  arrange(geb_year) %>% head(2)
+```
+
+```
+## # A tibble: 2 × 6
+##   geb_day geb_mon geb_year   sex   nat name       
+##     <dbl>   <dbl>    <dbl> <dbl> <dbl> <chr>      
+## 1       4      12     2011     2  8100 Malea Sinja
+## 2       6      12     2011     1  8100 Levin
+```
+
+]
+.panel[.panel-name[arrange + desc]
+Mit der `desc()` Funktion kann man die Daten auch in eine absteigende Sortierung bringen.
+
+```r
+geburten_ch_2010 %>% 
+  arrange(desc(geb_year)) %>% head(2)
+```
+
+```
+## # A tibble: 2 × 6
+##   geb_day geb_mon geb_year   sex   nat name          
+##     <dbl>   <dbl>    <dbl> <dbl> <dbl> <chr>         
+## 1       9       5     2021     1  8100 Esra Nathanael
+## 2      17       6     2021     2  8100 Malena
+```
+]
+.panel[.panel-name[slice]
+Zeilen können auch per Index gefiltert werden
+
+```r
+# extrahiert die Zeilen 10,11 und 12
+geburten_ch_2010 %>% 
+  slice(10:12)
+```
+
+```
+## # A tibble: 3 × 6
+##   geb_day geb_mon geb_year   sex   nat name         
+##     <dbl>   <dbl>    <dbl> <dbl> <dbl> <chr>        
+## 1      10       8     2016     2  8100 Neaira Tayna 
+## 2       6       8     2016     1  8100 Marques David
+## 3       2       8     2016     2  8100 Selina Sophie
+```
+
+]
+.panel[.panel-name[top_n]
+Mit `top_n()` können die Zeilen mit den höchsten (oder niedrigsten) Werten für eine bestimmte Variable gefiltert werden
+
+```r
+geburten_ch_2010 %>% 
+  group_by(geb_year,name) %>% 
+  count() %>% 
+  group_by(geb_year) %>% 
+  top_n(1,n) %>% 
+  head(2)
+```
+
+```
+## # A tibble: 2 × 3
+## # Groups:   geb_year [1]
+##   geb_year name       n
+##      <dbl> <chr>  <int>
+## 1     2011 Andrin    10
+## 2     2011 Jana      10
+```
+
+]
+.panel[.panel-name[distinct]
+Mit `distinct()` können Duplikate entfernt werden. Dazu werden einfach die Variablen aus denen die Duplikate entfernt werden sollen als Argumente mitgegeben. Setzt man `.keep_all=TRUE`, dann bleiben alle anderen Variablen des data.frames erhalten. Sonst bleiben nur die Spalten, die als Argument angegeben wurden. Bei der Entfernung der Duplikate wird immer der erste Wert behalten, der Rest wird entfernt.
+
+
+
+```r
+popular_names %>% 
+  distinct(geb_year,.keep_all = TRUE) %>% 
+  head(2)
+```
+
+```
+## # A tibble: 2 × 3
+## # Groups:   geb_year [2]
+##   geb_year name       n
+##      <dbl> <chr>  <int>
+## 1     2011 Andrin    10
+## 2     2012 Luca      15
+```
+]
+]
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----
+## stringr
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://stringr.tidyverse.org' target="_blank">
+    <img src='https://stringr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+Oft muss in der Datenaufbereitung mit Text (=strings) gearbeitet werden. Dafür kann das `stringr` Package verwendet werden.
+
+Für detailliertere Informationen findet sich [hier](https://github.com/rstudio/cheatsheets/blob/main/strings.pdf) ein empfehlenswertes Cheatsheet
+
+Alle Funktionen in stringr beginnen mit str_ und nehmen einen Vektor von Strings (oder einen einzelnen String) als erstes Argument.
+
+Die verwendung von sogenannten *regular expressions* ist möglich.
+
+---
+----
+## stringr
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://stringr.tidyverse.org' target="_blank">
+    <img src='https://stringr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+.panelset[
+.panel[.panel-name[str_detect]
+Ermitteln, ob eine bestimmte Zeichenfolge im String enthalten ist.
+
+
+
+```r
+str_detect(c("Das ist ein Test", "Hello World"),
+           pattern = "Test")
+```
+
+```
+## [1]  TRUE FALSE
+```
+
+]
+.panel[.panel-name[str_extract]
+Text extrahieren
+
+
+```r
+str_extract(c("dasisteinTestmitstrings",
+              "das_ist_ein_Test_mit_strings"), 
+            pattern = "Test")
+```
+
+```
+## [1] "Test" "Test"
+```
+
+]
+.panel[.panel-name[str_replace]
+Text ersetzen
+
+```r
+str_replace(c("dasisteinTestmitstrings",
+              "das_ist_ein_Test_mit_strings_Test"), 
+            pattern = "Test",
+            replacement = "Versuch")
+```
+
+```
+## [1] "dasisteinVersuchmitstrings"           "das_ist_ein_Versuch_mit_strings_Test"
+```
+**ACHTUNG:** `str_replace` ersetzt das Pattern lediglich beim ersten Auftreten. Soll jedes Auftreten innerhalb des Strings ersetzt werden, muss die `str_replace_all` Funktion verwendet werden.
+]
+.panel[.panel-name[str_remove]
+Text entfernen
+
+```r
+str_remove(c("dasisteinTestmitstrings",
+              "das_ist_ein_Test_mit_strings"), 
+            pattern = "Test")
+```
+
+```
+## [1] "dasisteinmitstrings"      "das_ist_ein__mit_strings"
+```
+**ACHTUNG:** `str_remove` entfernt das Pattern lediglich beim ersten Auftreten. Soll jedes Auftreten innerhalb des Strings entfernt werden, muss die `str_remove_all` Funktion verwendet werden.
+]
+
+.panel[.panel-name[str_split]
+Text zerteilen
+
+```r
+str_split(c("dasisteinTestmitstrings",
+              "das_ist_ein_Test_mit_strings"), 
+            pattern = "_")
+```
+
+```
+## [[1]]
+## [1] "dasisteinTestmitstrings"
+## 
+## [[2]]
+## [1] "das"     "ist"     "ein"     "Test"    "mit"     "strings"
+```
+`str_split_fixed` und `str_split_n` sind verwandte Funktionen, die ebenfalls Text zerteilen können un zusätzliche Spezifikationen erlauben.
+]
+.panel[.panel-name[str_trim]
+Leerzeichen an Anfang und Ende eines Strings entfernen
+
+```r
+str_trim(c("    Hello World      ", "    Test"))
+```
+
+```
+## [1] "Hello World" "Test"
+```
+
+]
+]
+
+---
+----
+## Regular Expressions
+<figure class="logo-fig logo-fig-small">
+  <a href='https://stringr.tidyverse.org' target="_blank">
+    <img src='https://stringr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+Regular Expressions (kurz "Regex" genannt) sind eine Art von Zeichenfolgen, die zur Suche nach Mustern in Texten verwendet werden. 
+
+Mit Regex kann man komplexe Suchmuster definieren, die aus bestimmten Zeichenfolgen, Buchstaben, Zahlen, Sonderzeichen und Platzhaltern bestehen.
+
+Beispiele für den Einsatz von Regex sind das Extrahieren von Telefonnummern aus Texten, das Überprüfen der Gültigkeit von E-Mail-Adressen oder das Ersetzen von bestimmten Zeichenfolgen in einer Datei.
+
+---
+----
+## Regular Expressions: Beispiele
+<figure class="logo-fig logo-fig-small">
+  <a href='https://stringr.tidyverse.org' target="_blank">
+    <img src='https://stringr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+.panelset[
+.panel[.panel-name[Telefonnummern extrahieren]
+- Jede Zahl (digit) kann mit dem regex `\d` extrahiert werden.
+
+```r
+str_extract_all(c("Meine Nummer ist die 058345-5367",
+                  "Meine Adresse ist Grabenstrasse 8, 8510 Frauenfeld"), 
+                pattern = "\\d{6}-\\d{4}")
+```
+
+```
+## [[1]]
+## [1] "058345-5367"
+## 
+## [[2]]
+## character(0)
+```
+
+
+]
+.panel[.panel-name[Email extrahieren]
+-  `.` (Punkt): matcht alles ausser Zeilenumbrüche
+- `+`: einer oder mehr des voangengangenen Wertes
+- `*`: null oder mehr des voangengangenen Wertes
+- `[^\\s]`: matcht alles ausser Whitespaces
+- `?\\.ch` und `?@`: Match muss mit `\\.ch` bzw. `@` enden
+
+```r
+str_extract_all(c("Meine Mailadresse ist felix.lorenz@tg.ch",
+                  "felix.lorenz@tg wird nicht gematcht"), 
+                pattern = "[^\\s]*?@.+?\\.ch")
+```
+
+```
+## [[1]]
+## [1] "felix.lorenz@tg.ch"
+## 
+## [[2]]
+## character(0)
+```
+]
+.panel[.panel-name[Weitere nützliche Regex]
+Im Netz finden sich jede Menge nützliche Sammlungen
+
+- [Top 15 Commonly Used Regex](https://digitalfortress.tech/tips/top-15-commonly-used-regex/)
+- [Regex Tutorial](https://www3.ntu.edu.sg/home/ehchua/programming/howto/Regexe.html)
+- [Regex schreiben und testen](https://regexr.com/)
+- etc.
+
+]
+]
+---
+----
+## Hands-On: Arbeiten mit stringr und Regular Expressions
+<figure class="logo-fig logo-fig-small">
+  <a href='https://stringr.tidyverse.org' target="_blank">
+    <img src='https://stringr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+1. Bringe `abstimmungen` in ein Tidy Format, sodass jeder Wert in `Ergebnis` einer eigenen Spalte entspricht<br>
+Die dazugehörigen Werte sollen aus der Spalte `Volksabstimmungen (Ergebnisse Ebene Kanton seit 1866)` kommen.<br>
+Nutze das tidyr package und eine der vohin besprochenen Funktionen um die Tabelle zu verbreitern (wide Format)<br>
+Speichere das Ergebnis in `abstimmungen_tidy` 
+
+2. Erstelle eine neue Variable `date`.<br>
+Extrahiere dazu das Datum aus der Spalte `Datum und Vorlage`<br>
+Nutze dafür den Regex `\\d\\d\\d\\d-\\d\\d-\\d\\d`
+
+3. Entferne das Datum aus der Spalte `Datum und Vorlage` und wandle die `date` Spalte in ein von R lesbares Datum um.
+
+4. Entferne die Leerzeichen anführenden Leerzeichen aus der Spalte `Datum und Vorlage` (" Test " -> "Test")
+
+<!--html_preserve--><div class="countdown" id="timer_ce321478" data-update-every="1" tabindex="0" style="right:0;bottom:0;">
+<div class="countdown-controls"><button class="countdown-bump-down">&minus;</button><button class="countdown-bump-up">&plus;</button></div>
+<code class="countdown-time"><span class="countdown-digits minutes">10</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
+</div><!--/html_preserve-->
+---
+----
+## Good to know: stringi
+
+`stringr` enthält zwar viele nützliche Funktionen im Umgang mit Strings, ist aber auf das Nötigste beschränkt. Eine weitreichende Erweiterung stellt das `stringi` package dar. In diesem Package sind wahrscheinlich alle Funktionen enthalten, die im Umgang mit Text notwendig sein könnten. Im Unterschied zu `stringr` beginnen `stringi` Funktionen nicht mit *str_*, sondern mit *stri_*
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----
+## lubridate
+<figure class="logo-fig logo-fig-small">
+  <a href='https://lubridate.tidyverse.org' target="_blank">
+    <img src='https://lubridate.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+- Da das arbeiten mit Datumsangaben in R oft unintuitiv ist, wurde das `lubridate` Package entwickelt
+- Mit `lubridate` Können Datums- und Zeitangaben deutlich einfacher verarbeitet werden, als mit base R.
+
+- `lubridate` kann sowohl Daten vom Typ `date` (Datum auf Tagesbasis) als auch vom Typ `datetime` (Genaues Datum mit Uhrzeit) verarbeiten.
+
+ 
+---
+----
+## lubridate: Nützliche Funktionen
+<figure class="logo-fig logo-fig-small">
+  <a href='https://lubridate.tidyverse.org' target="_blank">
+    <img src='https://lubridate.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+.panelset[
+.panel[.panel-name[date]
+- `lubridate` bietet Funktionen an, die quasi jedes Datumsformat erkennen und umwandeln kann. 
+- Wichtig ist einzig die Reihenfolge (Tag-Monat-Jahr -> `dmy()`; Jahr-Monat-Tag -> `ymd()`)
+
+
+
+```r
+ymd("20221212")
+```
+
+```
+## [1] "2022-12-12"
+```
+
+```r
+dmy("02.03.2023")
+```
+
+```
+## [1] "2023-03-02"
+```
+
+
+]
+.panel[.panel-name[datetime]
+-  gleiches gilt für Daten vom Typ `datetime` (gleiches Prinzip)
+
+```r
+dmy_hms("02.03.2023 11:41:12 Uhr")
+```
+
+```
+## [1] "2023-03-02 11:41:12 UTC"
+```
+]
+.panel[.panel-name[Daten runden und extrahieren]
+- will man Daten auf z.B. auf Jahresbasis zusammenfassen müssen tgesaktuelle Daten gerundet werden
+
+
+```r
+new_date <- round_date(dmy_hms("02.03.2023 11:41:12 Uhr"),unit = "year")
+new_date
+```
+
+```
+## [1] "2023-01-01 UTC"
+```
+
+- wenn nun nur das Jahr angezeigt werden soll, bietet `lubridate` ebenfalls eine Lösung
+
+
+```r
+year(new_date)
+```
+
+```
+## [1] 2023
+```
+]
+]
+
+
+---
+----
+## Hands-On: lubridate und das Arbeiten mit Datumsangaben
+<figure class="logo-fig logo-fig-small">
+  <a href='https://lubridate.tidyverse.org' target="_blank">
+    <img src='https://lubridate.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+1. Betrachten wir den Datensatz `geburten`. Wir möchten das Geburtsdatum noch genauer wissen und beziehen deshalb   die Geburtsstunde des Kindes mit ein. Demnach bilden wir aus dem Geburtsjahr (geb_year), dem Geburtsmonat (geb_mon),   dem Geburtstag und der Geburtsstunde eine neue Variable `geb_fulldate`, die ein von R lesbares Datum vom Typ `datetime` enthält.<br>
+Selektiere den Datensatz vor der Berechnung so, dass nur die benötigten Variablen enthalten sind.
+Erstelle einen neuen Datensatz `geburten_time` und füge die neue Spalte hinzu.
+
+2. Was ist der Grund für die Warning Message wonach das parsing bei einigen Zeilen fehlgeschlagen ist?
+
+3. Wie könnte man dieses Problem theoretisch lösen?
+
+<!--html_preserve--><div class="countdown" id="timer_0cf341c8" data-update-every="1" tabindex="0" style="right:0;bottom:0;">
+<div class="countdown-controls"><button class="countdown-bump-down">&minus;</button><button class="countdown-bump-up">&plus;</button></div>
+<code class="countdown-time"><span class="countdown-digits minutes">10</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
+</div><!--/html_preserve-->
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----
+
+## Conditional Statements
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+- `Conditional Statements` (Bedingungen) sind hilfreich, wenn es z.B. darum geht numerische Daten in Kategorien einzuteilen
+
+- "Wenn x dann y sonst z"
+
+- in `dplyr`-Pipelines kann dazu entweder das klassische `ifelse()` oder die `case_when()` Funktion verwendet werden
+
+
+---
+----
+
+## ifelse
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+.panelset[
+.panel[.panel-name[Syntax]
+
+
+```r
+# Genereller Syntax
+ifelse(Bedingung,wenn_wahr,wenn_falsch)
+```
+Mehrere `ifelse` Funktionen können auch verschachtelt werden. Anstelle eines `wenn_falsch` Wert wird dann ein weiteres `ifelse` Statement eingefügt.
+
+```r
+ifelse(Bedingung1,wenn_wahr1,
+       ifelse(Bedingung2, wenn_wahr2, wenn_falsch))
+```
+
+]
+.panel[.panel-name[Anwendung]
+
+```r
+geburten %>% 
+  select(age_m) %>% 
+  mutate(age_class = ifelse(age_m<18,"unter 18",
+                            ifelse(age_m>=18, "18 oder älter", "unbekannt"))) %>% 
+  head(3)
+```
+
+```
+## # A tibble: 3 × 2
+##   age_m age_class    
+##   <dbl> <chr>        
+## 1    28 18 oder älter
+## 2    20 18 oder älter
+## 3    31 18 oder älter
+```
+]
+.panel[.panel-name[Problem]
+
+Bei vielen verschachtelten `ifelse` Funktionen wird der Code unübersichtlich (zu viele Klammern, schwer zu bearbeiten)
+
+
+```r
+geburten %>% 
+  select(age_m) %>% 
+  mutate(age_class = ifelse(age_m < 20,"unter 20",
+                            ifelse(age_m>=20 & age_m<25, "20 bis 24", 
+                                   ifelse(age_m>=25 & age_m<30, "25 bis 29", 
+                                          ifelse(age_m>=30 & age_m<35, "30 bis 34", 
+                                                 ifelse(age_m>=35 & age_m<40, "35 bis 39", 
+                                                        ifelse(age_m>=40, "40 und älter", "unbekannt"))))))) 
+```
+]
+]
+
+
+---
+----
+
+## dplyr::case_when
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+`case_when` bietet die Möglichkeit den Code in einer übersichtlicheren Form darzustellen.
+
+.panelset[
+.panel[.panel-name[Syntax]
+
+- das Tilde-Symbol (`~`) kann mit `Ctrl+Alt+^` (zweimal drücken) erzeugt werden
+
+
+```r
+# Genereller Syntax
+case_when(Bedingung ~ wenn_wahr,
+          TRUE ~ wenn_falsch)
+```
+Mehrere Bedingungen werden einfach mit Komma getrennt. `TRUE ~ x` kennzeichnet den Wert der zurückgegeben wird, wenn keine Bedingung zutrifft.
+
+```r
+case_when(Bedingung1 ~ wenn_wahr1,
+          Bedingung2 ~ wenn_wahr2,
+          TRUE ~ wenn_falsch)
+```
+
+]
+.panel[.panel-name[Anwendung]
+
+```r
+geburten %>% 
+  select(age_m) %>% 
+  mutate(age_class = case_when(age_m<18 ~"unter 18",
+                               age_m>=18 ~ "18 oder älter",
+                               TRUE ~ "unbekannt")) %>% 
+  head(3)
+```
+
+```
+## # A tibble: 3 × 2
+##   age_m age_class    
+##   <dbl> <chr>        
+## 1    28 18 oder älter
+## 2    20 18 oder älter
+## 3    31 18 oder älter
+```
+]
+.panel[.panel-name[Vorteil ggü. ifelse]
+
+Mehrere Bedingungen können einfach unterinander geschrieben werden, ohne das jedes Mal eine neue Klammer geöffnet werden muss.
+
+Der Code wird leichter lesbar und einfacher zu bearbeiten.
+
+```r
+geburten %>% 
+  select(age_m) %>% 
+  mutate(age_class = case_when(age_m < 20 ~ "unter 20",
+                               age_m>=20 & age_m<25 ~ "20 bis 24",
+                               age_m>=25 & age_m<30 ~ "25 bis 29",
+                               age_m>=30 & age_m<35 ~ "30 bis 34",
+                               age_m>=35 & age_m<40 ~ "35 bis 39",
+                               age_m>=40 ~ "40 und älter",
+                               TRUE ~ "unbekannt"))
+```
+
+```
+## # A tibble: 139,093 × 2
+##    age_m age_class
+##    <dbl> <chr>    
+##  1    28 25 bis 29
+##  2    20 20 bis 24
+##  3    31 30 bis 34
+##  4    24 20 bis 24
+##  5    38 35 bis 39
+##  6    27 25 bis 29
+##  7    26 25 bis 29
+##  8    20 20 bis 24
+##  9    27 25 bis 29
+## 10    34 30 bis 34
+## # … with 139,083 more rows
+```
+]
+]
+
+---
+----
+## Hands-On: Conditional Statements: case_when und ifelse
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+Erstelle den Datensatz `geburten_nat_eltern` aus dem `geburten` Datensatz:
+- **Spalten auswählen:** behalte nur stat_jahr, nat_m und nat_V
+- **Filtern:** nur Daten behalten die keine NAs in nat_m oder nat_V enthalten (Staatsangehörigkeit Mutter und Vater) besitzen
+
+Verwende Conditional Statements um die neue Variable `eltern_nat_type` zu erstellen:
+- Wenn **beide Elternteile Ausländer** sind, soll **"beide Elternteile Ausländer"** eingetragen werden  
+- Wenn **beide Elternteile Schweizer** sind, soll **"beide Elternteile Schweizer"** eingetragen werden    
+- Wenn der **Vater Ausländer** ist, soll **"Vater Ausländer"** eingetragen werden                       
+- Wenn die **Mutter Ausländerin** ist, soll **"Mutter Ausländer"** eingetragen werden                           
+- Wenn **keine der Kategorien zutrifft** soll **"unbekannt"** eingetragen werden (Kontrolle) 
+
+
+---
+----
+
+## baseR: if...else
+
+- eine andere Form von `Conditional Statements` ist die in anderen Sprachen oft verwendete `if...else` Notierung
+- diese wird vor allem in Loops und Funktionen  verwendet
+- ein `if` braucht in R nicht zwingend ein `else` 
+
+.panelset[
+.panel[.panel-name[mit else]
+
+
+```r
+x = 3
+
+if (x %% 2 == 0){
+  print("x ist eine gerade Zahl")
+} else {
+  print("x ist eine ungerade Zahl")
+}
+```
+
+```
+## [1] "x ist eine ungerade Zahl"
+```
+
+]
+.panel[.panel-name[ohne else]
+
+```r
+x = 4
+
+if (x %% 2 == 0){
+  print("x ist eine gerade Zahl")
+}
+```
+
+```
+## [1] "x ist eine gerade Zahl"
+```
+]
+]
+
+
+
+---
+----
+
+## baseR: if...else
+
+.panelset[
+.panel[.panel-name[Bsp. 1]
+Ein `else` Statement ist nicht unbedingt notwendig, wenn nur in einem einzigen Prüffall etwas unternommen werden soll
+
+```r
+x = 3
+
+if (x %% 2 != 0){
+  x <- x+1
+} 
+
+x
+```
+
+```
+## [1] 4
+```
+
+]
+.panel[.panel-name[Bsp. 2]
+Wenn mehrere, sich gegenseitig ausschliessende Bedingungen abgeprüft werden sollen, kann die spezielle `else if` Schreibweise verwendet werden
+
+
+```r
+alter <- 45
+
+if (alter >= 70) {
+  altersklasse <- "70 und älter"
+} else if (alter >= 50) {
+  altersklasse <- "50 bis 69"
+} else if (alter >= 30) {
+  altersklasse <- "30 bis 49"
+}
+print(altersklasse)
+```
+
+```
+## [1] "30 bis 49"
+```
+]
+
+.panel[.panel-name[Bsp. 3]
+Für kompliziertere Prüfungen können `if` statements auch verschachtelt werden
+
+```r
+dienstjahre <- 5
+bewertung <- "Gut"
+
+if (bewertung == "Sehr gut"){
+  bonus <- 5000
+} else if (bewertung == "Gut"){
+  if (dienstjahre>=10){
+    bonus <- 3000
+  } else {
+    bonus <- 2500
+  }
+} else {
+  bonus <- 0
+}
+```
+
+]
+]
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----
+
+## baseR: loops und apply
+
+- grundlegender Baustein in allen Programmiersprachen
+
+- wird verwendet um Code wiederholt auszuführen (Loop = Schleife)
+
+- ist dort nützlich, wo es vieler Iterationen bedarf
+
+- in allen Programmiersprachen gibt es `for` und `while` Loops
+
+- R bietet zusätzlich noch die Funktionen aus der `apply` Familie, die ein ähnliches Ergebnis liefern
+
+---
+----
+
+## baseR: for-loop
+
+.pull-left[
+**Für jedes Element `i` in Vektor `x` führe Hauptteil aus**
+<br>
+<br>
+`for` Loops bestehen aus zwei Bestandteilen:
+  1. eine Kopfzeile, die die Anzahl an Iterationen angibt (in runden Klammern `()`)
+  2. einen Hauptteil, der einen Codeblock enthält, der bei jeder Iteration einmal ausgeführt wird (in geschweiften Klammern `{}`)
+
+
+
+```r
+for (i in x){ # Kopfzeile
+   # Hauptteil
+  do_something()
+}
+```
+  
+]
+.pull-right[
+<img src="img/forloop.png" alt="https://universeofdatascience.com/wp-content/uploads/2021/06/Loops_in_R-1024x576.png" width="70%" style="display: block; margin: auto;" />
+
+]
+
+
+---
+----
+
+## baseR: for-loop
+
+.panelset[
+.panel[.panel-name[Bsp. 1]
+- Zuweisungen sind essentiell bei Loops
+- Wenn Daten nicht zugewiesen werden sind sie nachher nicht im  Environment verfügbar
+- Zuweisungen die ausschliesslich innerhalb des loops geschehen sind nicht im globalen environment verfügbar
+
+```r
+for (i in 1:3){
+  temp <- paste0("Iteration Nr. ",i)
+}
+temp
+```
+
+```
+## [1] "Iteration Nr. 3"
+```
+
+]
+.panel[.panel-name[Bsp. 2]
+- Elemente können auch direkt verwendet werden
+
+```r
+new_list <- list()
+for (elem in c("A","B","C")){
+  new_list[[elem]] <- tolower(elem)
+}
+new_list
+```
+
+```
+## $A
+## [1] "a"
+## 
+## $B
+## [1] "b"
+## 
+## $C
+## [1] "c"
+```
+]
+.panel[.panel-name[Bsp. 3]
+- mit `seq_along` werden die Indizes (=Positionen) für einen Vektor gebildet
+
+
+```r
+vec <- c("A","B","C")
+for (i in seq_along(vec)){
+  print(paste0(vec[i],i))
+}
+```
+
+```
+## [1] "A1"
+## [1] "B2"
+## [1] "C3"
+```
+]
+]
+
+---
+----
+
+## baseR: while-loop
+
+.pull-left[
+**Solange `i` kleiner gleich `y`  führe Hauptteil aus und erhöhe `i` anschliessend um 1**
+<br>
+<br>
+- `while` Loops können, wenn fehlerhaft programmiert, unendlich lange laufen
+- der Parameter `i` muss in diesem Fall vor dem Loop initialisiert werden
+
+
+
+
+```r
+i = 1
+while (i <= y){
+  do_something()
+  i=i+1
+}
+```
+  
+]
+.pull-right[
+<img src="img/whileloop.png" alt="https://universeofdatascience.com/wp-content/uploads/2021/06/Loops_in_R-1024x576.png" width="70%" style="display: block; margin: auto;" />
+
+]
+
+---
+----
+## baseR: while-loop
+
+.panelset[
+.panel[.panel-name[Bsp. 1]
+Wie oft wird `"Hello World"` im unten stehenden while Loop ausgegeben?
+
+```r
+y = 3
+i = 1
+
+while (i <= y){
+  print("Hello World")
+}
+```
+
+]
+.panel[.panel-name[Lösung. 1]
+Abbruchbedingungen müssen korrekt initialisert werden um einen unendlichen Loop zu vermeiden
+
+```r
+y = 3
+i = 1
+
+while (i <= y){
+  print("Hello World")
+  i <- i+1
+}
+```
+
+```
+## [1] "Hello World"
+## [1] "Hello World"
+## [1] "Hello World"
+```
+]
+]
+
+
+---
+----
+## baseR: Loops und Conditional Statements
+- kombiniert sind Loops und Conditional Statements mächtige Werkzeuge in R
+- elementar sind dafür die Befehle `break` und `next`
+
+.panelset[
+.panel[.panel-name[break]
+Mit `break` kann ein Loop an einer bestimmten Stelle (z.B. bei Erfüllung einer bestimmten Bedingung) vorzeitigabgebrochen werden.
+
+```r
+for (i in c(1,3,6,8)){
+  if (i %% 2 == 0){
+    print(i)
+    break
+  }
+}
+```
+
+```
+## [1] 6
+```
+
+]
+.panel[.panel-name[next]
+Mit `next` kann zur nächsten Iteration gesprungen werden ohne den gesamten Codebody auszuführen
+
+```r
+for (i in c(1,2,3,5)){
+  if (i %% 2 == 0){
+    next # alles nach dieser Zeile wird übersprungen
+  }
+  print(i)
+}
+```
+
+```
+## [1] 1
+## [1] 3
+## [1] 5
+```
+]
+
+]
+
+---
+----
+
+## Hands-On: Loops und Conditional Statements
+
+
+.panelset[
+.panel[.panel-name[Aufgabe]
+Lade den Datensatz `Daten/firma.rds` und berechne die jährlichen Auszahlungsbeträge pro Mitarbeiter inklusive Boni:
+
+- Mitarbeiter mit einem Monatslohn über 10000 bekommen keinen Bonus
+- **Sehr Gut** bewertete Mitarbeiter bekommen einen Bonus in Höhe von **70% ihres Monatseinkommens**
+- **Gut** bewertete Mitarbeiter bekommen einen Bonus von **40% ihres Monatseinkommens**, bei **10 oder mehr Dienstjahren** bekommen sie **50%**
+- Bewertungen, die weder `Gut` noch `Sehr Gut` sind bekommen den Standardbonus von **300 CHF**
+
+<p>Schreibe einen Loop, welcher eine Liste befüllt mit dem String "NAME erhält AUSZAHLUNG CHF im Jahr inkl. Bonus" für jede/n MitarbeiterIn im Datensatz.</p>
+<p>Sollte ein/e MitarbiertIn keinen Bonus erhalten, sollte der String wie folgt aussehen: "NAME erhält AUSZAHLUNG CHF im Jahr. NAME erhält keinen Bonus"</p>
+
+]
+.panel[.panel-name[Tipps]
+**Tipps:**
+- Nutze einen for loop
+- Arbeite die Bedingungen der Reihe nach ab
+- Verwende verschachtelte if Statements, wenn mehrere bedingungen erfüllt sein müssen
+]
+
+.panel[.panel-name[Ergebnis]
+
+```
+## [[1]]
+## [1] "Marta erhält 144000 CHF im Jahr. Marta erhält keinen Bonus."
+## 
+## [[2]]
+## [1] "Mario erhält 120650 CHF im Jahr inkl. Bonus."
+## 
+## [[3]]
+## [1] "Miro erhält 76200 CHF im Jahr inkl. Bonus."
+## 
+## [[4]]
+## [1] "Moni erhält 52080 CHF im Jahr inkl. Bonus."
+## 
+## [[5]]
+## [1] "Theo erhält 192000 CHF im Jahr. Theo erhält keinen Bonus."
+## 
+## [[6]]
+## [1] "Karla erhält 90300 CHF im Jahr inkl. Bonus."
+```
+]
+]
+
+
+---
+----
+## apply vs. loops
+
+Die apply-Famile bietet eine Alternative zu klassischen loops.
+
+
+.panelset[
+.panel[.panel-name[Vorteile]
+
+- man benötigt deutlich weniger Code (keine Zuweisungen, Counter, Abbruchbedingungen etc.)
+
+- beugt dem Erzeugen von "Spaghetti-Code" vor, da leichter lesbar
+
+- Variablen innerhalb der Funktion werden nicht im Global Environment gespeichert (keine Gefahr der versehentlichen Überschreibung)
+
+]
+.panel[.panel-name[Nachteile]
+
+- kompliziertere Abläufe können mit den apply Funktionen nicht nativ realisiert werden
+
+- klassische Loops können viel feiner definiert werden
+
+- Es können Iterationen erzeugt werden, bei denen das Ergebnis auf der vorigen Iteration beruht
+
+**Ein generelles Ablehnen von Loops, wie es von manchen Autoren propagiert wird ist mMn Quatsch!**
+]
+]
+
+---
+----
+## Die apply-Familie
+
+Aus der Erfahrung sind `lapply, sapply` und `apply` die am meisten genutzen Funktionen.
+
+.panelset[
+.panel[.panel-name[lapply]
+Anwendung einer Funktion auf jedes Element einer Liste/eines Vektors und gibt eine Liste zurück.
+
+
+```r
+num_list <- list(a = c(3,8,6), b = c(1,15,3), c = c(32,15,16))
+
+lapply(num_list, mean)
+```
+
+```
+## $a
+## [1] 5.666667
+## 
+## $b
+## [1] 6.333333
+## 
+## $c
+## [1] 21
+```
+
+]
+.panel[.panel-name[sapply]
+Gleiche Funktionsweise wie `lapply`, gibt aber - wenn möglich - einen Vektor und sonst eine Matrix als Ergebnis zurück.
+
+
+```r
+sapply(num_list, mean)
+```
+
+```
+##         a         b         c 
+##  5.666667  6.333333 21.000000
+```
+]
+.panel[.panel-name[tapply & aggregate]
+Berechnung einer Kennzahl (mean, median, min, max, etc.) für jede Faktor-Variable in einem Vektor.
+
+```r
+df <- data.frame(fac = c("a","a","b","b","c","c"),
+                num = c(4,8,6,5,7,9))
+
+tapply(df$num, as.factor(df$fac),mean)
+```
+
+```
+##   a   b   c 
+## 6.0 5.5 8.0
+```
+
+]
+.panel[.panel-name[mapply]
+Anwendung einer Funktion auf die korrespondierenden Elemente von mehreren Listen.
+
+```r
+num_list <- list(a = c(3,8,6), b = c(1,15,3), c = c(32,15,16))
+num_list2 <- list(a = c(1,2,3), b = c(4,5,6), c = c(7,8,9))
+
+mapply(sum, num_list, num_list2)
+```
+
+```
+##  a  b  c 
+## 23 34 87
+```
+
+]
+.panel[.panel-name[apply]
+Anwendung einer Funktion auf die Elemente eines data.frames oder einer Matrix. Gibt Vektor oder Liste zurück.
+Apply kann entweder reihenweise, spaltenweise oder elementweise operieren.
+
+```r
+df <- data.frame(fac = c("a","a","b","b","c","c"),
+                num = c(4,8,6,5,7,9))
+
+apply(df, 1, paste0, collapse="_")
+```
+
+```
+## [1] "a_4" "a_8" "b_6" "b_5" "c_7" "c_9"
+```
+]
+]
+
+---
+----
+## Die apply-Familie: Syntax
+
+In allen Funktionen aus der `apply`-Familie können Funktionen mit oder ohne Parameter oder eigene sog. [anonymus functions](https://coolbutuseless.github.io/2019/03/13/anonymous-functions-in-r-part-1/) verwednet werden.
+.panelset[
+.panel[.panel-name[Generell]
+Bei allen `apply`-Funktionen muss ein Objekt (oder mehrere) sowie eine Funktion angegeben werden, welche auf die Elemente des Objekts angewendet wird.
+
+Bei `lapply` kann dies eine Liste oder ein Vektor sein, welche als erstes Argument an die Funktion mitgegeben wird. Das zweite Argument ist die Funktion.
+
+
+```r
+# Generell
+lapply(vec_or_list, func)
+```
+]
+.panel[.panel-name[Ohne Args.]
+Wenn keine zusätzlichen Argumente für diei Funktion benötigt werden (z.B. `mean()`), kann die Funktion einfach **ohne Klammern** als Argument mitgegeben werden.
+
+
+```r
+# Keine Argumente
+lapply(num_list, mean)
+```
+
+```
+## $a
+## [1] 5.666667
+## 
+## $b
+## [1] 6.333333
+## 
+## $c
+## [1] 21
+```
+]
+.panel[.panel-name[Mit Args.]
+Argumente, welche normalerweise in die Klammer hinter der Funktion geschrieben werden (`mean(.,na.rm=TRUE)`), werden im Falle von `apply`-Funktionen mit Komma getrennt aufgelistet (`mean,na.rm=TRUE`)
+
+
+```r
+# Mit Argumenten
+lapply(num_list[1:2], mean,na.rm=TRUE)
+```
+
+```
+## $a
+## [1] 5.666667
+## 
+## $b
+## [1] 6.333333
+```
+]
+.panel[.panel-name[Anonym. (1)]
+[Anonymus Functions](https://coolbutuseless.github.io/2019/03/13/anonymous-functions-in-r-part-1/) (auch *lambda expression* genannt) sind Funktionen, denen kein Name zugeordnet wird und die nur im Zusammehang der apply Funktion existieren
+
+
+```r
+# Mit Argumenten
+lapply(num_list[1:2], function(x){
+  temp <- paste0("Die Summe ist ",sum(x))
+  return(temp)
+})
+```
+
+```
+## $a
+## [1] "Die Summe ist 17"
+## 
+## $b
+## [1] "Die Summe ist 19"
+```
+]
+.panel[.panel-name[Anonym. (2)]
+Um den Code übersichtlicher zu gestalten und die ungewohnte Schreibweise mit der Kommatrenung zu vermeiden, können auch andere Funktionen als `Anonymus Functions` notiert werden.  
+
+
+```r
+# Mit Argumenten
+lapply(num_list[1:2], function(x){
+  mean(x,na.rm=TRUE)
+})
+```
+
+```
+## $a
+## [1] 5.666667
+## 
+## $b
+## [1] 6.333333
+```
+]
+]
+---
+----
+## Anwendungsbeispiel
+.panelset[
+.panel[.panel-name[Vorberietung]
+Einlesen von mehreren gleichförmigen Datensätzen und anschliessendes Zusammenfügen zu einem zusammenhängenden Datensatz.
+
+
+
+```r
+#Filepath definieren
+abstimmungen_path <- "Daten/Ebene_Gemeinden" 
+# CSV Files im Ordner als Vektor 
+csv_files <- list.files(path = abstimmungen_path, pattern = "*.csv") 
+# Vollständige Pfad Variable erstellen
+csv_paths <- paste0(abstimmungen_path,"/",csv_files)
+```
+]
+.panel[.panel-name[lapply]
+
+```r
+# Alle Files mithilfe der lapply Funktion in eine Liste einlesen 
+csv_list <- lapply(csv_paths,function(file){
+  df <- read_csv2(file,
+                  locale = locale(encoding = "latin1"),
+                  col_types = cols(.default = "c"))
+  return(df)
+})
+```
+
+]
+.panel[.panel-name[Ergebnis]
+Alle Einzeldatensätze werden mit `bind_rows` zu einem zusammenhängenden data.frame zusammengefügt.
+
+```r
+# Datensatz zusammenfügen
+csv_df <- csv_list %>% bind_rows()
+# bind_rows: hängt Datensatzreihen aneinander 
+# alle Einzelabstimmungen in einem Datensatz
+unique(csv_df$DATUM_ABSTIMMUNG)
+```
+
+```
+##  [1] "16.05.2004" "28.11.2004" "05.06.2005" "25.09.2005" "12.02.2006" "21.05.2006" "25.11.2007" "30.11.2008"
+##  [9] "08.02.2009" "17.05.2009" "27.09.2009" "29.11.2009" "07.03.2010" "13.02.2011" "15.05.2011" "23.10.2011"
+## [17] "17.06.2012" "23.09.2012" "05.06.2016" "27.11.2016" "12.02.2017"
+```
+]
+.panel[.panel-name[for-loop]
+Löst man dies mit einem `for`-Loop, so muss die finale Liste im Vorhinein als leere Liste definiert werden, welche dann im Loop an den entsprechenden Indizes befüllt wird.
+
+```r
+csv_list2 <- list()
+for (i in seq_along(csv_paths)){
+  csv_list2[[i]] <-
+    read_csv2(
+      csv_paths[i],
+      locale = locale(encoding = "latin1"),
+      col_types = cols(.default = "c")
+    )
+}
+```
+]
+]
+---
+----
+## Hands-On: apply-Funktionen
+
+*Gegeben ist ein Auszug aus dem Mikrezensus Mobilität und Verkehr 2021 (haush_sample.rds) sowie eine Liste von Fahrzeugklassen*
+
+Für jede Fahrzeuklasse soll ein Datensatz erstellt werden, welcher den Mittelwert und die Gesamtnzahl der Fahrzeuge in der entsprechenden Fahrzeugklasse pro Bezirk enthält. Verwende eine passende apply Funktion.
+
+**Erläuterung:**
+- Reihen bei denen die Anzahl kleiner 0 ist sind `NAs` und müssen entfernt werden
+- filtere die entsprechende Fahrzeugklasse
+- gruppiere die Daten nach Bezirk
+- nutze summarise um die Kennzahlen zu errechnen
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----
+## Funktionen
+
+Eigene Funktionen sind hilfreich, wenn Code immer wieder ausgeführt werden muss. Im Vergleich zu copy-paste von Code ergeben sich folgende Vorteile:
+
+1. Lesbarer Code: Du kannst deinen Funktionen aussagekräftige Namen geben, sodass andere sofort wissen, was in der Funktion passiert.
+
+2. Erleichtertes Korrigieren: Sollte sich etwas ändern musst du nicht jeden kopierten Codeblock einzeln bearbeiten sondern nur die Funktion einmalig.
+
+3. Weniger Flüchtigkeitsfehler: veränderst du zum Beispiel bei einem Code Block die Vaiablenzuweisung bei der Kopie aber nicht, kann das zu Problemen führen. Diese entstehen mit Funktionen erst gar nicht
+
+---
+----
+## Funktionen
+
+Eine Funktion wird mit dem `function()` Keyword definiert.
+
+```r
+durchschnitt <- function(vektor){
+  temp <- sum(vektor)/length(vektor)
+  return(temp)
+}
+wert <- durchschnitt(c(5,6,2,7,8))
+wert
+```
+
+```
+## [1] 5.6
+```
+.panelset[
+.panel[.panel-name[Name]
+`durchschnitt` ist in diesem Fall der Name der Funktion. Somit kann sie mit `durchschnitt()` aufgerufen werden
+]
+.panel[.panel-name[Argumente]
+Das einzige Argument dieser Funktion ist `vektor`. Eine Funktion kann unbegrenzt Argumente besitzen oder aber keines. 
+]
+.panel[.panel-name[Return]
+Um das Ergebnis einer Funktion einer neuen Variable zuweisen zu können, braucht es ein `return` Statement. Ansonsten gibt die Funktion nichts zurück.
+]
+]
+
+
+
+---
+----
+
+## Hands-On: Funktionen
+
+1. Schreibe eine eigene Funktion zur Berechnung der Varianz eines numerischen Vektors und nenne sie `varianz`
+$$\mathrm{Var}(x) = \frac{1}{n - 1} \sum_{i=1}^n (x_i - \bar{x}) ^2$$
+**Erklärung:**
+- $n$ ist die Stichprobengrösse (-> die Anzahl der Elemente im Vektor)
+- $x_i$ ist der Wert von Vektor $x$ an Stelle $i$
+- $\bar{x}$ ist der Mittelwert von Vektor $x$
+- $\sum_{i=1}^n (x_i - \bar{x}) ^2$ bedeuted das alle Ergebnisse von $(x_i - \bar{x}) ^2$ für jedes Element im vektor aufsummiert werden.
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----
+## ggplot2: Daten visualisieren
+
+<figure class="logo-fig logo-title1">
+  <a href='https://readr.tidyverse.org' target="_blank">
+    <img src='https://readr.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title2">
+  <a href='https://readxl.tidyverse.org' target="_blank">
+    <img src='https://readxl.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title3">
+  <a href='https://haven.tidyverse.org' target="_blank">
+    <img src='https://haven.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title4">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title5">
+  <a href='https://tidyr.tidyverse.org' target="_blank">
+    <img src='https://tidyr.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title6">
+  <a href='https://stringr.tidyverse.org' target="_blank">
+    <img src='https://stringr.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title7">
+  <a href='https://lubridate.tidyverse.org' target="_blank">
+    <img src='https://lubridate.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title8">
+  <a href='https://magrittr.tidyverse.org' target="_blank">
+    <img src='https://magrittr.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title9">
+  <a href='https://forcats.tidyverse.org' target="_blank">
+    <img src='https://forcats.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+
+<figure class="logo-fig logo-title10">
+  <a href='https://ggplot2.tidyverse.org' target="_blank">
+    <img src='https://ggplot2.tidyverse.org/logo.png' class='logo' />
+  </a>
+</figure>
+
+
+
+
+---
+----
+## ggplot2: Daten visualisieren
+<figure class="logo-fig logo-fig-small">
+  <a href='https://ggplot2.tidyverse.org' target="_blank">
+    <img src='https://ggplot2.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+- ggplot2 bietet eine einfache Möglichkeit, datenbasierte Grafiken zu erstellen, ohne komplizierte Grafikbefehle schreiben zu müssen
+
+- ggplot2 verwendet das Grammar of Graphics-Konzept, das auf einfache Syntax und klare Struktur setzt.
+
+- durch Hinzufügen von Ebenen (Layers) können Grafiken angepasst werden
+
+- das Buch [ggplot2: Elegant Graphics for Data Analysis](https://ggplot2-book.org/toolbox.html) bietet umfangreiche Informationen
+
+---
+----
+## ggplot2: Vom Datensatz zur Grafik
+<figure class="logo-fig logo-fig-small">
+  <a href='https://ggplot2.tidyverse.org' target="_blank">
+    <img src='https://ggplot2.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+.panelset[
+.panel[.panel-name[Beschreibung]
+Eine Grafik in ggplot2 wird immer über den `ggplot()` Befehl initialisiert und besteht aus drei Grundbestandteilen
+- **data:** ein Datenobjekt, auf werlches sich die Grafik bezieht
+- **aesthetic mappings:** Datenvariablen werden bestimmten ästhetischen Eigenschaften zugeordnet, wie z.B. Farbe, Größe, Form, Position, etc.
+- **geom:** in welcher Form die Daten visualisiert werden sollen (z.B. Scatter, Linien, Balken, etc.)
+
+]
+.panel[.panel-name[Code]
+
+
+```r
+library(ggplot2)
+set.seed(1234)
+index <- sample(1:nrow(geburten),2000)
+geburten_sample <- geburten[index,]
+
+ggplot(data = geburten_sample, aes(x=age_v, y=age_m))+
+  geom_point()
+```
+]
+.panel[.panel-name[Grafik]
+Alter des Vaters auf der x-Achse und Alter der Mutter auf der y-Achses
+
+<img src="figure/unnamed-chunk-185-1.png" alt="plot of chunk unnamed-chunk-185" style="display: block; margin: auto auto auto 0;" />
+]
+]
+
+---
+----
+## ggplot2: Aesthetic Mappings
+<figure class="logo-fig logo-fig-small">
+  <a href='https://ggplot2.tidyverse.org' target="_blank">
+    <img src='https://ggplot2.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+.panelset[
+.panel[.panel-name[Beschreibung]
+- Mit **aesthetic mappings** können Datenvariablen  bestimmten ästhetischen Eigenschaften, wie z.B. Farbe, Größe, Form, Position, etc. zugeordnet werden.
+- sie werden innerhalb des `aes()` Befehls definiert
+- `aes()` kann sowohl für die ganze Grafik innerhalb des `ggplot()` Befehls verwendet werden oder aber für jeden Layer seperat.
+- aesthetics können auch ausserhalb von `aes()` definiert werde, wenn kein Variablenbezug nötig ist 
+- beim mapping spielt auch der Datentyp eine wichtige Rolle
+
+<p>Eine Übersicht über mögliche aesthetics findet ihr z.B. <a href = 'https://ggplot2.tidyverse.org/articles/ggplot2-specs.html'>hier</a></p>
+
+]
+.panel[.panel-name[Bsp 1]
+Die Datenpunkte sollen je nach Geschlecht (`sex`) unterschiedlich eingefärbt werden
+
+```r
+ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = sex))+
+  geom_point()
+```
+]
+.panel[.panel-name[Fig 1]
+<img src="figure/unnamed-chunk-187-1.png" alt="plot of chunk unnamed-chunk-187" style="display: block; margin: auto auto auto 0;" />
+]
+.panel[.panel-name[Bsp 2]
+`sex` wird als numerische Variable erkannt weshalb eine Umwandlung nötig ist
+
+```r
+ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = as.factor(sex)))+
+  geom_point()
+```
+]
+.panel[.panel-name[Fig 2]
+<img src="figure/unnamed-chunk-189-1.png" alt="plot of chunk unnamed-chunk-189" style="display: block; margin: auto auto auto 0;" />
+]
+.panel[.panel-name[Bsp 3]
+Ausserhalb des `aes()` Befehls können auch statische Variablen als aesthetics definiert werden (siehe [hier](https://ggplot2-book.org/layers.html#setting-mapping))
+
+```r
+ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = as.factor(sex)))+
+  geom_point(shape = 15)
+```
+]
+.panel[.panel-name[Fig 3]
+<img src="figure/unnamed-chunk-191-1.png" alt="plot of chunk unnamed-chunk-191" style="display: block; margin: auto auto auto 0;" />
+]
+]
+
+---
+----
+
+## ggplot2: geoms
+<figure class="logo-fig logo-fig-small">
+  <a href='https://ggplot2.tidyverse.org' target="_blank">
+    <img src='https://ggplot2.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+.panelset[
+.panel[.panel-name[Beschreibung]
+- **geoms** definieren die Form in der Daten dargestellt werden
+- jedes geom ist zweidimensional und benötigt daher `x` und `y` aestheics, um die Position festzulegen
+- jedem geom können die aesthetics `color` und `size` zugeordnet werden
+- ausserdem gibt es geom-spezifische aesthetics (z.b. `linetype` für `geom_line()`)
+
+
+<p>Eine Übersicht über verfügbare geoms findet ihr z.B. <a href = 'https://ggplot2.tidyverse.org/reference/#geoms'>hier</a></p>
+
+]
+.panel[.panel-name[Bsp]
+- Die Grafik leidet bisher unter *overplotting* (= mehrere Datenpunkte liegen direkt übereinander)
+- Mit `geom_jitter` anstelle von `geom_point` kann eine minimale künstliche Varianz erzeugt werden, welche die Grafik aussagekräftiger macht
+
+```r
+ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = as.factor(sex)))+
+  geom_jitter(shape = 15)
+```
+]
+.panel[.panel-name[Fig]
+<img src="figure/unnamed-chunk-193-1.png" alt="plot of chunk unnamed-chunk-193" style="display: block; margin: auto auto auto 0;" />
+]
+]
+
+
+---
+----
+
+## ggplot2: geoms (Beispiele)
+<figure class="logo-fig logo-fig-small">
+  <a href='https://ggplot2.tidyverse.org' target="_blank">
+    <img src='https://ggplot2.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+.panelset[
+.panel[.panel-name[Bsp 1]
+- Balkendiagramm des Altersunterschied zwischen Vätern und Müttern über Zeit
+- Pipeline enthält sowohl Datenaufbereitung als auch -visualisierung (nicht immer empfehlenswert)
+
+```r
+geburten %>% 
+  mutate(age_diff = age_v-age_m) %>% 
+  group_by(stat_jahr) %>% 
+  summarise(mean_dif =mean(age_diff,na.rm = T)) %>% 
+  ggplot(aes(x= stat_jahr,y=mean_dif)) + 
+  geom_bar(stat = "identity")
+```
+
+
+]
+.panel[.panel-name[Fig 1]
+<img src="figure/unnamed-chunk-195-1.png" alt="plot of chunk unnamed-chunk-195" style="display: block; margin: auto auto auto 0;" />
+]
+.panel[.panel-name[Bsp 2]
+- Hinzufügen einer Linie als zusätzlicher Layer
+
+```r
+geburten %>% 
+  mutate(age_diff = age_v-age_m) %>% 
+  group_by(stat_jahr) %>% 
+  summarise(mean_dif =mean(age_diff,na.rm = T)) %>% 
+  ggplot(aes(x= stat_jahr,y=mean_dif)) + 
+  geom_bar(stat = "identity") +
+  geom_line(linetype = "dashed", color = "red")
+```
+]
+.panel[.panel-name[Fig 2]
+<img src="figure/unnamed-chunk-197-1.png" alt="plot of chunk unnamed-chunk-197" style="display: block; margin: auto auto auto 0;" />
+]
+.panel[.panel-name[Bsp 3]
+- Durchschnittliches Alter der Mutter und des Vaters bei Geburt
+- Mehrere Linien mit unterscheidlichen Positionen
+
+```r
+geburten %>% 
+  group_by(stat_jahr) %>% 
+  summarise(mean_m =mean(age_m,na.rm = T), #Durchschnittliches Alter der Mutter
+            mean_v = mean(age_v,na.rm = T)) %>% #Durchschnittliches Alter des Vaters
+  ggplot(aes(x= stat_jahr)) + 
+  geom_line(aes(y=mean_v), color = "red") +
+  geom_line(aes(y=mean_m), color = "blue")
+```
+]
+.panel[.panel-name[Fig 3]
+<img src="figure/unnamed-chunk-199-1.png" alt="plot of chunk unnamed-chunk-199" style="display: block; margin: auto auto auto 0;" />
+]
+.panel[.panel-name[Bsp 4]
+- Ermittlung von Missing Values
+
+```r
+geburten %>% 
+  group_by(stat_jahr) %>% 
+  summarise(age_m_na =sum(is.na(age_m))/n(), #Anteil NAs beim Alter der Mutter
+            age_v_na =sum(is.na(age_v))/n()) %>% #Anteil NAs beim Alter des Vaters
+  ggplot(aes(x= stat_jahr)) + 
+  geom_line(aes(y=age_v_na), color = "red") +
+  geom_line(aes(y=age_m_na), color = "blue")
+```
+]
+.panel[.panel-name[Fig 3]
+<img src="figure/unnamed-chunk-201-1.png" alt="plot of chunk unnamed-chunk-201" style="display: block; margin: auto auto auto 0;" />
+]
+]
+
+---
+----
+
+## Hands-On: Daten visualisieren mit ggplot2
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://ggplot2.tidyverse.org' target="_blank">
+    <img src='https://ggplot2.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+Stelle das erreichte Alter von Männern und Frauen im Zeitverlauf gegenüber.
+
+- Schaue dir den vorbereiten Datensatz `heirat_mod` an, bevor du die Visualisierung angehst 
+- Erzeuge ein Liniendiagramm, welches die Altersentwicklung von Männern und Frauen bei der Hochzeit abbildet
+- Das Liniendiagramm soll eine Linie pro Geschlecht enthalten. Beide Linien sollen unterschiedliche Farben haben.   
+- Füge einen Titel sowie eine Beschriftung für X- und Y-Achse hinzu.
+- Verwende dafür die labs() Funktion (`?ggplot2::labs()` für Hilfe)
+
+<!--html_preserve--><div class="countdown" id="timer_d77e987c" data-update-every="1" tabindex="0" style="right:0;bottom:0;">
+<div class="countdown-controls"><button class="countdown-bump-down">&minus;</button><button class="countdown-bump-up">&plus;</button></div>
+<code class="countdown-time"><span class="countdown-digits minutes">10</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
+</div><!--/html_preserve-->
+
+---
+----
+
+## ggplot2: Good to know
+<figure class="logo-fig logo-fig-small">
+  <a href='https://ggplot2.tidyverse.org' target="_blank">
+    <img src='https://ggplot2.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+Ein vertieftes Einsteigen in die Feinheiten von `ggplot2` sprengt den Rahmen dieses Workshops.<br><br>
+Daher sei noch einmal auf das Buch [ggplot2: Elegant Graphics for Data Analysis](https://ggplot2-book.org/) verwiesen. Hier ist besonders das Kapitel [Build a plot layer by layer](https://ggplot2-book.org/layers.html#layers) interessant, welches die notwendigen Schritte zur Erstellung von Grafiken erläutert. Daebi wird auch auf das Styling einer Grafik eingegangen. <br>
+<br>
+Mit dem [plotly](https://plotly-r.com/) Package ist es ausserdem möglich statische Grafiken in interaktive Grafiken zu transformieren
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

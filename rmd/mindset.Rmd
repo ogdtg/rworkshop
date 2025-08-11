@@ -1,0 +1,127 @@
+---
+title: "Mindset"
+author: "Felix lorenz"
+date: '12. Dezember 2022'
+amt: "Staatskanzlei"
+stelle: "Dienststelle für Statistik"
+output: 
+  xaringan::moon_reader:
+    highlightStyle: github
+    highlightlines: true
+    highlightSpans: true
+    css: ["default","styles_x.css"]
+
+
+---
+
+
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,dpi=300)
+```
+
+
+
+----
+## "Programmierweisheiten"
+
+--
+
+**1. Jedes Problem hatte irgendjemand anders schon einmal...**
+
+--
+
+**2. "Richtiges" Googlen ist die halbe Miete beim Programmieren.**
+
+--
+
+**3. Man kann oft mehr automatisieren, als man im ersten Moment denkt.**
+
+--
+
+**4. Automatisierung bring *immer* einen Mehrwert.**
+
+--
+
+**5. Viele Wege führen nach Rom.**
+
+---
+----
+## Jedes Problem hatte irgendjemand anders schon einmal...
+
+...die Lösung ist daher meistens auch irgendwo zu finden.
+
+- Code übernehmen und reproduzieren, anstatt das Rad jedes Mal neu erfinden
+
+- [Stack Overflow](https://stackoverflow.com/) hilft (fast) immer. (*"Every data scientist has a tab open to Stack Overflow"*)
+
+- Unzählige weitere Hilfeseiten z.B. [Rbloggers](https://www.r-bloggers.com/), [Geeks for Geeks](https://www.geeksforgeeks.org/r-programming-language-introduction/), etc.
+
+<br>
+```{r, out.width="40%", fig.cap="https://upload.wikimedia.org/wikipedia/commons/0/02/Stack_Overflow_logo.svg", fig.align='center'}
+knitr::include_graphics("https://upload.wikimedia.org/wikipedia/commons/0/02/Stack_Overflow_logo.svg")
+```
+
+
+---
+----
+## "Richtiges" Googlen ist die halbe Miete
+
+- Programmieren ist ein englischsprachiges Feld &#10140; auf Englisch googlen bringt die besten Ergebnisse
+
+- Bei Fehlermeldungen kann als erster Schritt einfach der Text der Meldung gegooglet werden &#10140; bringt meistens schon ersten Anhaltspunkt
+
+---
+----
+## Man kann oft mehr automatisieren als man im ersten Moment denkt
+<br>
+- Prozesse als Ganzes betrachten! Kann ich vielleicht noch mehr automatisieren, als diesen einen spezifischen Prozessschritt?
+
+- Kann ich meine Arbeit skalieren und für andere Prozesse nutzen?
+
+- Wie kann ich meinen Code so generisch wie möglich schreiben?
+
+---
+----
+## Automatisierung bring immer einen Mehrwert
+
+--
+
+- Automatisierung spart oft Zeit
+
+--
+
+- Automatisierung reduziert meistens die Fehleranfälligkeit
+
+--
+
+- Automatisierung bringt **immer** einen Lerneffekt
+
+--
+
+```{r, out.width="55%", fig.cap= "https://marcgg.com/assets/blog/automation-win.png", fig.align='center'}
+knitr::include_graphics("https://marcgg.com/assets/blog/automation-win.png")
+```
+
+
+---
+----
+## Viele Wege führen nach Rom
+
+- Es gibt niemals "die eine Lösung"
+
+- Probleme können auf die unterschiedlichste Art, mit den unterschiedlichsten Funktionen und den unterschiedlichsten Packages gelöst werden
+<br>
+<br>
+<h2 align="center"><i>"Der beste Code ist der, der verlässlich funktioniert" </i></p>
+
+---
+----
+## Programmieren lernt man nur durch Anwendung!
+
+```{r , fig.cap="https://tidyverse.tidyverse.org/logo.png",fig.align='center'}
+knitr::include_graphics("./img/how_much_I_think_I_know_about_R.PNG")
+
+```

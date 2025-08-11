@@ -1,0 +1,494 @@
+---
+title: "Daten in Excel schreiben"
+author: "Felix lorenz"
+date: '12. Dezember 2022'
+amt: "Staatskanzlei"
+stelle: "Dienststelle für Statistik"
+output: 
+  xaringan::moon_reader:
+    highlightStyle: github
+    highlightlines: true
+    highlightSpans: true
+    css: ["default","styles_x.css"]
+
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,dpi=300)
+```
+
+
+----
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://ycphs.github.io/openxlsx/' target="_blank">
+    <img src='https://i2.wp.com/mfatihtuzen.netlify.app/posts/2024-11-04_openxlsx/openxlsx.png?w=578&ssl=1' class='logo'/>
+  </a>
+</figure>
+
+
+
+## Einführung in `openxlsx`
+
+- Leichtgewichtiges R-Package für Excel-Dateien
+
+- Lesen, Schreiben und Formatieren von `.xlsx`-Dateien
+
+- Keine externe Software (z. B. Excel) erforderlich.
+
+- basiert auf sog. `workbook` objekten
+
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://ycphs.github.io/openxlsx/' target="_blank">
+    <img src='https://i2.wp.com/mfatihtuzen.netlify.app/posts/2024-11-04_openxlsx/openxlsx.png?w=578&ssl=1' class='logo'/>
+  </a>
+</figure>
+## openxlsx: Sheets erstellen und Daten eintragen
+
+.panelset[
+.panel[.panel-name[Erklärung]
+
+- ein `workbook` kann entweder mit `createWorkbook()` neu erstellt werden oder eine `xlsx`-Datei kann mit `loadWorkbook()` zum bearbeiten eingelesen werden
+
+- Neue Reiter werden mit `addWorksheet()` angefügt. Bei neuen Workbooks muss dies immer als erstes erledigt werden, da es sonst keine Reiter gibt. Mit `removeWorksheet()` kann ein Worksheet wieder entfernt werden.
+
+- mit `writeData()` werden Daten eingetragen. Hier besteht die Möglichkeit genau zu definieren, wo die Daten eingefügt werden sollen
+]
+.panel[.panel-name[Code]
+```{r , echo = TRUE, eval=TRUE}
+library(openxlsx)
+
+# Workbook neu erstellen
+wb <- createWorkbook()
+
+# Neues Worksheet erstellen
+addWorksheet(wb,sheetName = "Neuer Reiter")
+
+# Daten eintragen ins entsprechenden sheet.Default für startRow und startCol ist 1
+writeData(wb,x=iris,sheet = "Neuer Reiter",startCol = 3,startRow = 4)
+
+#Daten abspeichern
+saveWorkbook(wb,"Daten/wb1.xlsx",overwrite = TRUE)
+
+```
+]
+.panel[.panel-name[Ergebnis]
+
+
+![openxlsx Bsp 1](img/openxlsx1.png)
+]
+]
+
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://ycphs.github.io/openxlsx/' target="_blank">
+    <img src='https://i2.wp.com/mfatihtuzen.netlify.app/posts/2024-11-04_openxlsx/openxlsx.png?w=578&ssl=1' class='logo'/>
+  </a>
+</figure>
+## openxlsx: Zellen stylen
+
+.panelset[
+.panel[.panel-name[Erklärung]
+
+- Jede Zelle kann mit einem *cell style* versehen werden. Hier können z.B. Hintergrund, Zahlenformat, Farbe usw definiert werden. Eine Übersciht der Möglichkeiten findet ihr [hier](https://rdrr.io/cran/openxlsx/man/createStyle.html)
+
+- Styles könne auf einzelnde Zellen oder auf ganze Zellbereiche angewendet werden. Ausserdem können Styles "gestackt" werden, also gestapelt. So können zusätzliche Style-Features zu einem existierenden Style hinzugefügt werden.
+
+- styles werden mit der `createStyle()` Funktion erstellt und mit der `addStyle()` Funktion auf Zellen angewendet. Wenn ein Style auf eine Zellregion angewendet werden soll, die nicht "quadratisch" ist, muss `gridExpand=TRUE` gesetzt werden.
+]
+.panel[.panel-name[Code]
+```{r , echo = TRUE, eval=TRUE}
+library(openxlsx)
+# Workbook laden
+wb <- loadWorkbook("Daten/wb1.xlsx")
+# Styles erstellen
+style_1 <- createStyle(fontSize = 18,fontColour = "red")
+style_2 <- createStyle(textDecoration = "bold",border = c("top", "bottom", "left", "right"))
+
+# Styles anwenden. Beim Sheet kann auch der Index verwednet werden, aber vorsicht mit Index.
+addStyle(wb, sheet = 1, style = style_1,rows = c(4:5),cols = c(3:4),gridExpand = TRUE)
+addStyle(wb, sheet = 1, style = style_2,rows = c(5:8),cols = c(3:4),gridExpand = TRUE)
+addStyle(wb, sheet = 1, style = style_1,rows = c(7:8),cols = c(3:4),gridExpand = TRUE,stack = TRUE)
+
+#Daten abspeichern
+saveWorkbook(wb,"Daten/wb2.xlsx",overwrite = TRUE)
+
+```
+]
+.panel[.panel-name[Ergebnis]
+
+
+![openxlsx Bsp 1](img/openxlsx2.png)
+]
+]
+
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://ycphs.github.io/openxlsx/' target="_blank">
+    <img src='https://i2.wp.com/mfatihtuzen.netlify.app/posts/2024-11-04_openxlsx/openxlsx.png?w=578&ssl=1' class='logo'/>
+  </a>
+</figure>
+## openxlsx: Weitere Funktionen
+
+.panelset[
+.panel[.panel-name[Erklärung]
+
+- Weitere nützliche Funktionen sind zum Beispiel das Setzen von Spaltenbreiten und Zeilenhöhen mit `setColWidths()` und `setRowHeights()`
+
+- Mit `cloneWorksheet()` kann ein ganzes Worksheet kopiert werden.
+
+- Es gibt noch unzählige weitere Funktionen. Eine Übersicht findet ihr [hier](https://rdrr.io/cran/openxlsx/man/)
+]
+.panel[.panel-name[Code]
+```{r , echo = TRUE, eval=TRUE}
+library(openxlsx)
+# Workbook laden
+wb <- loadWorkbook("Daten/wb2.xlsx")
+# Spaltenbreiten
+setColWidths(wb,sheet=1,cols = c(1,2), widths = 3)
+setColWidths(wb,sheet=1,cols = 3, widths = 15)
+
+# Zeilenhöhen
+setRowHeights(wb,sheet = 1,rows = 9,heights = 8)
+
+#speichern
+saveWorkbook(wb,"Daten/wb3.xlsx",overwrite = TRUE)
+
+```
+]
+.panel[.panel-name[Ergebnis]
+
+
+![openxlsx Bsp 1](img/openxlsx3.png)
+]
+]
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://ycphs.github.io/openxlsx/' target="_blank">
+    <img src='https://i2.wp.com/mfatihtuzen.netlify.app/posts/2024-11-04_openxlsx/openxlsx.png?w=578&ssl=1' class='logo'/>
+  </a>
+</figure>
+## Hands-On: Daten in Excel schreiben mit openxlsx
+
+Repliziere die Tabelle in `Slides/Daten/openxlsx_table.xlsx`.
+
+Speichere die Datei unter `Slides/Daten/openxlsx_table_DEIN_KÜRZEL.xlsx`.
+
+![openxlsx Aufgabe](img/openxlsx_exercise.png)
+```{r}
+countdown::countdown(minutes=10)
+```
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://github.com/ogdtg/TGexcel' target="_blank">
+    <img src='img/hex-TGexcel.png' class='logo'/>
+  </a>
+</figure>
+## TGexcel
+
+- `TGexcel` basiert auf `openxlsx`, ist aber bereits auf unsere Bedürfnisse abgestimmt
+
+- Das Package enthält bereits Funktionen, die das erstellen und bearbeiten von Internettabellen erleichtern
+
+- Die verwendeten Sytles sind bereits im Package hinterlegt
+
+- Am häufigsten werden wahrscheinlich die Funktionen `create_xlsx_spalte()`,`create_xlsx_zeile()` und `create_xlsx_reiter()` gebraucht. Dies fügen eine Spalte/Zeile/Reiter mit Daten des neuen Jahres an und bedienen sich der Formatierungen aus dem Excelfile des letzten Jahres. Diese Funktionen sind stark vereinfacht. Das bringt sowohl Vorteile als auch Nachteile
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://github.com/ogdtg/TGexcel' target="_blank">
+    <img src='img/hex-TGexcel.png' class='logo'/>
+  </a>
+</figure>
+## TGexcel: `create_xlsx_spalte()`
+
+.panelset[
+.panel[.panel-name[Erklärung]
+         
+- Die Funktion hängt für die Daten eines neuen Jahres eine Spalte im Excel File an, passt die Untertitel der Überschrift und ggf. den Namen des Reiters an (z.B. aus 2020-2022 wird 2020-2023)
+         
+- benötigt wird dafür lediglich den Pfad zur Internettabelle des letzten Jahres als Muster, den Index der Zeile in der die Daten starten (nicht die Kopfzeile) sowie einen Datensatz mit einer Spalte, die als Spaltennamen das neue Jahr trägt.
+         
+- Die Reihenfolge der Daten muss dabei bereits der in der Exceltabelle entsprechen 
+         
+- [Doku auf GitHub](https://github.com/ogdtg/TGexcel?tab=readme-ov-file#jahr-als-spalte)
+                             
+]
+  
+.panel[.panel-name[Ausgangsdaten]
+         
+```{r, echo = TRUE, eval = TRUE}
+# Dummy Data addiert mit 50
+dummy_data <- openxlsx::read.xlsx("Daten/excel_spalte.xlsx", sheet = 1, cols = 7, rows = 3:89) + 50
+names(dummy_data) <- "2025"
+head(dummy_data, 5)
+```
+]
+  
+.panel[.panel-name[Musterexcel]
+         
+![openxlsx Bsp 1](img/tgexcel_spalte1.png)
+]
+  
+.panel[.panel-name[Code]
+         
+```{r, echo = TRUE, eval = TRUE}
+library(TGexcel)
+# WB des letzten Jahres laden
+wb <- loadWorkbook("Daten/excel_spalte.xlsx")
+
+# Daten eintragen. Achtung bei TGexcel muss eine Zuweisung erfolgen
+wb <- create_xlsx_spalte(
+  xlsx_path = "Daten/excel_spalte.xlsx",
+  year = 2025,
+  dataStart = 4, # In dieser Zeile starten die Daten
+  data = dummy_data
+)
+
+# Speichern
+save_tg_workbook(wb, "Daten/excel_spalte_new.xlsx", tg_header = FALSE, overwrite = TRUE)
+```
+]
+.panel[.panel-name[Ergebnis]
+         
+![openxlsx Bsp 2](img/tgexcel_spalte2.png)
+]
+]
+
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://github.com/ogdtg/TGexcel' target="_blank">
+    <img src='img/hex-TGexcel.png' class='logo'/>
+  </a>
+</figure>
+## TGexcel: `create_xlsx_zeile()`
+
+.panelset[
+.panel[.panel-name[Erklärung]
+         
+- Die Funktion hängt für die Daten eines neuen Jahres eine Reihe im Excel File an, passt die Untertitel der Überschrift und ggf. den Namen des Reiters an (z.B. aus 2020-2022 wird 2020-2023)
+         
+- Zu beachten ist, dass als data Argument jeweils ein data.frame übergeben werden muss, bei welchem eine Datenspalte mit dem Namen jahr enthalten sein muss. Diese muss das entsprechende Jahr enthalten. 
+
+- Der Datensatz sollte nur eine Zeile enthalten und die Variablenreihenfolge muss der Reihenfolge im Excel enstprechen
+         
+- [Doku auf GitHub](https://github.com/ogdtg/TGexcel?tab=readme-ov-file#jahr-als-zeile)
+                             
+]
+  
+.panel[.panel-name[Ausgangsdaten]
+         
+```{r, echo = TRUE, eval = TRUE}
+# Dummy Data multipliziert mit 0.96
+dummy_data <- openxlsx::read.xlsx("Daten/excel_zeile.xlsx", sheet = 1, cols = 1:4, rows = 8,colNames = FALSE) |> 
+  rename(jahr = "X1") |> 
+  mutate(jahr = 2024) |> 
+  mutate_at(vars(contains("X")),~.x*0.96)
+head(dummy_data, 5)
+```
+]
+  
+.panel[.panel-name[Musterexcel]
+         
+![openxlsx Bsp 1](img/tgexcel_zeile1.png)
+]
+  
+.panel[.panel-name[Code]
+         
+```{r, echo = TRUE, eval = TRUE}
+library(TGexcel)
+# WB des letzten Jahres laden
+wb <- loadWorkbook("Daten/excel_zeile.xlsx")
+
+# Daten eintragen. Achtung bei TGexcel muss eine Zuweisung erfolgen
+wb <- create_xlsx_zeile(
+  xlsx_path = "Daten/excel_zeile.xlsx",
+  year = 2024,
+  dataStart = 4, # In dieser Zeile starten die Daten
+  data = dummy_data
+)
+
+# Speichern
+save_tg_workbook(wb, "Daten/excel_zeile_new.xlsx", tg_header = FALSE, overwrite = TRUE)
+```
+]
+.panel[.panel-name[Ergebnis]
+         
+![openxlsx Bsp 2](img/tgexcel_zeile2.png)
+]
+]
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://github.com/ogdtg/TGexcel' target="_blank">
+    <img src='img/hex-TGexcel.png' class='logo'/>
+  </a>
+</figure>
+
+## TGexcel: `create_xlsx_reiter()`
+
+.panelset[
+.panel[.panel-name[Erklärung]
+         
+- Die Funktion hängt für die Daten eines neuen Jahres einen Reiter im Excel File an, passt die Untertitel der Überschrift und ggf. den Namen des Reiters an.
+         
+- Zu beachten ist, dass als data Argument jeweils ein data.frame übergeben werden muss, bei welchem eine Datenspalte mit dem Namen jahr enthalten sein muss. Diese muss das entsprechende Jahr enthalten. 
+
+- Der Datensatz sollte nur eine Zeile enthalten und die Variablenreihenfolge muss der Reihenfolge im Excel enstprechen
+         
+- [Doku auf GitHub](https://github.com/ogdtg/TGexcel?tab=readme-ov-file#jahr-als-zeile)
+                             
+]
+  
+.panel[.panel-name[Ausgangsdaten]
+         
+```{r, echo = TRUE, eval = TRUE}
+# Dummy Data multipliziert mit 0.96
+dummy_data <- openxlsx::read.xlsx("Daten/excel_zeile.xlsx", sheet = 1, cols = 1:4, rows = 8,colNames = FALSE) |> 
+  rename(jahr = "X1") |> 
+  mutate(jahr = 2024) |> 
+  mutate_at(vars(contains("X")),~.x*0.96)
+head(dummy_data, 5)
+```
+]
+  
+.panel[.panel-name[Musterexcel]
+         
+![openxlsx Bsp 1](img/tgexcel_zeile1.png)
+]
+  
+.panel[.panel-name[Code]
+         
+```{r, echo = TRUE, eval = TRUE}
+library(TGexcel)
+# WB des letzten Jahres laden
+wb <- loadWorkbook("Daten/excel_zeile.xlsx")
+
+# Daten eintragen. Achtung bei TGexcel muss eine Zuweisung erfolgen
+wb <- create_xlsx_zeile(
+  xlsx_path = "Daten/excel_zeile.xlsx",
+  year = 2024,
+  dataStart = 4, # In dieser Zeile starten die Daten
+  data = dummy_data
+)
+
+# Speichern
+save_tg_workbook(wb, "Daten/excel_zeile_new.xlsx", tg_header = FALSE, overwrite = TRUE)
+```
+]
+.panel[.panel-name[Ergebnis]
+         
+![openxlsx Bsp 2](img/tgexcel_zeile2.png)
+]
+]
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://github.com/ogdtg/TGexcel' target="_blank">
+    <img src='img/hex-TGexcel.png' class='logo'/>
+  </a>
+</figure>
+## TGexcel: Tabelle von Grund auf erstellen
+
+- TGexcel bietet auch die Möglichkeit formatierte Excel Tabellen von Grund auf zu erstellen
+
+- Dies ist vor allem dann nützlich, wenn man sich nicht auf eine Vorlage berufen möchte, z.B. weil sich deren Speicherort verändern könnte, oder aber wenn sich die Struktur der Tabelle leicht verändert und mehrfach erstellt werden muss
+
+- Das Package beinhaltet dafür vier Grundfunktionen:
+  - `create_header_style()`: Titel erstellen
+  - `create_subheader_style()`: Untertitel erstellen
+  - `create_varnames_style()`: Variablennamen erstellen
+  - `create_data_style()`: Daten eintragen
+  
+- Zusätzlich gibt es die Möglichkeit mit `create_nested_header_style()` verschachtelte Variablennamen zu erstellen
+
+
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://github.com/ogdtg/TGexcel' target="_blank">
+    <img src='img/hex-TGexcel.png' class='logo'/>
+  </a>
+</figure>
+## TGexcel: Tabelle von Grund auf erstellen
+
+.panelset[
+.panel[.panel-name[Erklärung]
+
+- in diesem Beispiel wird eine Tabelle mit verschachtelten Variablennamen erstellt
+
+- entscheidend ist dabei das `nesting` Argument. Es definiert wie viele `vars_level2` in eine Variable aus `vars_level1` geschachtelt werden. Der `nesting` Vektor muss daher gleich lang sein wie der `vars_level1`. Der `vars_level2` vektor muss so lang sein, wie die summe des `nesting` Vektor
+
+- Es ist auch möglich mehrfach verschachtelte Variablennamen zu erstellen. Dazu empfiehlt sich ein Blick auf das zweite Beispiel [hier](https://github.com/ogdtg/TGexcel?tab=readme-ov-file#verschachtelt)
+]
+.panel[.panel-name["Rechenbeispiel"]
+ 
+- Gegeben sind:
+  - `vars_level1 = c("BFS-Nr.","Total","männlich","weiblich")`
+  - `vars_level2 = c("","","absolut","in %","absolut","in %")`
+  - `nesting = c(1,1,2,2)`
+
+- Summe von `nesting` ist `6` und entspricht damit der Länge von `vars_level2`
+- Länge von `nesting` ist `4` und entspricht damit der Länge von `vars_level1`
+
+Somit ergibt sich folgendes:
+ - `BFS-Nr.` und `Total` erhalten jeweils **ein** untergeordnetes Element, nämlich jeweils `""`, also ein leerer String
+ - `männlich` und `weiblich` erhalten jeweils **zwei** untergeordnete Elemente, nämlich jeweils `absolut` und `in %`
+
+]
+.panel[.panel-name[Code]
+```{r , echo = TRUE, eval=TRUE}
+# Workbook neu erstellen
+wb <- createWorkbook()
+addWorksheet(wb,"Test")
+create_header_style(wb = wb, sheet = "Test", ncol = 6, text = "Das ist der Titel")
+create_subheader_style(wb = wb, sheet = "Test", ncol = 6, text = "Das ist der Subtitel")
+create_nested_header_style(wb = wb,
+                           sheet = "Test",
+                           nesting = c(1,1,2,2),
+                           vars_level1 = c("BFS-Nr.","Total","männlich","weiblich"),
+                           vars_level2 = c("","","absolut","in %","absolut","in %"))
+
+#Daten abspeichern
+saveWorkbook(wb,"Daten/wb3.xlsx",overwrite = TRUE)
+
+```
+]
+.panel[.panel-name[Ergebnis]
+
+
+![openxlsx Bsp 1](img/tgexcel1.png)
+]
+]
+
+
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://github.com/ogdtg/TGexcel' target="_blank">
+    <img src='img/hex-TGexcel.png' class='logo'/>
+  </a>
+</figure>
+## Hands-On: Daten in Excel schreiben mit TGexcel
+
+Gegeben sind zwei Datensätze
+
+  - `Slides/Daten/gemeinde_order.rds:` enthält alle Gemeinden in der korrekten Reihenfolge wie im Excel
+  
+  - `Slides/Daten/geburten_24.rds:` enthält Gesamtgeburtenzahlen für das Jahr 2024 nach Gemeinde, Bezirk und für den Gesamtkanton                                                                                                                                                                                      
+
+Gegeben ist ausserdem die Datei `Slides/Daten/2023_Gde_Geb_ab2000.xlsx`                                   
+                                                                                                         
+Füge die Geburtenzahlen für das Jahr 2024 in die Excel `2023_Gde_Geb_ab2000.xlsx` ein und speichere sie als **`Slides/Daten/2024_Gde_Geb_ab2000_DEIN_KÜRZEL.xlsx`** neu ab         
+
+```{r}
+countdown::countdown(minutes=10)
+```

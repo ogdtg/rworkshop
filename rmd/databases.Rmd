@@ -1,0 +1,333 @@
+---
+title: "Arbeiten mit der Datenbank"
+author: "Felix lorenz"
+date: '12. Dezember 2022'
+amt: "Staatskanzlei"
+stelle: "Dienststelle für Statistik"
+output: 
+  xaringan::moon_reader:
+    nature:
+      highlightStyle: github
+      highlightlines: true
+      #highlightSpans: true
+    css: ["default","styles_x.css"]
+    #css: ["default"]
+
+---
+```{r xaringan-logo, echo=FALSE}
+ # xaringanExtra::use_logo(
+ #   image_url = "./img/tg.jpg"
+ # )
+```
+
+```{r xaringan-banner, echo=FALSE}
+# xaringanExtra::use_banner(
+#    bottom_center = paste0("\U00A9 ",rmarkdown::metadata$amt),
+#    top_left = paste0("<h6>",rmarkdown::metadata$amt,"</h6><h7>",rmarkdown::metadata$stelle,"</h7>"),
+#    bottom_left = rmarkdown::metadata$date,
+#    exclude = "title-slide"
+#  )
+# 
+# xaringanExtra::use_panelset(TRUE)
+# knitr::opts_chunk$set(echo = FALSE,dpi=300)
+# options(knitr.duplicate.label = 'allow')
+# options(htmltools.dir.version = FALSE)
+
+
+```
+
+
+```{r xaringan-panelset, echo=FALSE,message=FALSE}
+# xaringanExtra::use_panelset(TRUE)
+library(tidyverse)
+library(xaringanExtra)
+# devtools::load_all("/r-proj/stat/ogd/dataspotR")
+```
+
+```{r setup, include=FALSE}
+# knitr::opts_chunk$set(echo = FALSE,dpi=300)
+# options(knitr.duplicate.label = 'allow')
+# options(htmltools.dir.version = FALSE)
+
+```
+
+
+
+```{r xaringan-tachyons, echo=FALSE}
+# xaringanExtra::use_tachyons()
+```
+
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dbi.r-dbi.org/' target="_blank">
+    <img src='img/hex-DBI (1).png' class='logo'/>
+  </a>
+</figure>
+## Verbindung herstellen
+
+- um die Verbindung herzustellen muss das `DBI` Package geladen und die `odbc()` Funktion aus dem `odbc` Package verwendet werden
+
+- die benötigten Credentials am Besten wieder als Umgebungsvariablen speichern
+
+- Weitere Infos zur Verbindung auf [Confluence](https://tgweb.tg.ch/display/datastat/R+Workbench)
+
+- Nach der Verbindung können alle Schemata und Tabellen im Reiter `Connecttions` (neben Environment) eingesehen werden
+
+.panelset[
+.panel[.panel-name[Intern]
+
+```{r , echo = TRUE, eval=FALSE}
+library(DBI)
+con <- dbConnect(odbc::odbc(), 
+                 Driver="sqlserver", 
+                 Server = Sys.getenv("DATABASE_SERVER"), 
+                 Port = "1433", 
+                 UID = Sys.getenv("LANDING_USER"), 
+                 PWD = Sys.getenv("LANDING_PW"), 
+                 Database = "landing")
+
+```
+]
+.panel[.panel-name[Öfeentlich]
+```{r , echo = TRUE, eval=TRUE}
+library(RSQLite)
+con <- dbConnect(RSQLite::SQLite(), "Daten/landing_local.db")
+
+```
+]
+]
+
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dbi.r-dbi.org/' target="_blank">
+    <img src='img/hex-DBI (1).png' class='logo'/>
+  </a>
+</figure>
+## Vorhandene Tabellen anzeigen
+
+- Alle vorhandenen Tabellen in einem Schema können mit einem einfachen SQL-Statement abgrufen werden
+
+
+```{r , echo = TRUE, eval=TRUE}
+dbo_tables <- dbListTables(con)
+dbo_tables
+
+```
+
+
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dbi.r-dbi.org/' target="_blank">
+    <img src='img/hex-DBI (1).png' class='logo'/>
+  </a>
+</figure>
+
+## Felder einer Tabelle anzeigen
+
+- Felder einer Tabelle können mit `dbListFields()` abegrufen werden
+
+```{r , echo = TRUE, eval=TRUE}
+dbListFields(con, "geres_bestand_2015_2022")
+
+
+```
+
+---
+----
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dbi.r-dbi.org/' target="_blank">
+    <img src='img/hex-DBI (1).png' class='logo'/>
+  </a>
+</figure>
+<figure class="logo-fig logo-fig-small2">
+  <a href='https://www.tidyverse.org/' target="_blank">
+    <img src='https://tidyverse.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+## tidyverse und Datenbanken
+
+.panelset[
+.panel[.panel-name[Erklärung]
+
+- mit `tbl` wird ein Pointer zu einer Tabelle erstellt
+
+- die Daten werden dafür noch nicht heruntergeladen
+
+- Auf den Pointer können `tidyverse`-Operationen angewendet werden. Diese werden automatisch in **SQL-Queries** umgewandelt
+
+- Um die Daten dann tatsächlich herunterzuladen kann die `collect()` Funktion verwendet werden
+
+- **SQL-Queries** können mit `show_query()` angezeigt werden
+]
+.panel[.panel-name[Query erstellen]
+```{r , echo = TRUE, eval=TRUE}
+query <- tbl(con,"geres_bestand_2015_2022") |> 
+  filter(Statistikjahr==2020) |> 
+  group_by(StaatsangehoerigkeitID) |> 
+  summarise(summe = sum(Anz_StBev,na.rm = TRUE)) |> 
+  arrange(desc(summe))
+
+query
+
+```
+]
+.panel[.panel-name[Query anzeigen]
+```{r , echo = TRUE, eval=TRUE}
+query |> show_query()
+
+```
+
+]
+.panel[.panel-name[Query ausführen]
+```{r , echo = TRUE, eval=TRUE}
+data <- query |> collect()
+data
+
+```
+
+]
+.panel[.panel-name[SQL]
+```{r ,echo=TRUE, eval=TRUE}
+sql_query <- 'SELECT "StaatsangehoerigkeitID", SUM("Anz_StBev") AS "summe"
+ FROM (
+   SELECT "geres_bestand_2015_2022".*
+   FROM "geres_bestand_2015_2022"
+   WHERE ("Statistikjahr" = 2020.0)
+ ) "q01"
+ GROUP BY "StaatsangehoerigkeitID"
+ ORDER BY "summe" DESC'
+dbGetQuery(con,sql_query)
+
+```
+
+]
+]
+
+
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dbi.r-dbi.org/' target="_blank">
+    <img src='img/hex-DBI (1).png' class='logo'/>
+  </a>
+</figure>
+<figure class="logo-fig logo-fig-small2">
+  <a href='https://www.tidyverse.org/' target="_blank">
+    <img src='https://tidyverse.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+## tidyverse und Datenbanken
+
+.panelset[
+.panel[.panel-name[Erklärung]
+
+- Es ist auch möglich zwei `tbl` Objekte miteinander zu joinen
+
+- Ebenso können `tbl` Objekte mit lokalen Daten gejoined werden. Dazu muss nur der lokale data.frame in einen lazy table umgewandelt werden. Dies wird erreicht indem man innerhalb des joins `copy=TRUE` setzt.
+
+- Diese Option ist allerdings "teuer", da die Ergebnisse temporär in die lokale Session geladen werden. 
+
+]
+.panel[.panel-name[Query erstellen]
+```{r , echo = TRUE, eval=TRUE}
+query <- tbl(con,"geres_bestand_2015_2022") |> 
+  filter(Statistikjahr==2020) |> 
+  group_by(StaatsangehoerigkeitID) |> 
+  summarise(summe = sum(Anz_StBev,na.rm = TRUE)) |> 
+  arrange(desc(summe))
+
+query
+
+```
+]
+.panel[.panel-name[join lokal]
+```{r , echo = TRUE, eval=TRUE}
+# Daten aus dataspot
+# staaten <- dataspotR::get_referenzdaten("Staaten, Regionen (det/ aggr)") |> 
+#   select(shortText,code) |> 
+#   mutate_all(as.character)
+staaten <- readRDS("Daten/staaten.rds")
+
+# Join und collect
+data_join_lokal <- query |> 
+  mutate(StaatsangehoerigkeitID = as.character(StaatsangehoerigkeitID)) |> 
+  left_join(staaten, join_by("StaatsangehoerigkeitID"=="code"),copy = TRUE) |> 
+  collect() |> 
+  arrange(desc(summe))
+
+```
+
+]
+.panel[.panel-name[join lokal (2)]
+```{r , echo = TRUE, eval=TRUE}
+data_join_lokal
+```
+
+]
+]
+
+
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dbi.r-dbi.org/' target="_blank">
+    <img src='img/hex-DBI (1).png' class='logo'/>
+  </a>
+</figure>
+<figure class="logo-fig logo-fig-small2">
+  <a href='https://www.tidyverse.org/' target="_blank">
+    <img src='https://tidyverse.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+## tidyverse und Datenbanken
+
+Deutlich ausführlicher wird dieses Thema im Workshop von Cynkra behandelt.
+
+<!-- Ihr findet alle Workshop Unterlagen lokal auf unserer Workbench oder nur die Folien auf [GitHub](https://cynkra.github.io/databases-sg_stat-2024/#1) -->
+
+Ihr findet die Folien auf [GitHub](https://cynkra.github.io/databases-sg_stat-2024/#1).
+
+
+
+
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dbi.r-dbi.org/' target="_blank">
+    <img src='img/hex-DBI (1).png' class='logo'/>
+  </a>
+</figure>
+<figure class="logo-fig logo-fig-small2">
+  <a href='https://www.tidyverse.org/' target="_blank">
+    <img src='https://tidyverse.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+## Hands On: tidyverse und Datenbanken
+
+Errechne den Ausländeranteil pro Gemeinde für die Jahre 2015 bis 2022.
+
+Beachte, dass der finale Datensatz lokal als normaler R data.frame nutzbar sein muss.
+
+**Ergebnis:**
+
+```{r , echo = FALSE, eval=TRUE}
+
+tbl(con,"geres_bestand_2015_2022") %>% 
+  mutate(ausl = ifelse(StaatsangehoerigkeitID==8100,"Schweiz","Ausland")) %>% 
+  collect() %>% 
+  group_by(Statistikjahr,ausl,BFS_Nr) %>% 
+  summarise(n = sum(Anz_StBev)) %>% 
+  tidyr::pivot_wider(names_from = ausl,values_from = n) %>% 
+  mutate(total = Ausland+Schweiz) %>% 
+  mutate(auslaenderanteil = Ausland/total*100) %>% 
+  select(Statistikjahr,BFS_Nr,auslaenderanteil ) %>% 
+  head(4)
+```
+
+```{r}
+countdown::countdown(minutes=10)
+```

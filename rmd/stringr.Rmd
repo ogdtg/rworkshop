@@ -1,0 +1,203 @@
+---
+title: "stringr"
+author: "Felix lorenz"
+date: '12. Dezember 2022'
+amt: "Staatskanzlei"
+stelle: "Dienststelle für Statistik"
+output: 
+  xaringan::moon_reader:
+    highlightStyle: github
+    highlightlines: true
+    highlightSpans: true
+    css: ["default","styles_x.css"]
+
+
+---
+
+
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,dpi=300)
+```
+
+
+
+
+
+----
+## stringr
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://stringr.tidyverse.org' target="_blank">
+    <img src='https://stringr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+Oft muss in der Datenaufbereitung mit Text (=strings) gearbeitet werden. Dafür kann das `stringr` Package verwendet werden.
+
+Für detailliertere Informationen findet sich [hier](https://github.com/rstudio/cheatsheets/blob/main/strings.pdf) ein empfehlenswertes Cheatsheet
+
+Alle Funktionen in stringr beginnen mit str_ und nehmen einen Vektor von Strings (oder einen einzelnen String) als erstes Argument.
+
+Die verwendung von sogenannten *regular expressions* ist möglich.
+
+---
+----
+## stringr
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://stringr.tidyverse.org' target="_blank">
+    <img src='https://stringr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+.panelset[
+.panel[.panel-name[str_detect]
+Ermitteln, ob eine bestimmte Zeichenfolge im String enthalten ist.
+```{r, message=FALSE}
+library(stringr)
+```
+
+```{r, echo=TRUE}
+str_detect(c("Das ist ein Test", "Hello World"),
+           pattern = "Test")
+```
+
+]
+.panel[.panel-name[str_extract]
+Text extrahieren
+
+```{r, echo=TRUE}
+str_extract(c("dasisteinTestmitstrings",
+              "das_ist_ein_Test_mit_strings"), 
+            pattern = "Test")
+```
+
+]
+.panel[.panel-name[str_replace]
+Text ersetzen
+```{r, echo=TRUE}
+str_replace(c("dasisteinTestmitstrings",
+              "das_ist_ein_Test_mit_strings_Test"), 
+            pattern = "Test",
+            replacement = "Versuch")
+```
+**ACHTUNG:** `str_replace` ersetzt das Pattern lediglich beim ersten Auftreten. Soll jedes Auftreten innerhalb des Strings ersetzt werden, muss die `str_replace_all` Funktion verwendet werden.
+]
+.panel[.panel-name[str_remove]
+Text entfernen
+```{r, echo=TRUE}
+str_remove(c("dasisteinTestmitstrings",
+              "das_ist_ein_Test_mit_strings"), 
+            pattern = "Test")
+```
+**ACHTUNG:** `str_remove` entfernt das Pattern lediglich beim ersten Auftreten. Soll jedes Auftreten innerhalb des Strings entfernt werden, muss die `str_remove_all` Funktion verwendet werden.
+]
+
+.panel[.panel-name[str_split]
+Text zerteilen
+```{r, echo=TRUE}
+str_split(c("dasisteinTestmitstrings",
+              "das_ist_ein_Test_mit_strings"), 
+            pattern = "_")
+```
+`str_split_fixed` und `str_split_n` sind verwandte Funktionen, die ebenfalls Text zerteilen können un zusätzliche Spezifikationen erlauben.
+]
+.panel[.panel-name[str_trim]
+Leerzeichen an Anfang und Ende eines Strings entfernen
+```{r, echo=TRUE}
+str_trim(c("    Hello World      ", "    Test"))
+```
+
+]
+]
+
+---
+----
+## Regular Expressions
+<figure class="logo-fig logo-fig-small">
+  <a href='https://stringr.tidyverse.org' target="_blank">
+    <img src='https://stringr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+Regular Expressions (kurz "Regex" genannt) sind eine Art von Zeichenfolgen, die zur Suche nach Mustern in Texten verwendet werden. 
+
+Mit Regex kann man komplexe Suchmuster definieren, die aus bestimmten Zeichenfolgen, Buchstaben, Zahlen, Sonderzeichen und Platzhaltern bestehen.
+
+Beispiele für den Einsatz von Regex sind das Extrahieren von Telefonnummern aus Texten, das Überprüfen der Gültigkeit von E-Mail-Adressen oder das Ersetzen von bestimmten Zeichenfolgen in einer Datei.
+
+---
+----
+## Regular Expressions: Beispiele
+<figure class="logo-fig logo-fig-small">
+  <a href='https://stringr.tidyverse.org' target="_blank">
+    <img src='https://stringr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+.panelset[
+.panel[.panel-name[Telefonnummern extrahieren]
+- Jede Zahl (digit) kann mit dem regex `\d` extrahiert werden.
+```{r, echo=TRUE}
+str_extract_all(c("Meine Nummer ist die 058345-5367",
+                  "Meine Adresse ist Grabenstrasse 8, 8510 Frauenfeld"), 
+                pattern = "\\d{6}-\\d{4}")
+```
+
+
+]
+.panel[.panel-name[Email extrahieren]
+-  `.` (Punkt): matcht alles ausser Zeilenumbrüche
+- `+`: einer oder mehr des voangengangenen Wertes
+- `*`: null oder mehr des voangengangenen Wertes
+- `[^\\s]`: matcht alles ausser Whitespaces
+- `?\\.ch` und `?@`: Match muss mit `\\.ch` bzw. `@` enden
+```{r, echo=TRUE}
+str_extract_all(c("Meine Mailadresse ist felix.lorenz@tg.ch",
+                  "felix.lorenz@tg wird nicht gematcht"), 
+                pattern = "[^\\s]*?@.+?\\.ch")
+```
+]
+.panel[.panel-name[Weitere nützliche Regex]
+Im Netz finden sich jede Menge nützliche Sammlungen
+
+- [Top 15 Commonly Used Regex](https://digitalfortress.tech/tips/top-15-commonly-used-regex/)
+- [Regex Tutorial](https://www3.ntu.edu.sg/home/ehchua/programming/howto/Regexe.html)
+- [Regex schreiben und testen](https://regexr.com/)
+- etc.
+
+]
+]
+---
+----
+## Hands-On: Arbeiten mit stringr und Regular Expressions
+<figure class="logo-fig logo-fig-small">
+  <a href='https://stringr.tidyverse.org' target="_blank">
+    <img src='https://stringr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+1. Bringe `abstimmungen` in ein Tidy Format, sodass jeder Wert in `Ergebnis` einer eigenen Spalte entspricht<br>
+Die dazugehörigen Werte sollen aus der Spalte `Volksabstimmungen (Ergebnisse Ebene Kanton seit 1866)` kommen.<br>
+Nutze das tidyr package und eine der vohin besprochenen Funktionen um die Tabelle zu verbreitern (wide Format)<br>
+Speichere das Ergebnis in `abstimmungen_tidy` 
+
+2. Erstelle eine neue Variable `date`.<br>
+Extrahiere dazu das Datum aus der Spalte `Datum und Vorlage`<br>
+Nutze dafür den Regex `\\d\\d\\d\\d-\\d\\d-\\d\\d`
+
+3. Entferne das Datum aus der Spalte `Datum und Vorlage` und wandle die `date` Spalte in ein von R lesbares Datum um.
+
+4. Entferne die Leerzeichen anführenden Leerzeichen aus der Spalte `Datum und Vorlage` (" Test " -> "Test")
+
+```{r}
+countdown::countdown(minutes=10)
+```
+---
+----
+## Good to know: stringi
+
+`stringr` enthält zwar viele nützliche Funktionen im Umgang mit Strings, ist aber auf das Nötigste beschränkt. Eine weitreichende Erweiterung stellt das `stringi` package dar. In diesem Package sind wahrscheinlich alle Funktionen enthalten, die im Umgang mit Text notwendig sein könnten. Im Unterschied zu `stringr` beginnen `stringi` Funktionen nicht mit *str_*, sondern mit *stri_*

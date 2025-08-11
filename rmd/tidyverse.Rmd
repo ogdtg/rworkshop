@@ -1,0 +1,105 @@
+---
+title: "Tidyverse"
+author: "Felix lorenz"
+date: '12. Dezember 2022'
+amt: "Staatskanzlei"
+stelle: "Dienststelle für Statistik"
+output: 
+  xaringan::moon_reader:
+    highlightStyle: github
+    highlightlines: true
+    highlightSpans: true
+    css: ["default","styles_x.css"]
+
+
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,dpi=300)
+```
+
+
+
+
+
+----
+## Das tidyverse 
+.pull-left[
+tidyverse ist eine Sammlung von zusammenhängenden R-Paketen. Sie basiert auf der Idee von tidy Data, wo jede Spalte eine Variable, jede Zeile eine Beobachtung und jede Zelle einen einzelnen Wert darstellt.
+
+Das tidyverse umfasst Pakete für die Datenmanipulation, Visualisierung und Modellierung. Alle Packages basieren auf einer konsistenten "Grammatik".
+
+]
+.pull-right[
+```{r , fig.cap="https://tidyverse.tidyverse.org/logo.png",out.extra="style =top: 0; right: 0; display: block; margin-left: auto;"}
+knitr::include_graphics("https://tidyverse.tidyverse.org/logo.png")
+
+```
+]
+
+---
+----
+## Das tidyverse
+<figure class="logo-fig logo-title1">
+  <a href='https://readr.tidyverse.org' target="_blank">
+    <img src='https://readr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title2">
+  <a href='https://readxl.tidyverse.org' target="_blank">
+    <img src='https://readxl.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title3">
+  <a href='https://haven.tidyverse.org' target="_blank">
+    <img src='https://haven.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title4">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo' />
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title5">
+  <a href='https://tidyr.tidyverse.org' target="_blank">
+    <img src='https://tidyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title6">
+  <a href='https://stringr.tidyverse.org' target="_blank">
+    <img src='https://stringr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title7">
+  <a href='https://lubridate.tidyverse.org' target="_blank">
+    <img src='https://lubridate.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title8">
+  <a href='https://magrittr.tidyverse.org' target="_blank">
+    <img src='https://magrittr.tidyverse.org/logo.png' class='logo' />
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title9">
+  <a href='https://forcats.tidyverse.org' target="_blank">
+    <img src='https://forcats.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+
+<figure class="logo-fig logo-title10">
+  <a href='https://ggplot2.tidyverse.org' target="_blank">
+    <img src='https://ggplot2.tidyverse.org/logo.png' class='logo' />
+  </a>
+</figure>
+
+

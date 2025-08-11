@@ -1,0 +1,407 @@
+---
+title: "ggplot"
+author: "Felix lorenz"
+date: '12. Dezember 2022'
+amt: "Staatskanzlei"
+stelle: "Dienststelle für Statistik"
+output: 
+  xaringan::moon_reader:
+    highlightStyle: github
+    highlightlines: true
+    highlightSpans: true
+    css: ["default","styles_x.css"]
+
+
+---
+
+
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,dpi=300)
+```
+
+
+
+
+
+----
+## ggplot2: Daten visualisieren
+
+<figure class="logo-fig logo-title1">
+  <a href='https://readr.tidyverse.org' target="_blank">
+    <img src='https://readr.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title2">
+  <a href='https://readxl.tidyverse.org' target="_blank">
+    <img src='https://readxl.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title3">
+  <a href='https://haven.tidyverse.org' target="_blank">
+    <img src='https://haven.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title4">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title5">
+  <a href='https://tidyr.tidyverse.org' target="_blank">
+    <img src='https://tidyr.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title6">
+  <a href='https://stringr.tidyverse.org' target="_blank">
+    <img src='https://stringr.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title7">
+  <a href='https://lubridate.tidyverse.org' target="_blank">
+    <img src='https://lubridate.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title8">
+  <a href='https://magrittr.tidyverse.org' target="_blank">
+    <img src='https://magrittr.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+<figure class="logo-fig logo-title9">
+  <a href='https://forcats.tidyverse.org' target="_blank">
+    <img src='https://forcats.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
+  </a>
+</figure>
+
+
+<figure class="logo-fig logo-title10">
+  <a href='https://ggplot2.tidyverse.org' target="_blank">
+    <img src='https://ggplot2.tidyverse.org/logo.png' class='logo' />
+  </a>
+</figure>
+
+
+
+
+---
+----
+## ggplot2: Daten visualisieren
+<figure class="logo-fig logo-fig-small">
+  <a href='https://ggplot2.tidyverse.org' target="_blank">
+    <img src='https://ggplot2.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+- ggplot2 bietet eine einfache Möglichkeit, datenbasierte Grafiken zu erstellen, ohne komplizierte Grafikbefehle schreiben zu müssen
+
+- ggplot2 verwendet das Grammar of Graphics-Konzept, das auf einfache Syntax und klare Struktur setzt.
+
+- durch Hinzufügen von Ebenen (Layers) können Grafiken angepasst werden
+
+- das Buch [ggplot2: Elegant Graphics for Data Analysis](https://ggplot2-book.org/toolbox.html) bietet umfangreiche Informationen
+
+---
+----
+## ggplot2: Vom Datensatz zur Grafik
+<figure class="logo-fig logo-fig-small">
+  <a href='https://ggplot2.tidyverse.org' target="_blank">
+    <img src='https://ggplot2.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+.panelset[
+.panel[.panel-name[Beschreibung]
+Eine Grafik in ggplot2 wird immer über den `ggplot()` Befehl initialisiert und besteht aus drei Grundbestandteilen
+- **data:** ein Datenobjekt, auf werlches sich die Grafik bezieht
+- **aesthetic mappings:** Datenvariablen werden bestimmten ästhetischen Eigenschaften zugeordnet, wie z.B. Farbe, Größe, Form, Position, etc.
+- **geom:** in welcher Form die Daten visualisiert werden sollen (z.B. Scatter, Linien, Balken, etc.)
+
+]
+.panel[.panel-name[Code]
+
+```{r, echo=TRUE,eval=FALSE}
+library(ggplot2)
+set.seed(1234)
+index <- sample(1:nrow(geburten),2000)
+geburten_sample <- geburten[index,]
+
+ggplot(data = geburten_sample, aes(x=age_v, y=age_m))+
+  geom_point()
+
+```
+]
+.panel[.panel-name[Grafik]
+Alter des Vaters auf der x-Achse und Alter der Mutter auf der y-Achses
+
+```{r, echo=FALSE, warning=FALSE, fig.height=4.3, fig.width=10,fig.align='left',dpi=300}
+library(ggplot2)
+
+set.seed(1234)
+index <- sample(1:nrow(geburten),2000)
+geburten_sample <- geburten[index,]
+
+ggplot(data = geburten_sample, aes(x=age_v, y=age_m))+
+  geom_point()
+```
+]
+]
+
+---
+----
+## ggplot2: Aesthetic Mappings
+<figure class="logo-fig logo-fig-small">
+  <a href='https://ggplot2.tidyverse.org' target="_blank">
+    <img src='https://ggplot2.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+.panelset[
+.panel[.panel-name[Beschreibung]
+- Mit **aesthetic mappings** können Datenvariablen  bestimmten ästhetischen Eigenschaften, wie z.B. Farbe, Größe, Form, Position, etc. zugeordnet werden.
+- sie werden innerhalb des `aes()` Befehls definiert
+- `aes()` kann sowohl für die ganze Grafik innerhalb des `ggplot()` Befehls verwendet werden oder aber für jeden Layer seperat.
+- aesthetics können auch ausserhalb von `aes()` definiert werde, wenn kein Variablenbezug nötig ist 
+- beim mapping spielt auch der Datentyp eine wichtige Rolle
+
+<p>Eine Übersicht über mögliche aesthetics findet ihr z.B. <a href = 'https://ggplot2.tidyverse.org/articles/ggplot2-specs.html'>hier</a></p>
+
+]
+.panel[.panel-name[Bsp 1]
+Die Datenpunkte sollen je nach Geschlecht (`sex`) unterschiedlich eingefärbt werden
+```{r, echo=TRUE,eval=FALSE}
+ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = sex))+
+  geom_point()
+
+```
+]
+.panel[.panel-name[Fig 1]
+```{r, echo=FALSE, warning=FALSE, fig.height=4.3, fig.width=10,fig.align='left',dpi=300}
+ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = sex))+
+  geom_point()
+```
+]
+.panel[.panel-name[Bsp 2]
+`sex` wird als numerische Variable erkannt weshalb eine Umwandlung nötig ist
+```{r, echo=TRUE,eval=FALSE}
+ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = as.factor(sex)))+
+  geom_point()
+
+```
+]
+.panel[.panel-name[Fig 2]
+```{r, echo=FALSE, warning=FALSE, fig.height=4.3, fig.width=10,fig.align='left',dpi=300}
+ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = as.factor(sex)))+
+  geom_point()
+```
+]
+.panel[.panel-name[Bsp 3]
+Ausserhalb des `aes()` Befehls können auch statische Variablen als aesthetics definiert werden (siehe [hier](https://ggplot2-book.org/layers.html#setting-mapping))
+```{r, echo=TRUE,eval=FALSE}
+ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = as.factor(sex)))+
+  geom_point(shape = 15)
+
+```
+]
+.panel[.panel-name[Fig 3]
+```{r, echo=FALSE, warning=FALSE, fig.height=4.3, fig.width=10,fig.align='left',dpi=300}
+ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = as.factor(sex)))+
+  geom_point(shape = 15)
+```
+]
+]
+
+---
+----
+
+## ggplot2: geoms
+<figure class="logo-fig logo-fig-small">
+  <a href='https://ggplot2.tidyverse.org' target="_blank">
+    <img src='https://ggplot2.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+.panelset[
+.panel[.panel-name[Beschreibung]
+- **geoms** definieren die Form in der Daten dargestellt werden
+- jedes geom ist zweidimensional und benötigt daher `x` und `y` aestheics, um die Position festzulegen
+- jedem geom können die aesthetics `color` und `size` zugeordnet werden
+- ausserdem gibt es geom-spezifische aesthetics (z.b. `linetype` für `geom_line()`)
+
+
+<p>Eine Übersicht über verfügbare geoms findet ihr z.B. <a href = 'https://ggplot2.tidyverse.org/reference/#geoms'>hier</a></p>
+
+]
+.panel[.panel-name[Bsp]
+- Die Grafik leidet bisher unter *overplotting* (= mehrere Datenpunkte liegen direkt übereinander)
+- Mit `geom_jitter` anstelle von `geom_point` kann eine minimale künstliche Varianz erzeugt werden, welche die Grafik aussagekräftiger macht
+```{r, echo=TRUE,eval=FALSE}
+ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = as.factor(sex)))+
+  geom_jitter(shape = 15)
+```
+]
+.panel[.panel-name[Fig]
+```{r, echo=FALSE, warning=FALSE, fig.height=4.3, fig.width=10,fig.align='left',dpi=300}
+ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = as.factor(sex)))+
+  geom_jitter(shape = 15)
+```
+]
+]
+
+
+---
+----
+
+## ggplot2: geoms (Beispiele)
+<figure class="logo-fig logo-fig-small">
+  <a href='https://ggplot2.tidyverse.org' target="_blank">
+    <img src='https://ggplot2.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+.panelset[
+.panel[.panel-name[Bsp 1]
+- Balkendiagramm des Altersunterschied zwischen Vätern und Müttern über Zeit
+- Pipeline enthält sowohl Datenaufbereitung als auch -visualisierung (nicht immer empfehlenswert)
+```{r, echo=TRUE,eval=FALSE}
+geburten %>% 
+  mutate(age_diff = age_v-age_m) %>% 
+  group_by(stat_jahr) %>% 
+  summarise(mean_dif =mean(age_diff,na.rm = T)) %>% 
+  ggplot(aes(x= stat_jahr,y=mean_dif)) + 
+  geom_bar(stat = "identity")
+```
+
+
+]
+.panel[.panel-name[Fig 1]
+```{r, echo=FALSE, warning=FALSE, fig.height=4.3, fig.width=10,fig.align='left',dpi=300}
+geburten %>% 
+  mutate(age_diff = age_v-age_m) %>% 
+  group_by(stat_jahr) %>% 
+  summarise(mean_dif =mean(age_diff,na.rm = T)) %>% 
+  ggplot(aes(x= stat_jahr,y=mean_dif)) + 
+  geom_bar(stat = "identity")
+```
+]
+.panel[.panel-name[Bsp 2]
+- Hinzufügen einer Linie als zusätzlicher Layer
+```{r, echo=TRUE,eval=FALSE}
+geburten %>% 
+  mutate(age_diff = age_v-age_m) %>% 
+  group_by(stat_jahr) %>% 
+  summarise(mean_dif =mean(age_diff,na.rm = T)) %>% 
+  ggplot(aes(x= stat_jahr,y=mean_dif)) + 
+  geom_bar(stat = "identity") +
+  geom_line(linetype = "dashed", color = "red")
+```
+]
+.panel[.panel-name[Fig 2]
+```{r, echo=FALSE, warning=FALSE, fig.height=4.3, fig.width=10,fig.align='left',dpi=300}
+geburten %>% 
+  mutate(age_diff = age_v-age_m) %>% 
+  group_by(stat_jahr) %>% 
+  summarise(mean_dif =mean(age_diff,na.rm = T)) %>% 
+  ggplot(aes(x= stat_jahr,y=mean_dif)) + 
+  geom_bar(stat = "identity") +
+  geom_line(linetype = "dashed", color = "red")
+```
+]
+.panel[.panel-name[Bsp 3]
+- Durchschnittliches Alter der Mutter und des Vaters bei Geburt
+- Mehrere Linien mit unterscheidlichen Positionen
+```{r, echo=TRUE,eval=FALSE}
+geburten %>% 
+  group_by(stat_jahr) %>% 
+  summarise(mean_m =mean(age_m,na.rm = T), #Durchschnittliches Alter der Mutter
+            mean_v = mean(age_v,na.rm = T)) %>% #Durchschnittliches Alter des Vaters
+  ggplot(aes(x= stat_jahr)) + 
+  geom_line(aes(y=mean_v), color = "red") +
+  geom_line(aes(y=mean_m), color = "blue")
+```
+]
+.panel[.panel-name[Fig 3]
+```{r, echo=FALSE, warning=FALSE, fig.height=4.3, fig.width=10,fig.align='left',dpi=300}
+geburten %>% 
+  group_by(stat_jahr) %>% 
+  summarise(mean_m =mean(age_m,na.rm = T), #Durchschnittliches Alter der Mutter
+            mean_v = mean(age_v,na.rm = T)) %>% #Durchschnittliches Alter des Vaters
+  ggplot(aes(x= stat_jahr)) + 
+  geom_line(aes(y=mean_v), color = "red") +
+  geom_line(aes(y=mean_m), color = "blue")
+```
+]
+.panel[.panel-name[Bsp 4]
+- Ermittlung von Missing Values
+```{r, echo=TRUE,eval=FALSE}
+geburten %>% 
+  group_by(stat_jahr) %>% 
+  summarise(age_m_na =sum(is.na(age_m))/n(), #Anteil NAs beim Alter der Mutter
+            age_v_na =sum(is.na(age_v))/n()) %>% #Anteil NAs beim Alter des Vaters
+  ggplot(aes(x= stat_jahr)) + 
+  geom_line(aes(y=age_v_na), color = "red") +
+  geom_line(aes(y=age_m_na), color = "blue")
+```
+]
+.panel[.panel-name[Fig 3]
+```{r, echo=FALSE, warning=FALSE, fig.height=4.3, fig.width=10,fig.align='left',dpi=300}
+geburten %>% 
+  group_by(stat_jahr) %>% 
+  summarise(age_m_na =sum(is.na(age_m))/n(),
+            age_v_na =sum(is.na(age_v))/n()) %>% 
+  ggplot(aes(x= stat_jahr)) + 
+  geom_line(aes(y=age_v_na), color = "red") +
+  geom_line(aes(y=age_m_na), color = "blue")
+```
+]
+]
+
+
+---
+----
+## Beispiel: Parteistärke
+
+
+
+---
+----
+
+## Hands-On: Daten visualisieren mit ggplot2
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://ggplot2.tidyverse.org' target="_blank">
+    <img src='https://ggplot2.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+Stelle das erreichte Alter von Männern und Frauen im Zeitverlauf gegenüber.
+
+- Schaue dir den vorbereiten Datensatz `heirat_mod` an, bevor du die Visualisierung angehst 
+- Erzeuge ein Liniendiagramm, welches die Altersentwicklung von Männern und Frauen bei der Hochzeit abbildet
+- Das Liniendiagramm soll eine Linie pro Geschlecht enthalten. Beide Linien sollen unterschiedliche Farben haben.   
+- Füge einen Titel sowie eine Beschriftung für X- und Y-Achse hinzu.
+- Verwende dafür die labs() Funktion (`?ggplot2::labs()` für Hilfe)
+
+```{r}
+countdown::countdown(minutes=10)
+```
+
+---
+----
+
+## ggplot2: Good to know
+<figure class="logo-fig logo-fig-small">
+  <a href='https://ggplot2.tidyverse.org' target="_blank">
+    <img src='https://ggplot2.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+Ein vertieftes Einsteigen in die Feinheiten von `ggplot2` sprengt den Rahmen dieses Workshops.<br><br>
+Daher sei noch einmal auf das Buch [ggplot2: Elegant Graphics for Data Analysis](https://ggplot2-book.org/) verwiesen. Hier ist besonders das Kapitel [Build a plot layer by layer](https://ggplot2-book.org/layers.html#layers) interessant, welches die notwendigen Schritte zur Erstellung von Grafiken erläutert. Daebi wird auch auf das Styling einer Grafik eingegangen. <br>
+<br>
+Mit dem [plotly](https://plotly-r.com/) Package ist es ausserdem möglich statische Grafiken in interaktive Grafiken zu transformieren
+

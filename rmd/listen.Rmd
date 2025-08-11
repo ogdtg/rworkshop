@@ -1,0 +1,103 @@
+---
+title: "Exkurs: Listen"
+author: "Felix lorenz"
+date: '12. Dezember 2022'
+amt: "Staatskanzlei"
+stelle: "Dienststelle für Statistik"
+output: 
+  xaringan::moon_reader:
+    nature:
+        highlightStyle: github
+        highlightLines: true
+        highlightSpans: true
+    css: ["default","styles_x.css"]
+
+
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,dpi=300)
+
+```
+
+
+----
+
+## Listen
+.panelset[
+.panel[.panel-name[Basics]
+- im Unterschied zu Vektoren können Listen unterschiedlichste Datentypen enthalten
+
+- jedes Listenelement kann man sich als eine Art  Container vorstellen, in dem der jeweilige Inhalt liegt
+
+- Listen werden mit `list()` initialisiert
+
+- jedem Listenelement kann ein Name zugewiesen werden
+]
+.panel[.panel-name[Zugriff (1)]
+- auf Listenelmente kann *direkt* über deren Index oder Namen (wenn vorhanden) zugegriffen werden
+- wichtig dabei sind die doppelten eckigen Klammern `[[]]` für direkten Zugriff
+```{r, echo=TRUE}
+new_list <- list(a="hallo",4)
+new_list[["a"]]
+new_list[[2]]
+```
+]
+.panel[.panel-name[Zugriff (2)]
+- mit einfachen eckigen Klammern `[]` greift man über den Index auf den Container zu und erhält als Ergebnis eine Liste
+
+```{r, echo=TRUE}
+new_list[2]
+class(new_list[2])
+```
+]
+.panel[.panel-name[Nested Lists]
+- Listen können beliebig tief verschachtelt werden (*nested*)
+- hierfür wird `list()` innerhalb der Liste verwendet
+- Listen können so z.B. einfach in `JSON` umgewandelt werden (ähnliches Prinzip)
+```{r, echo=TRUE}
+nested_list <- list(char = list(a = "halo",b="hi"), nums = list(1,2))
+jsonlite::toJSON(nested_list,auto_unbox = T) %>% jsonlite::prettify()
+```
+]
+.panel[.panel-name[Nested Lists (2)]
+- für den Zugriff können Indizes und Namen verschachtelt werden
+- auch der `$`-Operator kann verwendet werden
+
+```{r, echo=TRUE}
+nested_list <- list(char = list(a = "halo",b="hi"), nums = list(1,2))
+nested_list$char$a
+nested_list[["nums"]][[2]]
+```
+]
+]
+
+---
+----
+## Listen (2)
+
+.panelset[
+.panel[.panel-name[Listen Bearbeiten]
+- neue Listenelmente können einfach per Namen oder Index hinzugefügt werden
+```{r, echo=TRUE}
+new_list[[3]] <- "neues Element"
+new_list[["test"]] <- "neu"
+new_list
+```
+]
+.panel[.panel-name[Unlisten]
+- Listen können mit `unlist()` zu Vektoren (soweit möglich) umgewandelt werden
+- eine Liste von `data.frames` kann mit `dplyr::bind_rows` zu einem zusammenhängenden Datensatz umgewandelt werden
+```{r, echo=TRUE}
+unlist(new_list)
+```
+]
+.panel[.panel-name[Listen mergen]
+- mehrere Listen können mit dem `c()` Operator zusammengefügt werden
+
+```{r, echo=TRUE}
+full_list <- c(new_list,nested_list)
+```
+]
+]

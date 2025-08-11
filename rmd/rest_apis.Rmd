@@ -1,0 +1,576 @@
+---
+title: "REST APIs in R"
+author: "Felix lorenz"
+date: '12. Dezember 2022'
+amt: "Staatskanzlei"
+stelle: "Dienststelle für Statistik"
+output: 
+  xaringan::moon_reader:
+    nature:
+        highlightStyle: github
+        highlightlines: true
+        highlightSpans: true
+    css: ["default","styles_x.css"]
+
+
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,dpi=300)
+
+```
+
+---
+----
+
+## Was ist eine API?
+
+- **API** bedeutet:  **Application Programming Interface**  
+
+- Eine API ist wie ein **Kellner** in einem Restaurant:  
+  - Du (das Programm) gibst eine **Bestellung** (Anfrage).  
+  - Die API bringt deine Bestellung zur **Küche** (Server).  
+  - Die Küche liefert die Antwort zurück.
+
+- Sie ermöglicht Programmen, **miteinander zu kommunizieren**.
+
+---
+----
+## Was ist eine REST API?
+
+- Eine **REST API** nutzt das **HTTP-Protokoll** – wie Webseiten.  
+
+- **REST** steht für: **Representational State Transfer**
+
+- Typische Aufgaben einer REST API:
+  - **Daten abrufen**: `GET`-Request 
+  - **Daten senden**: `POST`-Request 
+  - **Daten aktualisieren** oder **löschen**: `PUT`-Request bzw `DELETE`-Request 
+  
+- **REST API** können über URLs angesteuert werden. Oft kann man diese auch einfach im Browser eingenben und erhält ein Ergebnis (nützlich zum Ausprobieren)
+
+- Um eine **REST API** anzusteuern wird das `httr` oder das `httr2` Package verwendet.
+
+- Eine **REST API** antwortet in der Regel im JSON Format
+---
+----
+## Die API-Response
+.panelset[
+.panel[.panel-name[Statuscode]
+Der Statuscode gibt an, ob die Anfrage erfolgreich war und liefert Informationen über den Status der Anfrage. Verschiede Stauscodes sind:
+
+- **2xx (Success): Anfrage war erfolgreich** `r emo::ji("smile")`
+  - `200 OK`: Anfrage erfolgreich verarbeitet.
+  - `201 Created`: Ressource erfolgreich erstellt (bei POST-Anfragen).
+- **4xx (Client Error): Problem auf der Seite des Clients** `r emo::ji("thinking")`
+  - `400 Bad Request`: Anfrage ist fehlerhaft.
+  - `401 Unauthorized`: Fehlende oder ungültige Authentifizierung.
+  - `404 Not Found`: Ressource nicht gefunden.
+- **5xx (Server Error): Problem auf der Seite des Servers** `r emo::ji("rage")`
+  - `500 Internal Server Error`: Unerwarteter Serverfehler.
+  - `503 Service Unavailable`: Dienst vorübergehend nicht verfügbar.
+
+]
+.panel[.panel-name[Response Body]
+
+Der Body enthält die Daten der Antwort, meistens im JSON- oder XML-Format. Dies ist der Hauptteil der Antwort und enthält je nach API die angeforderten Informationen. Die Daten sind oft kodiert. Die Kodierung händelt aber das `httr2` Package
+]
+.panel[.panel-name[Headers]
+Headers sind zusätzliche Informationen, die mit der Antwort geliefert werden. Sie enthalten Metadaten über die Antwort oder den Server.
+
+**Wichtige Header:**
+- `Content-Type:` Typ der Daten im Body (z. B. application/json).
+- `Content-Length:` Größe des Response-Bodies.
+- `Date:` Zeitpunkt der Antwort.
+- `Server:` Informationen über den Server.
+- `Authorization:` Informationen zur Authentifizierung (falls relevant).
+]
+]
+
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://httr2.r-lib.org/logo.png' target="_blank">
+    <img src='https://httr2.r-lib.org/logo.png' class='logo'/>
+  </a>
+</figure>
+## API-Requests mit `httr2`
+
+**Warum `httr2`?**
+- Moderner, flexibler und schlanker Ansatz im Vergleich zu `httr`.
+- Unterstützt einfache Handhabung von HTTP-Requests, Headern, Body und Authentifizierung.
+
+
+
+**Typischer Workflow mit `httr2`:**
+  1. Request-Objekt erstellen
+  2. Request anpassen (z. B. Header, Query-Parameter)
+  3. Request senden und Antwort prüfen
+  4. Antwortdaten verarbeiten
+
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://httr2.r-lib.org/logo.png' target="_blank">
+    <img src='https://httr2.r-lib.org/logo.png' class='logo'/>
+  </a>
+</figure>
+## GET-Request
+
+- `GET`-Requests werden dazu benutzt um Daten abzurufen
+
+- Ohne weitere Spezifikationen führt `httr2` standardmässig ein `GET`-Request aus
+
+- Grundlage eines jeden Request ist die entsprechende URL, der sogenannte **API-Endpoint**. Dieser kann aus der API Dokumentation der entsprchenden Website entnommen werden.
+
+- Eine API-URL besteht in der Regel aus einer base-URL und dem spezifischen Endpoint
+
+**Wichtige Funktionen:**
+- `request()`: Erstellt ein Request-Objekt.
+- `req_perform()`: Führt die Anfrage aus.
+- `resp_body_json()`: Antwort-Body als JSON-Daten einlesen.
+
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://httr2.r-lib.org/logo.png' target="_blank">
+    <img src='https://httr2.r-lib.org/logo.png' class='logo'/>
+  </a>
+</figure>
+## GET-Request: Beispiel data.tg.ch
+
+.panelset[
+.panel[.panel-name[API Console]
+[![openxlsx Bsp 1](img/datatg_api.png)](https://data.tg.ch/api/explore/v2.1/console)
+]
+.panel[.panel-name[Code]
+```{r , echo = TRUE, eval=TRUE}
+library(httr2)
+base_url <- "https://data.tg.ch/api/explore/v2.1"
+endpoint <- "/catalog/datasets/sk-stat-56/exports/json"
+url <- paste0(base_url,endpoint)
+
+# Request erstellen
+response <- request(url) %>% req_perform()
+
+# JSON-Daten extrahieren
+data <- response %>% resp_body_json()
+```
+]
+.panel[.panel-name[Response]
+```{r , echo = TRUE, eval=TRUE}
+response
+```
+```{r , echo = TRUE, eval=TRUE}
+response$status_code
+```
+]
+.panel[.panel-name[Data]
+```{r , echo = TRUE, eval=TRUE}
+data[[1]]
+```
+]
+.panel[.panel-name[Data (aufbereitet)]
+```{r , echo = TRUE, eval=TRUE}
+data |> bind_rows()
+```
+]
+]
+
+
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://httr2.r-lib.org/logo.png' target="_blank">
+    <img src='https://httr2.r-lib.org/logo.png' class='logo'/>
+  </a>
+</figure>
+## GET-Request mit Query Paramtern: Beispiel data.tg.ch
+
+.panelset[
+.panel[.panel-name[Erklärung]
+
+- Mit Query-Parametern kann die Anfrage verfeinert werden, sodass man genau das erhält was man braucht
+
+- in einer URL kann man Query-Paramter daran erkennen, dass sie nach dem `?` stehen
+
+- auf data.tg.ch kann man zum Beispiel einen SQL-artigen Sysntax anwenden. Die Möglichkeiten von Query Parametern unterscheiden sich aber von API zu API
+
+- Beispiel: `https://data.tg.ch/api/explore/v2.1/catalog/datasets/sk-stat-56/exports/json?select=gemeinde_name,anzahl_personen&where=jahr=date'2021' and gemeinde_name='Frauenfeld'`
+]
+.panel[.panel-name[Code]
+```{r , echo = TRUE, eval=TRUE}
+response <- request(url) %>%
+  req_url_query(
+    select = "gemeinde_name,anzahl_personen", 
+    where = "jahr=date'2021' and gemeinde_name='Frauenfeld'"
+  ) %>%
+  req_perform()
+
+data <- response %>% resp_body_json() |> bind_rows()
+```
+]
+.panel[.panel-name[Response]
+```{r , echo = TRUE, eval=TRUE}
+response
+```
+```{r , echo = TRUE, eval=TRUE}
+response$status_code
+```
+]
+.panel[.panel-name[Data]
+```{r , echo = TRUE, eval=TRUE}
+data
+```
+]
+]
+
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://httr2.r-lib.org/logo.png' target="_blank">
+    <img src='https://httr2.r-lib.org/logo.png' class='logo'/>
+  </a>
+</figure>
+## GET-Request mit Authentifizierung: Beispiel dataspot
+
+
+- Für viele API-Dienste bedarf es einer Authentifizierung
+
+- Dazu gibt es [verschiedene Authentifizierungsmöglichkeiten](https://www.computerweekly.com/de/tipp/API-Sicherheit-Gaengige-Methoden-zur-Authentifizierung):
+  - HTTP Basic Authentication
+  - Access Tokens
+  - OAuth mit OpenID
+  - etc.
+
+- Manche dieser Methoden sind sicherer als andere, doch man ist meist nicht frei in der Auswahl, da man nur die Methoden verwenden kann, die auch von Seiten des API-Frameworks implementiert sind
+
+- dataspot verwendet (zumindest in unserer Konfiguration) `HTTP Basic Authentication` mit Passwort und Username. Dies ist zwar am wenigsten "sicher", dafür aber sehr einfach zu verwenden.
+
+
+---
+----
+## Einschub: Umgebungsvariablen in R
+
+.panelset[
+.panel[.panel-name[Erklärung]
+
+- v.a. Passwörter aber auch API-Keys sollten nicht direkt im Script gespeichert werden
+
+- Umgebungsvariablen helfen dabei, Code und Credentials zu trennen 
+
+- Diese können entweder über `usethis::edit_r_environ()` dauerhaft oder mit `Sys.setenv()` für die Dauer der Session angelegt werden
+
+]
+.panel[.panel-name[edit_r_environ()]
+
+- Mit `usethis::edit_r_environ()` öffnet sich das `.Renviron` File. Hier können Umgebungsvariablen direkt eingegeben werden.
+
+- Nach dem Speichern des Files und Neustart der R Session sind die Umgebungsvariablen dauerhaft abrufbar
+
+![renviron file](img/renviron.png)
+
+]
+.panel[.panel-name[Sys.setenv()]
+
+- Mit `Sys.setenv()` können Umgebungsvariablen für die Dauer einer Session gesetzt werden
+
+- `Sys.setenv()` überschreibt Umgebungsvariablen aus dem `.Renviron` File für die Dauer der Session.
+
+```{r , echo = TRUE, eval=TRUE}
+Sys.setenv(PASSWORT="meinpasswort",
+           USER="meinname")
+```
+]
+.panel[.panel-name[Umgebungsvariablen nutzen]
+
+- Egal, wie die Umgebungsvariablen definiert wurden, beziehen kann man sie mit `Sys.getenv()`
+
+```{r , echo = TRUE, eval=TRUE}
+Sys.getenv("PASSWORT")
+Sys.getenv("USER")
+
+```
+]
+]
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://httr2.r-lib.org/logo.png' target="_blank">
+    <img src='https://httr2.r-lib.org/logo.png' class='logo'/>
+  </a>
+</figure>
+## GET-Request mit Authentifizierung: Beispiel dataspot
+.panelset[
+.panel[.panel-name[API Doku]
+
+- dataspot besitzt keine API Console zum Testen und nur eine eher rudimentäre Dokumentation
+
+- Mit dieser Doku und viel Herumprobieren kann man dennoch einige Funktionalitäten mit der API darstellen
+
+- [Link zur dataspot-API-Doku](https://dataspot.apps.ktgcpp01.tg.ch/api/dataspot/manual/rest-api)
+
+- Als Beispiel werden wir eine Funktion erstellen, die eine Liste mit allen Referenzdaten erstellt
+
+
+]
+.panel[.panel-name[Code]
+```{r , echo = TRUE, eval=TRUE}
+library(httr2)
+base_url <- "https://dataspot.apps.ktgcpp01.tg.ch/rest/dataspot"
+endpoint <- "/schemes/Referenzdaten/enumerations"
+url <- paste0(base_url,endpoint)
+
+# Request erstellen
+response <- request(url) |> 
+  req_auth_basic(username = Sys.getenv("DATASPOT_USER"),password = Sys.getenv("DATASPOT_PW")) |> 
+  req_perform()
+
+# JSON-Daten extrahieren
+data <- response |> resp_body_json()
+```
+]
+.panel[.panel-name[Response]
+```{r , echo = TRUE, eval=TRUE}
+response
+```
+```{r , echo = TRUE, eval=TRUE}
+response$status_code
+```
+]
+.panel[.panel-name[Data]
+![result dataspot](img/req_auth.png)
+]
+.panel[.panel-name[Data (aufbereitet)]
+
+Daten können dieses Mal nicht so einfach verwendet werden, sondern es bedarf einer etwas komplizierteren Aufbereitung
+```{r , echo = TRUE, eval=TRUE}
+# dataspotR Package
+devtools::load_all("/r-proj/stat/ogd/dataspotR")
+
+# Funktion zum aufbereiten aus dem Package
+referenzdaten <- prepare_raw_results(data)
+referenzdaten
+```
+]
+]
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dataspot.apps.ktgcpp01.tg.ch/api/dataspot/manual/rest-api' target="_blank">
+    <img src='img/hex-dataspotR.png' class='logo'/>
+  </a>
+</figure>
+## `dataspotR` Package
+
+- Package um die dataspot Rest API zu nutzen
+
+- derzeit nur ein Entwurf, aber durchaus nutzbar
+
+- mit dem Package können ganz einfach alle möglichen Dataspot Elemente bezogen und auch angelegt werden
+
+Das Package ist derzeit noch nicht auf GitHub, kann aber lokal geladen werden mit 
+
+```{r , echo = TRUE, eval=TRUE}
+devtools::load_all("/r-proj/stat/ogd/dataspotR")
+```
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dataspot.apps.ktgcpp01.tg.ch/api/dataspot/manual/rest-api' target="_blank">
+    <img src='img/hex-dataspotR.png' class='logo'/>
+  </a>
+</figure>
+## dataspotR: Referenzdaten beziehen
+
+.panelset[
+.panel[.panel-name[Liste beziehen]
+
+```{r , echo = TRUE, eval=TRUE}
+# Das, was vorhin gemacht wurde in einer Funktion komprimiert
+referenzdaten <- get_referenzdaten_list()
+referenzdaten |> 
+  select(id,label,title,createdBy)  
+```
+
+]
+.panel[.panel-name[Referenzdatenobjekt beziehen]
+```{r , echo = TRUE, eval=TRUE}
+get_referenzdaten("Thurgauer Gemeinden") |> 
+  select(shortText,label,code)
+```
+]
+.panel[.panel-name[Objekte beziehen]
+
+Jedes Objekt auf dataspot besitzt eine ID und kann mit dieser bezogen werden
+
+```{r , echo = TRUE, eval=TRUE}
+# Beispiel Sammlung Open Government Data im A-Anlieferungen
+get_element_by_id("cb0cc89d-e011-4ee1-8c2c-06a631206926")
+
+```
+]
+]
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://httr2.r-lib.org/logo.png' target="_blank">
+    <img src='https://httr2.r-lib.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+## POST-Request
+
+.panelset[
+.panel[.panel-name[Erklärung]
+
+- **POST**-Requests werden verwendet, um neue Daten auf einem Server zu erstellen.
+
+- In der Anfrage wird ein **Body** mit den zu sendenden Daten übermittelt (z. B. als JSON).
+
+**Wichtige Funktionen für POST:**
+- `req_body_json()`: Legt die Daten im JSON-Format fest.
+- `req_perform()`: Führt die Anfrage aus.
+
+]
+.panel[.panel-name[Beispiel]
+```{r , echo = TRUE, eval=TRUE}
+response <- request("https://jsonplaceholder.typicode.com/posts") %>%
+  req_body_json(list(
+    title = "Neuer Beitrag",
+    body = "Dies ist ein Beispieltext",
+    userId = 1
+  )) %>%
+  req_perform()
+
+# Ergebnis ansehen
+response %>% resp_body_json()
+```
+]
+]
+
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://httr2.r-lib.org/logo.png' target="_blank">
+    <img src='https://httr2.r-lib.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+## PUT-Request
+
+.panelset[
+.panel[.panel-name[Erklärung]
+
+- **PUT**-Requests werden verwendet, um Daten auf einem Server zu aktualisieren.
+
+- Dabei wird der gesamte Datensatz ersetzt.
+
+**Wichtige Funktionen für PUT:**
+- `req_body_json()`: Legt die zu aktualisierenden Daten fest.
+- `req_perform()`: Führt die Anfrage aus.
+
+
+]
+.panel[.panel-name[Beispiel]
+```{r , echo = TRUE, eval=TRUE}
+response <- request("https://jsonplaceholder.typicode.com/posts/1") %>%
+  req_method("PUT") %>%
+  req_body_json(list(
+    id = 1,
+    title = "Aktualisierter Beitrag",
+    body = "Der Inhalt wurde aktualisiert",
+    userId = 1
+  )) %>%
+  req_perform()
+
+# Aktualisierte Daten ansehen
+response %>% resp_body_json()
+```
+]
+]
+
+
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://httr2.r-lib.org/logo.png' target="_blank">
+    <img src='https://httr2.r-lib.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+## DELETE-Request
+
+
+.panelset[
+.panel[.panel-name[Erklärung]
+
+- **DELETE**-Requests werden verwendet, um Daten auf einem Server zu löschen.
+
+- Es wird keine zusätzliche Datenübertragung (Body) benötigt.
+
+**Wichtige Funktionen für DELETE:**
+- `req_method("DELETE")`: Setzt die HTTP-Methode auf DELETE.
+- `req_perform()`: Führt die Anfrage aus.
+
+
+]
+.panel[.panel-name[Beispiel]
+```{r , echo = TRUE, eval=TRUE}
+response <- request("https://jsonplaceholder.typicode.com/posts/1") %>%
+  req_method("DELETE") %>%
+  req_perform()
+
+# Statuscode prüfen
+response$status_code
+```
+]
+]
+
+
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://httr2.r-lib.org/logo.png' target="_blank">
+    <img src='https://httr2.r-lib.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+## Trockenlauf (`req_dry_run()`)
+
+.panelset[
+.panel[.panel-name[Erklärung]
+
+- `req_dry_run()` zeigt, wie die Anfrage aussehen würde, ohne sie tatsächlich auszuführen.
+- Nützlich, um Anfragen vorab zu prüfen.
+
+
+]
+.panel[.panel-name[Beispiel]
+```{r , echo = TRUE, eval=TRUE}
+request("https://jsonplaceholder.typicode.com/posts") %>%
+  req_method("POST") %>%
+  req_body_json(list(
+    title = "Test",
+    body = "Dies ist ein Test",
+    userId = 1
+  )) %>%
+  req_dry_run()
+```
+]
+]
+
+---
+----
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dataspot.apps.ktgcpp01.tg.ch/api/dataspot/manual/rest-api' target="_blank">
+    <img src='img/hex-dataspotR.png' class='logo'/>
+  </a>
+</figure>
+## Hands-On: Referenzdaten beziehen
+
+Was ist die Entsprechung des Codes `9` für Religionen in der Strukturerhebung? Löse das Problem programmatisch.
+Das Ergebnis sollte ein Datensatz mit einer Zeile sein, welcher ID, shortText, code sowie den/die Ersteller/in enthält.
+
+Beachte dass du, wenn du das `dataspotR` benutzen möchtest die Umgebungsvariablen `DATASPOT_USER` und `DATASPOT_PW` initialisieren musst.

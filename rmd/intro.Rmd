@@ -1,0 +1,263 @@
+---
+title: "Intro"
+author: "Felix lorenz"
+date: '12. Dezember 2022'
+amt: "Staatskanzlei"
+stelle: "Dienststelle für Statistik"
+output: 
+  xaringan::moon_reader:
+    highlightStyle: github
+    highlightlines: true
+    highlightSpans: true
+    css: ["default","styles_x.css"]
+
+
+---
+
+
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,dpi=300)
+```
+
+
+
+
+
+----
+## Ziele des Workshops
+
+
+1. Richtiges Mindset schaffen, um Programmieren zu lernen
+
+2. Möglichst breiten Blick auf die Möglichkeiten von R schaffen, um Grundstein für selbstständiges Lernen zu bilden.
+
+3. Beispiele aus der Praxis in der Dienststelle für Statistik zum besseren Verständnis
+
+
+---
+----
+## R und RStudio
+
+.pull-left[
+**R**
+- R ist eine freie (open-source) Programmiersprache, erschienen in 1993
+- R ist eine Arbeitsumgebung für statistische Analysen und Grafiken (und vieles mehr)
+- R kann mit *packages* erweitert werden
+]
+--
+.pull-right[
+
+**RStudio**
+
+- RStudio ist eine grafische Benutzeroberfläche, welche auch integrierte Entwicklunsumgebung (i.e. IDE - integrated development environment) genannt wird
+
+]
+
+---
+----
+## Die R und tidyverse-Bibel
+
+```{r, out.width="30%", fig.cap="https://pictures.abebooks.com/isbn/9781491910399-de.jpg"}
+knitr::include_graphics("https://pictures.abebooks.com/isbn/9781491910399-de.jpg")
+```
+
+Das Buch ist kostenlos [hier](https://r4ds.had.co.nz/index.html) zu finden und ist ideal für Einsteiger.
+
+
+
+
+
+---
+----
+## Aufbau RStudio
+```{r, out.width="100%"}
+knitr::include_graphics("./img/Rstudio.jpg")
+```
+
+
+---
+----
+## R Projects
+
+- Daten, Scripts etc. werden in einem Ordner gebündelt
+- erleichtert die Strukturierung und erhöht die Übersichtlichkeit
+
+**Derzeitige Ordnung im Y widerspricht dieser Logik**
+
+
+```{r, out.width="60%"}
+knitr::include_graphics("./img/03_projects.png")
+```
+---
+----
+## R Projects
+
+In der Regel folgen Projekte dem untenstehenden Aufbau. Dieser ist dem Aufbau eines Packages nachempfunden. Dies ist jedoch kein Muss und kann variiert werden.
+
+```{r, eval = FALSE, echo = TRUE}
+
+# Project
+- data
+  -> dataset.csv
+- R
+  -> data_preparation.R
+- output
+  -> output.xlsx
+- www
+  -> image.png
+
+```
+
+---
+----
+## Hands On: R Projects und initiale Einstellungen
+
+- Unnötiges Speichern/Laden von Daten ausstellen
+
+- Global Options kennenlernen
+
+- Projekte erstellen
+
+---
+----
+
+## Funktionen, Objekte und Packages
+
+
+
+> **In R ist alles ein Objekt – auch Funktionen sind spezielle Objekte.**
+
+R speichert sowohl Daten als auch Funktionen als Objekte. So können alle Elemente einheitlich behandelt und flexibel genutzt werden.
+
+
+
+
+---
+----
+
+## Datenstrukturen
+
+R besitzt verschiedene Basisobjekte, die ihr bereits im *DataCamp* Kurs kennengelernt habt. Die meistgenutzten sind:
+
+.panelset[
+.panel[.panel-name[Variablen]
+- grundlegenstes und kleinstes R Objekt
+- kann `numeric`, `character` oder `logical` sein
+```{r echo=TRUE}
+x <- 10
+y  = "Das ist ein String"
+x
+y
+```
+]
+.panel[.panel-name[Vektoren]
+- eindimensionales Objekt. Alle Elemente müssen den gleichen Datentyp haben.
+- am häufigsten verwendet werden `numeric`, `character` oder `logical`
+```{r echo=TRUE}
+vec_num <- c(1,5,2)
+vec_char <- c("one","five",NA)
+var_log <- c(FALSE,TRUE,TRUE)
+vec_num
+vec_char
+```
+]
+.panel[.panel-name[Data Frames]
+- vergleichbar mit klassischer Tabelle (alle Spalten müssen gleich lang sein)
+- einzelne Spalten sind im Prinzip Vektoren und besitzen die gleichen Eigenschaften
+```{r echo=TRUE}
+df <- data.frame(col_1 = c(1,5,2),col_2 = vec_char)
+df
+```
+]
+
+.panel[.panel-name[Listen]
+- Boxen die unterschiedlichste Objekte enthalten können
+- in einer Liste kann prinzipiell alles gespeichert werden
+```{r echo=TRUE}
+temp_list <- list(x,y,vec_num, vec_char,df)
+temp_list[[5]]
+```
+]
+
+]
+
+
+
+---
+----
+## Funktionen
+- Funktionen sind wichtige Bestandteile im Arbeiten mit R. Einzelne Tasks können mit einer Funktion zusammengefasst und reproduzierbar gemacht werden
+
+
+.panelset[
+.panel[.panel-name[built-in]
+
+R besitzt viele "built-in" Funktionen, wie z. B. mathematischen Grundlagen (`mean()`,`sum()`,`sqrt()`, etc.)
+```{r , echo = TRUE}
+values <- c(3,9,6,8)
+mean(values)
+```
+]
+.panel[.panel-name[Aus package]
+
+Einzelne Funktionen aus packages können mit voransgestelltem `packagename::` aufgerufen werden. 
+
+Die `library` Funktion lädt alle Funktionen des Packages. Der vorangestellte package Name kann dann weggeleassen werden.
+```{r, echo=TRUE,results='hide',message=FALSE,warning=FALSE}
+library(dplyr)
+
+```
+```{r, echo=TRUE}
+dplyr::dense_rank(values)
+```
+]
+.panel[.panel-name[Eigene Funktion]
+
+Funktionen können auch vom User selbst ersetellt werden
+
+```{r, echo=TRUE}
+greetings <- function(name){
+  result <- paste0("Hello ",name,". Nice to meet you.")
+  print(result)
+}
+```
+```{r, eval=FALSE,echo=TRUE}
+greetings(name="Joe")
+```
+
+
+]
+.panel[.panel-name[Ergebnis]
+```{r}
+greetings(name="Joe") 
+```
+]
+]
+---
+----
+
+## Packages
+
+- Erweiterungen, die reproduzierbare Funktionen enthalten und kostenfrei genutzt werden können
+- Packages können direkt von [CRAN (Comrehensive R Archive Network)](https://cran.r-project.org/) installiert werden
+- Packages können auch von GitHub, GitLab o.ä. installiert werden
+- Jede/r kann Packages entwickeln 
+
+```{r eval=FALSE, echo=TRUE}
+# CRAN
+install.packages("package_name")
+install.packages("dplyr")
+
+# GITHUB
+devtools::install_github("username/package_name")
+devtools::install_github("ogdtg/tgAPI")
+
+# GITLAB
+devtools::install_gitlab("username/packagename")
+
+# uvm...
+
+```

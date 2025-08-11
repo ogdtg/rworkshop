@@ -1,0 +1,753 @@
+---
+title: "dplyr"
+author: "Felix lorenz"
+date: '12. Dezember 2022'
+amt: "Staatskanzlei"
+stelle: "Dienststelle für Statistik"
+output: 
+  xaringan::moon_reader:
+    highlightStyle: github
+    highlightlines: true
+    highlightSpans: true
+    css: ["default","styles_x.css"]
+
+
+---
+
+
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,dpi=300)
+```
+
+
+
+
+----
+## dplyr::select()
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+- Mit der `select` können die gewünschten Variablen aus dem Datensatz ausgewählt und/oder entfernt werden.
+
+.panelset[
+.panel[.panel-name[Ausgangsdaten]
+```{r, echo=TRUE}
+df_tidy
+```
+]
+.panel[.panel-name[Bsp. 1]
+- Variablennamen können direkt an die `select` Funktion übergeben werden.
+- Genauso können Variablen auch als Vektor mit `c()` angegeben werden.
+
+```{r, echo=TRUE}
+df_tidy %>% 
+  select(date,cases)
+```
+]
+.panel[.panel-name[Bsp. 2]
+Variablen können auch als *range* ausgewählt werden
+```{r, echo=TRUE}
+df_tidy %>% 
+  select(date:cases)
+```
+]
+.panel[.panel-name[Bsp. 3]
+Auswahl per Spaltenindex ist ebenfalls möglich
+```{r, echo=TRUE}
+df_tidy %>% 
+  select(1,3:5)
+```
+]
+.panel[.panel-name[Bsp. 4]
+Mit vorangestelltem minus (`-`) können Variablen entfernt werden
+```{r, echo=TRUE}
+df_tidy %>% 
+  select(-c(date:cases))
+```
+]
+.panel[.panel-name[Bsp. 5]
+`select` kann z.B. mit `contains`, `ends_with` oder `starts_with`
+```{r, echo=TRUE}
+df_tidy %>% 
+  select(contains("death"))
+```
+]
+]
+
+---
+----
+
+## dplyr::filter()
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+- Mit `filter` können die gewünschten Reihen gefiltert werden. So kann ein *subset* des Datensatzes erstellt werden
+- Der Ausdruck innerhalb der `filter()` function muss vom Typ *logical* sein (`TRUE`,`FALSE`)
+
+--
+
+.panelset[
+.panel[.panel-name[Ausgangsdaten]
+```{r, echo=TRUE}
+df_tidy
+```
+]
+.panel[.panel-name[Bsp. 1]
+Für `filter` können sog. Operatoren verwendet werden (`==`, `!=`, `>=`, `<=`, `<`, `>`) 
+```{r, echo=TRUE}
+df_tidy %>% 
+  filter(kanton == "TG")
+```
+]
+.panel[.panel-name[Bsp. 2]
+Filteroptionen können mit `&` (*und*) und `|` (*oder*) verbunden werden.
+```{r, echo=TRUE}
+df_tidy %>% 
+  filter(kanton == "TG" & date== "2022-12-10")
+```
+]
+.panel[.panel-name[Bsp. 3]
+Für den Abgleich mit einem Vektor kann der `%in%` Operator verwendet werden.
+```{r, echo=TRUE}
+df_tidy %>% 
+  filter(cases %in% c(140484,102405))
+```
+]
+.panel[.panel-name[Bsp. 4]
+Wie die meisten dplyr Funktionen, können auch `filter` Statements beliebig oft aneinander gereiht werden 
+```{r, echo=TRUE}
+df_tidy %>% 
+  filter(kanton == "TG") %>% 
+  filter(date == "2022-12-10")
+```
+]
+]
+
+---
+----
+
+## Hands-On: filter und select (Zeit: 10 Minuten)
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+1. Lies die Datei **bevnatgeb2021.sas7bdat** aus dem Ordner **Daten** als data.frame ein.
+
+2. Wähle nur die Spalten `geb_day`,`geb_mon`,`geb_year`, `sex`, `nat` und `name` aus.
+
+3. Behalte nur Geburten **nach 2010** deren Staatsangehörigkeit **Schweiz** (8100) ist.
+
+4. Speichere das Resultat in der Variable **geburten_ch_2010**
+
+
+```{r}
+countdown::countdown(minutes=10)
+```
+
+---
+----
+
+## Hands-On: filter und select (Zeit: 10 Minuten)
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+.panelset[
+.panel[.panel-name[Lösung 1]
+
+Lies die Datei **geburten_mod.rds** aus dem Ordner **Daten** als data.frame ein.
+
+```{r echo = TRUE}
+library(dplyr)
+# Aus Datenschutzgründen ist der Datensatz anonymisiert
+geburten <- readRDS("Daten/geburten_mod.rds")
+```
+]
+
+.panel[.panel-name[Lösung 2]
+
+Wähle nur die Spalten `geb_day`,`geb_mon`,`geb_year`, `sex`, `nat` und `name` aus.
+
+```{r echo = TRUE}
+geburten_ch_2010 <- geburten %>%
+  select(geb_day,geb_mon,geb_year,sex,nat,name)
+```
+]
+
+.panel[.panel-name[Lösung 3]
+
+Behalte nur Geburten **nach 2010** deren Staatsangehörigkeit **Schweiz** (8100) ist.
+
+```{r echo = TRUE}
+geburten_ch_2010 <- geburten %>%
+  select(geb_day,geb_mon,geb_year,sex,nat,name) %>%
+  filter(geb_year > 2010 & nat == 8100)
+head(geburten_ch_2010,3)
+```
+]
+]
+
+
+---
+----
+
+## dplyr::mutate()
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+- Mit `mutate` können neue Spalten z.B. durch Berechnungen erstellt werden
+- `mutate` operiert immer reihenweise
+
+.panelset[
+.panel[.panel-name[Ausgangsdaten]
+```{r, echo=TRUE}
+df_tidy
+```
+]
+
+.panel[.panel-name[Bsp. 1]
+
+```{r echo = TRUE}
+df_tidy %>% 
+  mutate(kanton_long = case_when(kanton == "TG" ~ "Thurgau",
+                   kanton == "BS" ~ "Basel-Stadt"))
+```
+]
+
+.panel[.panel-name[Bsp. 2]
+
+```{r echo = TRUE}
+df_tidy %>% 
+  mutate(death_percent = deaths/cases *100) %>% 
+  mutate(death_percent = round(death_percent,2)) %>% 
+  mutate(death_percent = paste0(death_percent," %"))
+```
+]
+]
+
+---
+----
+## mutate(): Good to know
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+Mit `mutate_all` oder `mutate_at` können alle Variablen bzw. alle Variablen mit einem bestimmten Kriterium gleichzeitig bearbeitet werden.
+
+Das ist nützlich, wenn man die gleiche Operation auf mehrere Spalten anwenden will.
+
+```{r, echo=TRUE}
+df_tidy %>% 
+  mutate_all(as.character) %>% 
+  head(3)
+```
+
+---
+----
+
+## dplyr::group_by
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+- Mit der `group_by` Funktion können Datensätze gruppiert werden. Die Daten an sich werden dadurch allerdings noch nicht verändert.
+- Mächtig wird die Funktion erst in Kombination mit anderen Funktionen, wie z.B. `mutate` oder `summarise`
+
+.panelset[
+.panel[.panel-name[Ausgangsdaten]
+```{r, echo=TRUE}
+head(geburten_ch_2010,5)
+```
+]
+
+.panel[.panel-name[Bsp. 1]
+
+Neue Variablen nach Gruppen erstellen mit `group_by` und `mutate`
+
+```{r echo = TRUE}
+geburten_ch_2010 %>% 
+  group_by(geb_year,name) %>% 
+  mutate(sum_name_year = n()) %>% head(2)
+```
+]
+
+.panel[.panel-name[Bsp. 2]
+
+Daten zusammenfassen mit `group_by` und `summarise`
+
+```{r echo = TRUE}
+geburten_ch_2010 %>% 
+  group_by(geb_year) %>% 
+  summarise(geb_per_year = n()) %>% head(2)
+```
+]
+]
+
+---
+----
+
+## dplyr::group_by
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+**ACHTUNG:** Sollten Daten nach einem `group_by` in einer neuen Variable gespeichert werden, dann wird die Gruppierung übernommen.
+Das kann zu Verwirrung im weiteren Verarbeiten der Daten führen. Daher ist zu empfehlen nach einem `group_by` und der angehängten `mutate` die Gruppierung mit `ungroup` wieder aufzulösen.
+
+Nach einem `summarise` ist diese Auflösung nicht nötig.
+
+.panelset[
+.panel[.panel-name[Code 1]
+
+- Ohne `ungroup` 
+
+```{r, echo = TRUE, results='hide'}
+geburten_group <- geburten_ch_2010 %>% 
+  group_by(geb_year,name) %>% 
+  mutate(sum_name_year = n())
+
+geburten_group %>% 
+  mutate(n = n())
+```
+]
+
+.panel[.panel-name[Output 1]
+
+- Ohne `ungroup` 
+
+```{r}
+geburten_group %>% 
+  mutate(n = n()) %>% 
+  head(4)
+```
+]
+
+.panel[.panel-name[Code 2]
+
+- Mit `ungroup`
+
+```{r, echo = TRUE, results='hide'}
+geburten_ungroup <- geburten_ch_2010 %>% 
+  group_by(geb_year,name) %>% 
+  mutate(sum_name_year = n()) %>% 
+  ungroup()
+
+geburten_ungroup %>% 
+  mutate(n = n())
+```
+]
+
+.panel[.panel-name[Output 2]
+
+- Mit `ungroup`
+
+```{r}
+geburten_ungroup %>% 
+  mutate(n = n()) %>% 
+  head(4)
+```
+]
+]
+---
+----
+## Hands-On: mutate(), group_by() und summarise()
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+```{r, eval=FALSE}
+# Was passiert in diesem Code Abschnitt?
+geburten_ch_2010 <- geburten_ch_2010 %>% 
+  mutate(geb_day = ifelse(geb_day<10, paste0("0",geb_day), geb_day),
+         geb_mon = ifelse(geb_mon<10, paste0("0",geb_mon), geb_mon))
+```
+
+
+1. Erstelle für den in der vorherigen Aufgabe erstellten Datensatz geburten_ch_2010 eine neue Spalte `geb_date`.<br>
+Die Spalte soll das Geburtsdatum im Format tt.mm.jjjj enthalten.<br>
+Verwende dazu die `paste0()` Funktion.<br>
+Speichere das Resultat unter dem Namen **geburten_ch_2010_date**   
+
+2. Erstelle eine Variable `age`, welche das Alter des Kindes zum heutigen Tag enthält.<br>
+**Tipp:** das heutige Datum kann mit `Sys.Date()` ermittelt und verwendet werden. Die variable `age` soll das Alter in vollendeten Lebensjahren beinhalten.
+
+3. Zähle die Geburten pro (Geburts-)Jahr im Datensatz<br>
+**Tipp:** Nutze `group_by()` sowie `count()` bzw. `summarise()` und `n()`
+
+```{r}
+countdown::countdown(minutes=10)
+```
+---
+----
+
+## dplyr::join()
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+Mit den Funktionen aus der `join` Familie können mehrere Datensaätze miteinander verbunden werden.
+
+Es wird dabei zwischen [Filtering joins](https://dplyr.tidyverse.org/reference/filter-joins.html) und [Mutating joins](https://dplyr.tidyverse.org/reference/mutate-joins.html) unterscheiden.
+
+.panelset[
+.panel[.panel-name[Filtering joins]
+
+...filtern Zeilen aus x auf der Grundlage des Vorhandenseins oder Fehlens von Übereinstimmungen in y
+
+- `semi_join(x,y)`: gibt alle Zeilen von `x` **mit** einem Match in `y` zurück
+- `anti_join(x,y)`: gibt alle Zeilen von `x` **ohne** ein Match in `y` zurük 
+
+]
+.panel[.panel-name[Mutating joins]
+
+...fügen Spalten von y nach x hinzu, wobei die Zeilen anhand der Schlüssel abgeglichen werden
+
+- `inner_join(x,y)`: beinhaltet alle Zeilen in `x` die ein match in `y` haben
+- `left_join(x,y)`: beinhaltet alle Zeilen in `x`
+- `right_join(x,y)`: beinhaltet alle Zeilen in `y`
+- `full_join(x,y`: beinhaltet alle Zeilen in `x` und `y`
+
+]
+]
+
+
+---
+----
+
+## dplyr::join()
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+```{r, out.width="57%",fig.align='center', fig.cap= "https://tavareshugo.github.io/r-intro-tidyverse-gapminder/fig/07-dplyr_joins.svg"}
+knitr::include_graphics("https://tavareshugo.github.io/r-intro-tidyverse-gapminder/fig/07-dplyr_joins.svg")
+```
+
+---
+----
+
+## dplyr::join()
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+.pull-left[
+**df1: Beliebte Vornamen**
+
+```{r, message=FALSE}
+options(dplyr.summarise.inform = FALSE)
+df1 <- readRDS("Daten/geburten_land.rds")
+df1
+```
+
+]
+.pull-right[
+**df2: Länder und Codes**
+```{r}
+df2 <- readRDS("Daten/codes.rds") %>%
+  filter(code %in% c(df1$nat,8256)) %>% 
+  mutate(code = as.character(code))
+df2
+```
+]
+
+
+---
+----
+
+## Mutating joins
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+.panelset[
+.panel[.panel-name[left_join]
+
+```{r, message=FALSE, echo = TRUE}
+df1 %>% 
+  left_join(df2,by=c("nat"="code"))
+```
+
+]
+.panel[.panel-name[right_join]
+```{r, message=FALSE, echo = TRUE}
+df1 %>% 
+  right_join(df2,by=c("nat"="code"))
+```
+
+]
+.panel[.panel-name[inner_join]
+
+```{r, message=FALSE, echo = TRUE}
+df1 %>% 
+  inner_join(df2,by=c("nat"="code"))
+```
+]
+.panel[.panel-name[full_join]
+
+```{r, message=FALSE, echo = TRUE}
+df1 %>% 
+  full_join(df2,by=c("nat"="code"))
+```
+
+]
+]
+
+
+
+---
+----
+
+## Filtering joins
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+.panelset[
+.panel[.panel-name[semi_join]
+
+```{r, message=FALSE, echo = TRUE}
+df1 %>% 
+  semi_join(df2,by=c("nat"="code"))
+```
+
+]
+.panel[.panel-name[anti_join]
+```{r, message=FALSE, echo = TRUE}
+df1 %>% 
+  anti_join(df2,by=c("nat"="code"))
+```
+
+]
+]
+
+---
+----
+
+## Hands-On: Joins
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+.pull-left[
+**df1**
+```{r}
+df4 <- tibble(vorname = c("Peter","Maria","Paul"),
+              nachname = c("Huber","Krause", "Gut"))
+df4
+```
+
+]
+.pull-right[
+**df2**
+```{r}
+df5 <- tibble(nachname = c("Huber","Huber", "Meier"),
+              alter = c(34,67,18))
+df5
+```
+]
+.panelset[
+.panel[.panel-name[Frage]
+
+Joint man die beiden Datensätze, wie viele Reihen hat der resultierende Datensatz bei einem...
+- left join?
+- right join?
+- inner join?
+- full join?
+
+]
+.panel[.panel-name[left_join]
+```{r, message=FALSE}
+df4 %>% left_join(df5)
+```
+
+]
+.panel[.panel-name[right_join]
+```{r, message=FALSE}
+df4 %>% right_join(df5)
+```
+
+]
+.panel[.panel-name[inner_join]
+```{r, message=FALSE}
+df4 %>% inner_join(df5)
+```
+
+]
+.panel[.panel-name[full_join]
+```{r, message=FALSE}
+df4 %>% full_join(df5)
+```
+
+]
+]
+---
+----
+
+## Hands-On: Joins
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+```{r, eval = FALSE}
+codes <- readRDS("Daten/codes.rds")
+
+geburten_nat <- geburten %>% 
+  filter(name != "") %>% 
+  mutate(name = tolower(name)) %>% 
+  group_by(nat,sex,name) %>% 
+  count() %>% 
+  ungroup() %>% 
+  group_by(nat, sex) %>% 
+  filter(n == max(n))
+```
+
+1. Joine die `geburten_nat` mit dem `codes` Datensatz um den Ländernamen zu den Namensdaten hinzuzufügen<br>
+Nutze dafür `left_join()`<br>
+Schau dir die Datensätze vorher an, um die gemeinsamen Spalten herauszufinden<br>
+Speichere den neuen Datensatz unter dem Namen `geburten_join` 
+
+2. Wie lautet der häufigste männliche Vorname für Kinder mit der Nationalität Nordmazedonien im Datensatz?
+
+```{r}
+countdown::countdown(minutes=10)
+```
+---
+----
+## Good to know: Joins
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+Neben den Standard join Operatoren aus dem `dplyr` Package gibt es auch noch das [fuzzyjoin](http://varianceexplained.org/fuzzyjoin/index.html) Package, welches weitere join Möglichkeiten bietet.
+
+Das Package ermöglicht "inexact matching", wie z.B:
+
+- matching ähnlicher strings
+- matching numerischer Werte mit einer gewissen Toleranz
+- matching numerischer Werte auf bestimmte Intervalle
+- u.v.m.
+
+---
+----
+## Weitere nützliche dplyr Funktionen
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+.panelset[
+.panel[.panel-name[arrange]
+
+Mit arrange kann die Reihenfolge der Zeilen nach einer Variable im Datensatz sortiert werden. Standardmässig werden die Daten dann aufsteigend sortiert. 
+
+```{r, message=FALSE, echo=TRUE}
+geburten_ch_2010 %>% 
+  arrange(geb_year) %>% head(2)
+```
+
+]
+.panel[.panel-name[arrange + desc]
+Mit der `desc()` Funktion kann man die Daten auch in eine absteigende Sortierung bringen.
+```{r, message=FALSE, echo=TRUE}
+geburten_ch_2010 %>% 
+  arrange(desc(geb_year)) %>% head(2)
+```
+]
+.panel[.panel-name[slice]
+Zeilen können auch per Index gefiltert werden
+```{r, message=FALSE, echo=TRUE}
+# extrahiert die Zeilen 10,11 und 12
+geburten_ch_2010 %>% 
+  slice(10:12)
+```
+
+]
+.panel[.panel-name[top_n]
+Mit `top_n()` können die Zeilen mit den höchsten (oder niedrigsten) Werten für eine bestimmte Variable gefiltert werden
+```{r, message=FALSE, echo=TRUE}
+geburten_ch_2010 %>% 
+  group_by(geb_year,name) %>% 
+  count() %>% 
+  group_by(geb_year) %>% 
+  top_n(1,n) %>% 
+  head(2)
+```
+
+]
+.panel[.panel-name[distinct]
+Mit `distinct()` können Duplikate entfernt werden. Dazu werden einfach die Variablen aus denen die Duplikate entfernt werden sollen als Argumente mitgegeben. Setzt man `.keep_all=TRUE`, dann bleiben alle anderen Variablen des data.frames erhalten. Sonst bleiben nur die Spalten, die als Argument angegeben wurden. Bei der Entfernung der Duplikate wird immer der erste Wert behalten, der Rest wird entfernt.
+```{r, message=FALSE, echo=FALSE}
+popular_names <- geburten_ch_2010 %>% 
+  group_by(geb_year,name) %>% 
+  count() %>% 
+  group_by(geb_year) %>% 
+  top_n(1,n)
+```
+
+```{r, message=FALSE, echo=TRUE}
+popular_names %>% 
+  distinct(geb_year,.keep_all = TRUE) %>% 
+  head(2)
+```
+]
+]

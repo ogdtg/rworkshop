@@ -1,0 +1,379 @@
+---
+title: "Funktionen"
+author: "Felix lorenz"
+date: '12. Dezember 2022'
+amt: "Staatskanzlei"
+stelle: "Dienststelle für Statistik"
+output: 
+  xaringan::moon_reader:
+    nature:
+        highlightStyle: github
+        highlightLines: true
+        highlightSpans: true
+    css: ["default","styles_x.css"]
+
+
+---
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,dpi=300)
+
+```
+
+
+----
+## Funktionen
+
+Eigene Funktionen sind hilfreich, wenn Code immer wieder ausgeführt werden muss. Im Vergleich zu copy-paste von Code ergeben sich folgende Vorteile:
+
+1. Lesbarer Code: Du kannst deinen Funktionen aussagekräftige Namen geben, sodass andere sofort wissen, was in der Funktion passiert.
+
+2. Erleichtertes Korrigieren: Sollte sich etwas ändern musst du nicht jeden kopierten Codeblock einzeln bearbeiten sondern nur die Funktion einmalig.
+
+3. Weniger Flüchtigkeitsfehler: veränderst du zum Beispiel bei einem Code Block die Vaiablenzuweisung bei der Kopie aber nicht, kann das zu Problemen führen. Diese entstehen mit Funktionen erst gar nicht
+
+
+
+---
+----
+
+## Komponenten von Funktionen
+.panelset[
+.panel[.panel-name[formals]
+- eine Liste von Argumenten, die an die Funktion übergeben werden
+- jedes Argument hat einen Namen (hier `vektor`) und es kann ein Objekt (Wert, oder sogar Funktion zugewisen werden)
+```{r, message=FALSE, echo = TRUE}
+durchschnitt <- function(`vektor`){
+  # Ein Kommentar, der den Body beschreibt
+  temp <- sum(vektor)/length(vektor)
+  return(temp)
+}
+
+```
+
+Mit der `formals()` Funktionen können die Argumente aufgerufen werden. mit `?durchschnitt` kann ausserdem die Dokumentation (sofern vorhanden) eingesehen werden. 
+```{r, message=FALSE, echo = TRUE}
+formals(durchschnitt)
+```
+]
+.panel[.panel-name[body (1)]
+- der Code der in der Funktion ausgeführt wird und zwischen `{ }` steht
+```{r, message=FALSE, echo = TRUE, eval=FALSE}
+durchschnitt <- function(vektor)`{`
+  # Ein Kommentar, der den Body beschreibt
+  temp <- sum(vektor)/length(vektor) #<<
+  return(temp) #<<
+ `}`
+```
+]
+.panel[.panel-name[body (2)]
+Mit `attr(funktionsname, "srcref")` können sowohl der Funktions-Body als auch Inline-Kommentare sichtbar gemacht werden.
+```{r, message=FALSE, echo = TRUE}
+attr(durchschnitt, "srcref")
+```
+Die `body()` Funktion zeigt nur den Body ohne Kommentare
+]
+.panel[.panel-name[environment]
+
+]
+]
+
+---
+----
+## Funktionen: Wichtige Konzepte
+
+.panelset[
+.panel[.panel-name[Name Masking]
+Namen, die innerhalb einer Funktion definiert werden, "maskieren" Namen, die ausserhalb derFunktion definiert wurden.
+```{r, echo = TRUE}
+x <- 10
+f1 <- function() {
+  x <- 1
+  return(x)
+}
+f1()
+```
+Die Variable ausserhalb der Funktion bleibt unverändert. Gleichzeitig verwendet die Funktion, das `x` welches **innerhalb** der Funktion verwendet wird. Die Zuweisung ausserhalb der Funktion hat keinen Einfluss
+
+]
+.panel[.panel-name[Funktionen vs. Variablen]
+
+Es kann zu Problemen kommen, wenn Funktionen und nicht Funktionen den gleichen Namen tragen.
+
+Daher ist wichtig zu vermeiden, dass dieser Fall auftritt. Namen sollten jeweils nur für **ein** Objekt verwendet werden.
+
+]
+.panel[.panel-name[Dynamic Lookup]
+Vorsicht ist geboten, wenn man eine Variable ausserhalb der Funktion definiert und diese dann in der Funktion verwendet.
+```{r, echo = TRUE}
+x <- 10
+f2 <- function() {
+  return(x)
+}
+f2()
+```
+
+R sieht, schaut als erstes, ob die Variable `x` irgendwo in der Funktion definiert wurde. Da dies nicht der Fall ist schaut R als nächstes ausserhalb der Variable im Globalen Environment. Dort wird `x` in diesem Fall gefunden und zurückgegeben.
+
+]
+.panel[.panel-name["Neustart"]
+Das Environment einer Funktion wird bei jeder Ausführung zurückgesetzt. Zuweisungen bleiben somit nur für einen Durchlauf bestehen.
+```{r, echo = TRUE}
+f3 <- function() {
+  if (!exists("a")) { 
+    a <- 1 
+  }  else { 
+      a <- a + 1 
+  }
+  a
+}
+f3()
+```
+]
+]
+
+---
+----
+## Funktionen: Wichtige Konzepte
+
+.panelset[
+.panel[.panel-name[Lazy Evaluation]
+- `Lazy Evaluation` bedeutet im Falle von R Funktionen, dass Argumenete erst dann evaluiert werden, wenn sie wirklich aufgerufen werden.
+- Wenn ein Argument in einer Funktion nie verwendet wird, entsteht auch keine Fehlermeldung
+- Das bietet den Vorteil dass potentiell aufwändige Berechnungen nur dann ausgeführt werden, wenn diese wirklich benötigt werden
+```{r, echo = TRUE}
+f4 <- function(y) {
+  x <- 1
+  return(x)
+}
+f4()
+```
+]
+.panel[.panel-name[Default Argumente]
+- Dank `Lazy Evaluation` können in Funktionen default Argumente mitgegeben werden
+- Wenn kein expliziter Wert angegeben wird, verwendet die Funktion den default Wert
+- Diese können jedoch auch einfach überschrieben werden
+```{r, echo = TRUE}
+f5 <- function(y=10) {
+  return(y)
+}
+f5()
+f5(50)
+```
+]
+.panel[.panel-name[Mehr Informationen]
+
+Ausführlichere Informationen und mehr Beispiele zu den Konzepten findet ihr in [Hadley Wickhams Buch "Advanced R"](https://adv-r.hadley.nz/functions.html#lexical-scoping)
+
+]
+]
+
+---
+----
+## Funktionen: Wichtige Konzepte
+
+1. Jedes Objekt, das innerhalb einer Funktion erzeugt wird (einschließlich der Argumente, die an die Funktion übergeben werden), wird entfernt, wenn ein Funktionsdurchlauf abgeschlossen ist.
+
+2. Existiert ein Objekt nicht innerhalb der Funktion, sucht R nach einem Objekt außerhalb der Funktion.
+
+3. Argumenete werden erst dann evaluiert, wenn sie wirklich aufgerufen werden (*Lazy Evaluation*)
+
+4. In R-Funktionen ist es möglich den Argumenten default Werte zuzuweisen
+
+.bg-washed-green.b--dark-green.ba.bw2.br3.shadow-5.ph4.mt5.b[
+Alles, was innerhalb einer Funktion verwendet werden muss, sollte als Argument übergeben werden. Alles, was von einer Funktion gespeichert werden muss, sollte zurückgegeben werden
+
+]
+ 
+---
+----
+## Funktionen erstellen
+
+Eine Funktion wird mit dem `function()` Keyword definiert.
+```{r, echo = TRUE}
+durchschnitt <- function(vektor){
+  temp <- sum(vektor)/length(vektor)
+  return(temp)
+}
+wert <- durchschnitt(c(5,6,2,7,8))
+wert
+```
+.panelset[
+.panel[.panel-name[Name]
+- `durchschnitt` ist in diesem Fall der Name der Funktion. Somit kann sie mit `durchschnitt()` aufgerufen werden
+- wir haben die `anonymus functions` bereits kennen gelernt. Diese besitzen *keinen* Namen
+]
+.panel[.panel-name[Argumente]
+Das einzige Argument dieser Funktion ist `vektor`. Eine Funktion kann unbegrenzt Argumente besitzen oder aber keines. 
+]
+.panel[.panel-name[Return]
+Um das Ergebnis einer Funktion einer neuen Variable zuweisen zu können, wird ein `return` Statement verwendet.
+]
+]
+---
+----
+## Return Value
+Return bildet den Abschluss einer Funktion. Alles was nach einem `return()` Statement im Funktions-Body folgt, wird nicht mehr ausgeführt.
+In R- Funktionen gibt es implizite als auch explizite `return` Statements.
+.panelset[
+.panel[.panel-name[Implizites Return]
+Wenn kein `return()` definiert wird, wird der letzte **ausgegebene** Wert in der Funktion zurückgegben.
+```{r, echo = TRUE}
+f5 <- function(y) {
+  y
+}
+f5(20)
+```
+]
+.panel[.panel-name[Explizites Return]
+Meiner Meinung nach empfiehlt es sich **immer** ein `return()` Statement zu verwenden, wenn ein Wert zurückgegeben werden soll. Dies macht den Code einfacher lesbar.
+```{r, echo = TRUE}
+f6 <- function(y) {
+  return(y)
+}
+f6(20)
+```
+]
+]
+
+---
+----
+## Sprechende Funktionen
+
+- der Sinn von Funktionen liegt unter anderem darin, den Code für Menschen einfacher verständlich zu machen.
+
+- es ist daher sehr wichtig den eigenen Funktionen *sprechende* Namen zu geben
+
+- idealerweise sind Namen kurz und klar, im Zweifel ist es aber wichtiger klar als kurz zu sein, da die RStudio-Autovervollständigung dabei hilft auch lange Namen einzugeben
+
+- deutsche Funktionsnamen sind völlig okay, aber auf keinen Fall sollten Umlaute verwendet werden
+
+
+
+---
+----
+## Funktionen: Best Practices
+
+Best Practice laut [R for Data Science](https://r4ds.had.co.nz/functions.html#functions-are-for-humans-and-computers)
+.panelset[
+.panel[.panel-name[Verben/Nomen]
+- generell sollten Funktionen Verben sein und Argumente Nomen
+- Nomen sollten nur dann als Funktionsnamen verwendet werden, wenn das angedachte Verb zu "generisch" klingt (z.B. “get”, “compute”, “calculate” oder “determine”)
+```{r, echo = TRUE,eval=FALSE}
+# Zu kurzer Name
+f()
+# Weder ein Verb noch beschreibend
+my_awesome_function()
+# Lang aber klar
+impute_missing()
+collapse_years()
+```
+]
+.panel[.panel-name[Mehrere Wörter]
+- besteht ein Funktionsname aus mehreren Worten, empfiehlt sich die Trennung mit `_` (*snake_case*) 
+- alternativ kann *camelCase* verwendet werden (erstes Wort klein, alle folgenden Worte mit grosse Anfangsbuchstaben)
+- Wichtig ist **Konsistenz** (mische nicht *snake_case* und *camelCase*, wenn mehrere Funktionen erstellt werden)
+```{r, echo = TRUE, eval = FALSE}
+camelCaseFunction()
+
+snake_case_function()
+```
+]
+.panel[.panel-name[Kommentare]
+
+- kommentiere innerhalb des Funktions-Body in dem du `#` verwendest
+
+- beim Kommentieren gilt: Versuche zu beschreiben, **warum** du etwas tust und nicht **was** du tust.
+.bg-light-gray.b--dark-gray.ba.bw2.br3.shadow-5.ph4.mt2[
+Do you need to add some intermediate variables with useful names? Do you need to break out a subcomponent of a large function so you can name it? However, your code can never capture the reasoning behind your decisions: why did you choose this approach instead of an alternative? What else did you try that didn’t work? It’s a great idea to capture that sort of thinking in a comment.
+.tr[
+— Hadley Wickham, R for Data Science, Chapter 19.3
+]
+]
+]
+.panel[.panel-name[Argumente]
+
+- Argumente sollten wie Funktionen selbst aussagekräftige Namen besitzen (generell Nomen)
+
+- es gibt einige spezielle Argumente, für die sich eine einheitliche Benennung durchgesetzt hat. Diese findet ihr [hier](https://r4ds.had.co.nz/functions.html#choosing-names)
+
+- ein guter Tipp ist es ausserdem, sich Argumente bestehender Funktionen anzusehen
+
+]
+]
+
+---
+----
+## Funktionen: Conditions
+
+Ein R Workflow (oder eine Funktion) kann unterbrochen werden, um einen speziellen Zustand (*condition*) zu siganlisieren.
+
+In R gibt es generell drei `conditions`:
+
+1. **Error:** Ein Fehler im Ablauf, der ein weiterlaufen verhindert -> Der Prozess stopt an der Stelle, an der der Fehler aufgetreten ist.
+2. **Warning:** Weist auf ein mögliches Problem hin, das das Programm nicht anhält, sondern den Benutzer warnt
+3. **Info:** Gibt informatives Feedback über den laufenden Prozess, ohne einen Fehler oder eine Warnung zu implizieren
+
+
+---
+----
+## Funktionen: Conditions
+
+In Funktionen können eigene `conditions` erzeugt werden. Das ist wichtig, da es dem Benutzer später hilft herauszufinden, was er/sie womöglich falsch gemacht hat. 
+
+.panelset[
+.panel[.panel-name[stop]
+Mit `stop()` kann ein *Error* erzeugt werden
+```{r, echo = TRUE, error = TRUE}
+f7 <- function(x){
+  if (!is.numeric(x)){
+    stop(paste0("Der Wert für x (",x,") ist nicht numerisch."))
+  }
+  return(x*7)
+}
+f7("2")
+```
+]
+.panel[.panel-name[warning]
+Mit `warning()` kann eine *Warning Message* erzeugt werden
+
+```{r, echo = TRUE, error = TRUE}
+f7 <- function(x){
+  if (!is.numeric(x)){
+    x <- as.numeric(x)
+    warning("x wurde zu numeric konvertiert")
+  }
+  return(x*7)
+}
+f7("2")
+```
+]
+.panel[.panel-name[message]
+`message()` erzeugt eine `Info Message` 
+```{r, echo = TRUE, error = TRUE}
+f8 <- function(x){
+  if (is.numeric(x)){
+    message("x ist ein numerischer Wert")
+  }
+  return(x*7)
+}
+f8(2)
+```
+]
+]
+
+
+---
+----
+
+## Hands-On: Funktionen
+
+1. Schreibe eine eigene Funktion zur Berechnung der Varianz eines numerischen Vektors und nenne sie `varianz`
+$$\mathrm{Var}(x) = \frac{1}{n - 1} \sum_{i=1}^n (x_i - \bar{x}) ^2$$
+**Erklärung:**
+- $n$ ist die Stichprobengrösse (-> die Anzahl der Elemente im Vektor)
+- $x_i$ ist der Wert von Vektor $x$ an Stelle $i$
+- $\bar{x}$ ist der Mittelwert von Vektor $x$
+- $\sum_{i=1}^n (x_i - \bar{x}) ^2$ bedeuted das alle Ergebnisse von $(x_i - \bar{x}) ^2$ für jedes Element im vektor aufsummiert werden.

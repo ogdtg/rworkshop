@@ -1,0 +1,299 @@
+/* TITEL FOLIE */
+.title-slide {
+	background-color: #fff;
+	background-position: 0 55%, 90% 10%;
+	background-size: auto, 23%;
+	background-image: url(colorbar.png),url(tg.jpg);
+
+}
+
+
+
+.remark-slide-content.center.middle.inverse.title-slide{
+    padding: 1em 4em 1em 4em !important;
+}
+
+.title-slide div.title {
+  position: absolute;
+  top: 400px;
+}
+
+.title-slide div.amt {
+  position: fixed;
+  top: 10%;
+  left: 80px;
+}
+
+.title-slide .remark-slide-number{
+  display: none;
+}
+.title-slide div.author {
+  display: none;
+}
+.title-slide div.date {
+  display: none;
+}
+
+
+/* TITEL */
+.title-slide h1 {
+  text-shadow: none;
+  font-family: Arial;
+  color: black;
+  font-style: bold;
+  text-align: left;
+  left: 20px;
+  font-size: 44px;
+}
+
+/* AMT */
+.title-slide h4 {
+  position:relative;
+  top:-25px;
+  text-shadow: none;
+  font-family: Arial;
+  color: black;
+  font-style: bold;
+  text-align: left;
+  font-size: 14px;
+}
+
+/* STELLE */
+.title-slide h5 {
+  position:relative;
+  top:-253px;
+  text-shadow: none;
+  font-family: Arial;
+  color: black;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 100;
+}
+/* FOLIEN BODY */
+
+.xe-banner__left h6 {
+  font-family: Arial;
+  font-size: 12px;
+  text-align: left;
+}
+.xe-banner__left h7 {
+  font-size: 12px;
+  position: relative;
+  top: -28px;
+}
+
+.xe-banner.top {
+  height:7.5em;
+}
+.xe-banner__left {
+  padding-left:32px;
+  top: 300px;
+}
+.xe-banner__right {
+  padding-right:4em;
+  top: 300px;
+}
+hr {
+  color: black;
+  border: .5px solid;
+  width:103%;
+}
+
+body {
+  font-family: Arial;
+  text-shadow: none;
+  color: black;
+  font-size: 19px;
+
+}
+
+.xaringan-extra-logo{
+  right: 2em !important;
+  width: 145px !important;
+  top: 1.5em !important;
+
+}
+
+/*.remark-slide-content.hljs-default{
+   padding: 5em 4em 1em 3em;
+   font-style: bold;
+   pointer-events:none;
+}
+*/
+
+.remark-slide-content{
+   padding: 5em 4em 1em 3em;
+   font-style: bold;
+}
+
+.remark-slide-content h2 {
+   font-size: 25px;
+   height: 2em;
+   margin-block-start: 0.2em;
+
+}
+img, video, iframe {
+    max-width: 100%;
+    max-height: 440px;
+}
+.panel.panel-active img, video, iframe {
+    max-width: 100%;
+    max-height: 370px;
+}
+
+.remark-slide-number{
+  font-family: Arial;
+  font-size: 14px;
+  color: black;
+  opacity: 1;
+}
+
+.caption {
+  font-size: 8px;
+}
+
+.logo-fig {
+  top: 5em;
+  right: 2em;
+  width: 100px;
+  height: 0px;
+  position: absolute;
+  pointer-events: none;
+}
+
+.logo-fig-small {
+  top: 94px;
+  right: 39px;
+  width: 60px;
+  height: 0px;
+  position: absolute;
+  pointer-events:none;
+  z-index: 2;
+
+}
+
+.logo-fig-small3 {
+  top: 148px;
+  right: 69px;
+  width: 60px;
+  height: 0px;
+  position: absolute;
+  pointer-events:none;
+  z-index: 2;
+
+}
+
+
+/* TITLE LOGOS */
+.logo-title1 {
+  top: 150px;
+  left: 50%;
+}
+
+.logo-title2 {
+  top:150px;
+  left: 39%;
+}
+
+.logo-title3 {
+  top:150px;
+  left:28%;
+}
+
+.logo-title4 {
+  top:236px;
+  left:33.5%;
+}
+.logo-title5 {
+  top:236px;
+  left:44.5%;
+}
+.logo-title6 {
+  top:236px;
+  left:55.5%;
+}
+
+.logo-title7 {
+  top:322px;
+  left:50%;
+}
+.logo-title8 {
+  top:322px;
+  left:39%;
+}
+.logo-title9 {
+  top:322px;
+  left:28%;
+}
+.logo-title10 {
+  top:408px;
+  left:33.5%;
+}
+
+
+.logo-fig-small2 {
+  top: 95px;
+  right: 101px;
+  width: 60px;
+  height: 0px;
+  position: absolute;
+  pointer-events:none;
+  z-index: 2;
+
+}
+
+.panelset {
+  pointer-events: auto;
+}
+
+.logo-small{
+  width: 60px;
+}
+
+.check-yes{
+  color:green;
+  font-size: 100px;
+  text-align: center;
+  padding: 0;
+  margin: 0;
+}
+
+
+.check-no{
+  color:red;
+  font-size: 100px;
+  text-align: center;
+  padding: 0;
+  margin: 0;
+}
+
+img.logo {
+  pointer-events:auto;
+  z-index: 2;
+
+}
+
+img.logo:hover {
+  opacity: 0.5;
+}
+
+.remark-inline-code {
+  color:blue;
+}
+
+.countdown {
+  right: 337px;
+  bottom: 19px;
+  pointer-events: auto;
+}
+
+/* LINK */
+a {
+ pointer-events: auto;
+}
+
+/* Stil für hervorgehobene Codezeilen */
+.remark-code-line-highlight {
+  background-color: rgba(255, 255, 0, 0.3); /* Gelbe Hervorhebung */
+  display: block; /* Sicherstellen, dass es die ganze Zeile betrifft */
+}

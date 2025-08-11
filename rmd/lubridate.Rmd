@@ -1,0 +1,104 @@
+---
+title: "lubridate"
+author: "Felix lorenz"
+date: '12. Dezember 2022'
+amt: "Staatskanzlei"
+stelle: "Dienststelle für Statistik"
+output: 
+  xaringan::moon_reader:
+    highlightStyle: github
+    highlightlines: true
+    highlightSpans: true
+    css: ["default","styles_x.css"]
+
+
+---
+
+
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,dpi=300)
+```
+
+
+
+----
+## lubridate
+<figure class="logo-fig logo-fig-small">
+  <a href='https://lubridate.tidyverse.org' target="_blank">
+    <img src='https://lubridate.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+- Da das arbeiten mit Datumsangaben in R oft unintuitiv ist, wurde das `lubridate` Package entwickelt
+- Mit `lubridate` Können Datums- und Zeitangaben deutlich einfacher verarbeitet werden, als mit base R.
+
+- `lubridate` kann sowohl Daten vom Typ `date` (Datum auf Tagesbasis) als auch vom Typ `datetime` (Genaues Datum mit Uhrzeit) verarbeiten.
+
+ 
+---
+----
+## lubridate: Nützliche Funktionen
+<figure class="logo-fig logo-fig-small">
+  <a href='https://lubridate.tidyverse.org' target="_blank">
+    <img src='https://lubridate.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+.panelset[
+.panel[.panel-name[date]
+- `lubridate` bietet Funktionen an, die quasi jedes Datumsformat erkennen und umwandeln kann. 
+- Wichtig ist einzig die Reihenfolge (Tag-Monat-Jahr -> `dmy()`; Jahr-Monat-Tag -> `ymd()`)
+```{r, message=FALSE}
+library(lubridate)
+```
+
+```{r, echo=TRUE}
+ymd("20221212")
+dmy("02.03.2023")
+```
+
+
+]
+.panel[.panel-name[datetime]
+-  gleiches gilt für Daten vom Typ `datetime` (gleiches Prinzip)
+```{r, echo=TRUE}
+dmy_hms("02.03.2023 11:41:12 Uhr")
+```
+]
+.panel[.panel-name[Daten runden und extrahieren]
+- will man Daten auf z.B. auf Jahresbasis zusammenfassen müssen tgesaktuelle Daten gerundet werden
+
+```{r, echo=TRUE}
+new_date <- round_date(dmy_hms("02.03.2023 11:41:12 Uhr"),unit = "year")
+new_date
+```
+
+- wenn nun nur das Jahr angezeigt werden soll, bietet `lubridate` ebenfalls eine Lösung
+
+```{r, echo=TRUE}
+year(new_date)
+```
+]
+]
+
+
+---
+----
+## Hands-On: lubridate und das Arbeiten mit Datumsangaben
+<figure class="logo-fig logo-fig-small">
+  <a href='https://lubridate.tidyverse.org' target="_blank">
+    <img src='https://lubridate.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+1. Betrachten wir den Datensatz `geburten`. Wir möchten das Geburtsdatum noch genauer wissen und beziehen deshalb   die Geburtsstunde des Kindes mit ein. Demnach bilden wir aus dem Geburtsjahr (geb_year), dem Geburtsmonat (geb_mon),   dem Geburtstag und der Geburtsstunde eine neue Variable `geb_fulldate`, die ein von R lesbares Datum vom Typ `datetime` enthält.<br>
+Selektiere den Datensatz vor der Berechnung so, dass nur die benötigten Variablen enthalten sind.
+Erstelle einen neuen Datensatz `geburten_time` und füge die neue Spalte hinzu.
+
+2. Was ist der Grund für die Warning Message wonach das parsing bei einigen Zeilen fehlgeschlagen ist?
+
+3. Wie könnte man dieses Problem theoretisch lösen?
+
+```{r}
+countdown::countdown(minutes=10)
+```
