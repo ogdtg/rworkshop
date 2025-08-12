@@ -11,6 +11,7 @@ Sicher gibt es Stellen, an denen man Dinge effizienter oder „schöner“ löse
 Es ist ausserdem zu beachten, dass der Ursprung des Workshop in einer Zeit VOR KI liegt. Es sind daher keine Hinweise auf die Verwendung von KI vorhanden, was aber für den Lerneffekt eher förderlich sein sollte.
 
 Einige wenige Aufgaben und RMarkdown FIles (`dataspot`) können nur innerhalb des kantonalen Netzwerks des Kanton Thuragus ausgeführt werden.
+
 ---
 
 ## Intro
