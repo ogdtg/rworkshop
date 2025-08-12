@@ -8,6 +8,9 @@ Die Themen wuchsen dabei organisch – Wünsche und Vorschläge von Kolleginnen 
 Ziel war es, **alltägliches Programmieren in R** zu ermöglichen – pragmatisch und praxisnah.
 Sicher gibt es Stellen, an denen man Dinge effizienter oder „schöner“ lösen könnte, aber die vermittelten Methoden sind im Arbeitsalltag erprobt und funktionieren zuverlässig.
 
+Es ist ausserdem zu beachten, dass der Ursprung des Workshop in einer Zeit VOR KI liegt. Es sind daher keine Hinweise auf die Verwendung von KI vorhanden, was aber für den Lerneffekt eher förderlich sein sollte.
+
+Einige wenige Aufgaben und RMarkdown FIles (`dataspot`) können nur innerhalb des kantonalen Netzwerks des Kanton Thuragus ausgeführt werden.
 ---
 
 ## Intro
@@ -122,5 +125,7 @@ Sicher gibt es Stellen, an denen man Dinge effizienter oder „schöner“ löse
 * **Antworten**: Statuscodes, Body (JSON), Headers.
 * **httr2**: Moderner Workflow (`request()`, `req_url_query()`, `req_auth_basic()`, `resp_body_json()`).
 * **Beispiele**: Offene API (`data.tg.ch`), Authentifizierung (`dataspot`).
+* **Beispiele mit Authentifizierung können nur innerhalb des kantonalen Netzwerks des Kanton Thurgaus ausgeführt werden**
+
 * **Extras**: Umgebungsvariablen für Credentials, `req_dry_run()` für Tests.
 

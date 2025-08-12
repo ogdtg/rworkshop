@@ -43,8 +43,9 @@ head(bev_csv, 3)
 
 library(haven)
 
-bevnat <- read_sas("rmd/Daten/bevnatgeb2021.sas7bdat")
-head(bevnat, 3)
+# DIESE DATEI KANN AUS DATENSCHUTZGRÜNDEN NICHT MITGELIEFERT WERDEN
+# bevnat <- read_sas("rmd/Daten/bevnatgeb2021.sas7bdat")
+# head(bevnat, 3)
 
 ################################################################################################
 # d) EXCEL (Bonus)                                                                             #  
@@ -55,7 +56,7 @@ head(bevnat, 3)
 alter <- read_excel("rmd/Daten/bevölkerung.xlsx", sheet = "altersklassen",skip=2) 
 head(alter, 3)
 
-write_csv(x=alter,file="rmd/Output/Felix/alter.csv", na ="")
+write_csv(x=alter,file="rmd/Daten/alter_ergebnis.csv", na ="")
 
 #############################################################################################
 
@@ -135,10 +136,12 @@ abstimmungen_not_tidy <- abstimmungen_tidy %>%
 library(dplyr)
 
 ####################################################################################
-# a) Lies die Datei bevnatgeb2021.sas7bdat aus dem Ordner Daten als data.frame ein.#
+# a) Lies die Datei geburten_mod.rds aus dem Ordner Daten als data.frame ein.#
 ####################################################################################
 
-geburten <- read_sas("rmd/Daten/bevnatgeb2021.sas7bdat")
+
+# AUS DATENSCHUTZGRÜNDEN WURDEN DIE DATEN ANONYMISIERT
+geburten <- readRDS("rmd/Daten/geburten_mod.rds")
 
 ########################################################################################
 # c) Wähle nur die Spalten `geb_day`,`geb_mon`,`geb_year`, `sex`, `nat` und `name` aus.#
@@ -491,7 +494,7 @@ fahrzeug_klassen <- list(velo_total = c("f32200a","f32200b","f32200c"),
                          motorrad = c("f31200"))
 
 
-haush_sample <- readRDS("rmd/Daten/hashalte_sample.rds")
+haush_sample <- readRDS("rmd/Daten/haushalte_sample.rds") 
 
 
 
@@ -549,10 +552,10 @@ map_list_fz <- bezirke %>%
 
 # b) Anzahl Ortschaften pro Bezirk
 
-
+# devtools::install_github("ogdtg/odsAPI")
 library(odsAPI)
 odsAPI::set_domain("kantonthurgau.opendatasoft.com")
-svz <- get_dataset(dataset_id = "sk-stat-112")
+svz <- odsAPI::get_dataset(dataset_id = "sk-stat-112")
 
 anzahl_ortschaften <- sapply(bezirke,function(x){
   svz %>% 
@@ -788,6 +791,7 @@ save_tg_workbook(wb, "rmd/Daten/2024_Gde_Geb_ab2000_FL.xlsx",tg_header = F,overw
 ## AUFGABE 17: Referenzdaten beziehen   ##
 ##########################################
 
+# NUR INTERN LÖSBAR
 devtools::load_all("/r-proj/stat/ogd/dataspotR")
 
 # Sys.setenv(DATASPOT_PW="XXXXXXXX")
