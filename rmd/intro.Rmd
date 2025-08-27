@@ -89,7 +89,7 @@ knitr::include_graphics("./img/Rstudio.jpg")
 
 
 ```{r, out.width="60%"}
-knitr::include_graphics("./img/03_projects.png")
+knitr::include_graphics("./img/03_projects.PNG")
 ```
 ---
 ----

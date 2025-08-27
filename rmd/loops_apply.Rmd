@@ -70,7 +70,7 @@ for (i in x){ # Kopfzeile
 ]
 .pull-right[
 ```{r, out.width="70%",fig.align='center',fig.cap="https://universeofdatascience.com/wp-content/uploads/2021/06/Loops_in_R-1024x576.png"}
-knitr::include_graphics("img/forloop.png")
+knitr::include_graphics("img/forloop.PNG")
 ```
 
 ]
@@ -141,7 +141,7 @@ while (i <= y){
 ]
 .pull-right[
 ```{r, out.width="70%",fig.align='center',fig.cap="https://universeofdatascience.com/wp-content/uploads/2021/06/Loops_in_R-1024x576.png"}
-knitr::include_graphics("img/whileloop.png")
+knitr::include_graphics("img/whileloop.PNG")
 ```
 
 ]
