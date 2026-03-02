@@ -1,7 +1,7 @@
 ---
 title: "dplyr"
 author: "Felix lorenz"
-date: '12. Dezember 2022'
+date: 'Workshop 2026'
 amt: "Staatskanzlei"
 stelle: "Dienststelle für Statistik"
 output: 
@@ -256,15 +256,33 @@ df_tidy %>%
   </a>
 </figure>
 
-Mit `mutate_all` oder `mutate_at` können alle Variablen bzw. alle Variablen mit einem bestimmten Kriterium gleichzeitig bearbeitet werden.
+Mit `across()` (seit dplyr 1.0.0) können die gleiche Operation auf mehrere Spalten gleichzeitig angewendet werden.
 
-Das ist nützlich, wenn man die gleiche Operation auf mehrere Spalten anwenden will.
+> **Hinweis:** Die älteren Funktionen `mutate_all()` und `mutate_at()` sind veraltet (*deprecated*) und sollten durch `across()` ersetzt werden.
 
+.panelset[
+.panel[.panel-name[across – alle Spalten]
 ```{r, echo=TRUE}
-df_tidy %>% 
-  mutate_all(as.character) %>% 
+df_tidy %>%
+  mutate(across(everything(), as.character)) %>%
   head(3)
 ```
+]
+.panel[.panel-name[across – bestimmte Spalten]
+```{r, echo=TRUE}
+df_tidy %>%
+  mutate(across(c(cases, deaths), ~ .x / 1000)) %>%
+  head(3)
+```
+]
+.panel[.panel-name[across – nach Typ]
+```{r, echo=TRUE}
+df_tidy %>%
+  mutate(across(where(is.numeric), round)) %>%
+  head(3)
+```
+]
+]
 
 ---
 ----
@@ -722,14 +740,17 @@ geburten_ch_2010 %>%
 ```
 
 ]
-.panel[.panel-name[top_n]
-Mit `top_n()` können die Zeilen mit den höchsten (oder niedrigsten) Werten für eine bestimmte Variable gefiltert werden
+.panel[.panel-name[slice_max]
+Mit `slice_max()` / `slice_min()` können die Zeilen mit den höchsten (oder niedrigsten) Werten gefiltert werden.
+
+> **Hinweis:** `top_n()` ist veraltet (*deprecated*) – bitte `slice_max()` / `slice_min()` verwenden.
+
 ```{r, message=FALSE, echo=TRUE}
-geburten_ch_2010 %>% 
-  group_by(geb_year,name) %>% 
-  count() %>% 
-  group_by(geb_year) %>% 
-  top_n(1,n) %>% 
+geburten_ch_2010 %>%
+  group_by(geb_year,name) %>%
+  count() %>%
+  group_by(geb_year) %>%
+  slice_max(n, n = 1) %>%
   head(2)
 ```
 
@@ -737,11 +758,11 @@ geburten_ch_2010 %>%
 .panel[.panel-name[distinct]
 Mit `distinct()` können Duplikate entfernt werden. Dazu werden einfach die Variablen aus denen die Duplikate entfernt werden sollen als Argumente mitgegeben. Setzt man `.keep_all=TRUE`, dann bleiben alle anderen Variablen des data.frames erhalten. Sonst bleiben nur die Spalten, die als Argument angegeben wurden. Bei der Entfernung der Duplikate wird immer der erste Wert behalten, der Rest wird entfernt.
 ```{r, message=FALSE, echo=FALSE}
-popular_names <- geburten_ch_2010 %>% 
-  group_by(geb_year,name) %>% 
-  count() %>% 
-  group_by(geb_year) %>% 
-  top_n(1,n)
+popular_names <- geburten_ch_2010 %>%
+  group_by(geb_year,name) %>%
+  count() %>%
+  group_by(geb_year) %>%
+  slice_max(n, n = 1)
 ```
 
 ```{r, message=FALSE, echo=TRUE}

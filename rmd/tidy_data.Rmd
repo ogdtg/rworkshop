@@ -1,7 +1,7 @@
 ---
 title: "Tidy Data"
 author: "Felix lorenz"
-date: '12. Dezember 2022'
+date: 'Workshop 2026'
 amt: "Staatskanzlei"
 stelle: "Dienststelle für Statistik"
 output: 

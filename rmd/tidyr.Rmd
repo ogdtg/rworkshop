@@ -1,7 +1,7 @@
 ---
 title: "tidyr"
 author: "Felix lorenz"
-date: '12. Dezember 2022'
+date: 'Workshop 2026'
 amt: "Staatskanzlei"
 stelle: "Dienststelle für Statistik"
 output: 
@@ -42,6 +42,8 @@ Für detailliertere Informationen findet sich [hier](https://github.com/rstudio/
 - `pivot_wider`: fasst Zeilen zusammen und "verbreitert" den Datensatz
 - `separate`: teilt eine Spalte in mehrere Spalten auf (Gegenstück ist `unite`)
 
+> **Hinweis (tidyr ≥ 1.3.0):** `separate()` ist veraltet (*deprecated*). Die modernen Nachfolger sind `separate_wider_delim()` (für Trennzeichen) und `separate_wider_position()` (für feste Breiten).
+
 ---
 ----
 ## tidyr
@@ -75,10 +77,14 @@ df_tidy_m %>%
 ```
 ]
 .panel[.panel-name[separate]
-Spalten können mit `separate` in mehrere Spalten aufgeteilt werden.
+Spalten können mit `separate_wider_delim()` in mehrere Spalten aufgeteilt werden.
+
+> `separate()` ist veraltet – bitte `separate_wider_delim()` verwenden.
+
 ```{r, echo=TRUE}
-df_tidy_m %>% 
-  tidyr::separate(col="date",sep = "-", into = c("year","month","day"))
+df_tidy_m %>%
+  tidyr::separate_wider_delim(col = date, delim = "-",
+                              names = c("year","month","day"))
 ```
 ]
 ]

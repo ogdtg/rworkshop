@@ -1,0 +1,284 @@
+---
+title: "Recap"
+author: "Felix Lorenz"
+date: "Workshop 2026"
+amt: "Amt für Daten und Statistik"
+stelle: ""
+output:
+  xaringan::moon_reader:
+    highlightStyle: github
+    highlightlines: true
+    highlightSpans: true
+    css: ["default","styles_x.css"]
+---
+
+```{r setup-recap, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, dpi = 300, message = FALSE, warning = FALSE)
+library(dplyr)
+library(tidyr)
+```
+
+---
+----
+## Recap: Was haben wir bisher gelernt?
+
+.pull-left[
+**Session 1 – Themen:**
+
+1. Daten einlesen (`readr`, `readxl`, `haven`)
+2. Tidy Data – Prinzipien sauberer Datenstruktur
+3. `tidyr` – Daten umformen
+4. `dplyr::select()` & `dplyr::filter()` – Daten auswählen
+]
+
+.pull-right[
+```{r echo=FALSE, out.width="80%", fig.align='center'}
+knitr::include_graphics("https://tidyverse.tidyverse.org/logo.png")
+```
+]
+
+---
+----
+## Recap: Daten einlesen
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://readr.tidyverse.org' target="_blank">
+    <img src='https://readr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+<figure class="logo-fig logo-fig-small2">
+  <a href='https://readxl.tidyverse.org' target="_blank">
+    <img src='https://readxl.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+<figure class="logo-fig logo-fig-small3">
+  <a href='https://haven.tidyverse.org' target="_blank">
+    <img src='https://haven.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+R kann nahezu jedes Datenformat einlesen. Die wichtigsten Packages:
+
+| Format | Package | Funktion |
+|--------|---------|----------|
+| CSV (Komma) | `readr` | `read_csv()` |
+| CSV (Semikolon) | `readr` | `read_csv2()` |
+| Excel (.xlsx) | `readxl` | `read_excel()` |
+| SAS / SPSS / Stata | `haven` | `read_sas()`, `read_spss()`, `read_dta()` |
+| R-intern | base R | `readRDS()` / `saveRDS()` |
+
+```{r, echo=TRUE, eval=FALSE}
+library(readr);  library(readxl);  library(haven)
+
+df_csv   <- read_csv("daten/datei.csv")
+df_excel <- read_excel("daten/datei.xlsx")
+df_sas   <- read_sas("daten/datei.sas7bdat")
+```
+
+---
+----
+## Recap: Tidy Data
+
+Drei einfache Regeln machen einen Datensatz *tidy*:
+
+.pull-left[
+1. Jede **Spalte** ist eine Variable
+2. Jede **Zeile** ist eine Beobachtung
+3. Jede **Zelle** enthält genau einen Wert
+
+**Vorteile:**
+- Konsistente Struktur für alle Tools
+- R-Funktionen arbeiten nativ mit Tidy Data
+]
+
+.pull-right[
+```{r echo=FALSE}
+tibble::tibble(
+  kanton  = c("TG", "TG", "BS", "BS"),
+  datum   = as.Date(c("2024-01-01","2024-01-02","2024-01-01","2024-01-02")),
+  wert    = c(100, 102, 88, 90)
+)
+```
+<p class="check-yes">&#10003; Tidy</p>
+]
+
+---
+----
+## Recap: Tidy Data – Gegenbeispiele
+
+.panelset[
+.panel[.panel-name[Mehrere Werte in einer Zelle]
+```{r echo=FALSE}
+tibble::tibble(
+  kanton = c("TG","BS"),
+  werte  = c("100 / 102", "88 / 90")
+)
+```
+<p class="check-no">&#10060; Mehrere Werte pro Zelle</p>
+]
+.panel[.panel-name[Variablen als Spaltenköpfe]
+```{r echo=FALSE}
+tibble::tibble(
+  kanton     = c("TG", "BS"),
+  `2024-01-01` = c(100, 88),
+  `2024-01-02` = c(102, 90)
+)
+```
+<p class="check-no">&#10060; Datumswerte als Spaltennamen</p>
+]
+.panel[.panel-name[Tidy – korrekt]
+```{r echo=FALSE}
+tibble::tibble(
+  kanton = c("TG","TG","BS","BS"),
+  datum  = as.Date(c("2024-01-01","2024-01-02","2024-01-01","2024-01-02")),
+  wert   = c(100, 102, 88, 90)
+)
+```
+<p class="check-yes">&#10003; Eine Variable pro Spalte, ein Wert pro Zelle</p>
+]
+]
+
+---
+----
+## Recap: tidyr
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://tidyr.tidyverse.org' target="_blank">
+    <img src='https://tidyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+Das `tidyr` Package bringt Daten ins Tidy-Format.
+
+.panelset[
+.panel[.panel-name[pivot_longer]
+Mehrere Spalten → eine Spalte (*Long Format*)
+```{r echo=TRUE, eval=FALSE}
+df %>%
+  pivot_longer(cols = c("wert_a", "wert_b"),
+               names_to  = "indikator",
+               values_to = "wert")
+```
+]
+.panel[.panel-name[pivot_wider]
+Eine Spalte → mehrere Spalten (*Wide Format*)
+```{r echo=TRUE, eval=FALSE}
+df %>%
+  pivot_wider(names_from  = "kanton",
+              values_from = "wert")
+```
+]
+.panel[.panel-name[separate_wider_delim]
+Eine Spalte aufteilen (neu: `separate_wider_delim()`)
+```{r echo=TRUE, eval=FALSE}
+df %>%
+  separate_wider_delim(col   = datum,
+                       delim = "-",
+                       names = c("jahr", "monat", "tag"))
+```
+> `separate()` ist veraltet – bitte `separate_wider_delim()` verwenden.
+]
+.panel[.panel-name[unite]
+Mehrere Spalten zusammenführen
+```{r echo=TRUE, eval=FALSE}
+df %>%
+  unite(col = "datum", jahr, monat, tag, sep = "-")
+```
+]
+]
+
+---
+----
+## Recap: dplyr::select()
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+`select()` wählt **Spalten** aus einem Datensatz aus oder entfernt sie.
+
+.panelset[
+.panel[.panel-name[Nach Name]
+```{r echo=TRUE, eval=FALSE}
+df %>% select(kanton, datum, wert)
+```
+]
+.panel[.panel-name[Bereich]
+```{r echo=TRUE, eval=FALSE}
+df %>% select(kanton:wert)   # alle Spalten von kanton bis wert
+```
+]
+.panel[.panel-name[Entfernen mit -]
+```{r echo=TRUE, eval=FALSE}
+df %>% select(-datum)        # datum entfernen
+```
+]
+.panel[.panel-name[Hilfsfunktionen]
+```{r echo=TRUE, eval=FALSE}
+df %>% select(starts_with("wert"))
+df %>% select(contains("datum"))
+df %>% select(where(is.numeric))
+```
+]
+]
+
+---
+----
+## Recap: dplyr::filter()
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+`filter()` wählt **Zeilen** aus, die eine Bedingung erfüllen.
+
+.panelset[
+.panel[.panel-name[Einfach]
+```{r echo=TRUE, eval=FALSE}
+df %>% filter(kanton == "TG")
+df %>% filter(wert > 100)
+```
+]
+.panel[.panel-name[Mehrere Bedingungen]
+```{r echo=TRUE, eval=FALSE}
+# UND:  beide Bedingungen müssen zutreffen
+df %>% filter(kanton == "TG" & wert > 100)
+
+# ODER: mindestens eine muss zutreffen
+df %>% filter(kanton == "TG" | kanton == "BS")
+```
+]
+.panel[.panel-name[%in% Operator]
+```{r echo=TRUE, eval=FALSE}
+# Abgleich mit einem Vektor
+df %>% filter(kanton %in% c("TG", "BS", "ZH"))
+```
+]
+.panel[.panel-name[Kombiniert mit select]
+```{r echo=TRUE, eval=FALSE}
+df %>%
+  filter(kanton == "TG") %>%
+  select(datum, wert)
+```
+]
+]
+
+---
+----
+## Recap: Zusammenfassung
+
+| Funktion | Package | Was macht sie? |
+|----------|---------|---------------|
+| `read_csv()` / `read_excel()` | readr / readxl | Daten einlesen |
+| `pivot_longer()` | tidyr | Wide → Long |
+| `pivot_wider()` | tidyr | Long → Wide |
+| `separate_wider_delim()` | tidyr | Spalte aufteilen |
+| `select()` | dplyr | Spalten auswählen |
+| `filter()` | dplyr | Zeilen filtern |
+
+> **Merke:** Alle diese Funktionen folgen der gleichen Logik:
+> *Datensatz rein* `%>%` / `|>` *Funktion* → *Datensatz raus*
