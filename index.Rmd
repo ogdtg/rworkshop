@@ -72,6 +72,9 @@ xaringanExtra::use_tachyons()
 ```{r child='rmd/dplyr.Rmd'}
 ```
 ---
+```{r child='rmd/recap.Rmd'}
+```
+---
 ```{r child='rmd/stringr.Rmd'}
 ```
 ---
