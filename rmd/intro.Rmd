@@ -22,10 +22,22 @@ output:
 knitr::opts_chunk$set(echo = FALSE,dpi=300)
 ```
 
+----
+## Vorstellungsrunde
+
+Was ist meine Motivation für meine Teilnahme?
+
+Bei welchem konkreten Projekt/welcher Aufgabe aus meinem Arbeitsalltag könnte/möchte ich R einsetzen?
+
+Welche Kenntnisse möchte ich im Kurs erlangen?
 
 
 
 
+
+
+
+---
 ----
 ## Ziele des Workshops
 

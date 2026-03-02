@@ -16,11 +16,6 @@
 #    Benutze die head() Funktion, um die ersten 3 Zeilen von `bev` anzeigen zu lassen#
 ######################################################################################
 
-library(readxl)
-
-bev <- read_excel("rmd/Daten/bevölkerung.xlsx") 
-head(bev, 3)
-
 
 ##########################################################################################
 # b) CSV                                                                                 #  
@@ -29,10 +24,7 @@ head(bev, 3)
 #    Benutze die head() Funktion, um die ersten 3 Zeilen von `bev_csv` anzeigen zu lassen#
 ##########################################################################################
    
-library(readr)
 
-bev_csv <- read_csv(file = "rmd/Daten/bevölkerung.csv")
-head(bev_csv, 3)
 
 ##########################################################################################
 # c) SAS                                                                                 #
@@ -41,7 +33,6 @@ head(bev_csv, 3)
 #    Benutze die head() Funktion, um die ersten 3 Zeilen von `bevnat` anzeigen zu lassen #
 ##########################################################################################
 
-library(haven)
 
 # DIESE DATEI KANN AUS DATENSCHUTZGRÜNDEN NICHT MITGELIEFERT WERDEN
 # bevnat <- read_sas("rmd/Daten/bevnatgeb2021.sas7bdat")
@@ -53,16 +44,13 @@ library(haven)
 #    Nenne den data.frame `alter`                                                              #  
 #    Benutze die head() Funktion, um die ersten 3 Zeilen von `alter` anzeigen zu lassen        #
 ################################################################################################
-alter <- read_excel("rmd/Daten/bevölkerung.xlsx", sheet = "altersklassen",skip=2) 
-head(alter, 3)
 
-write_csv(x=alter,file="rmd/Daten/alter_ergebnis.csv", na ="")
 
 #############################################################################################
 
 
 ############################################
-## AUFGABE 2: magrittr:: %>%  (5 Minuten) ##
+## AUFGABE 2: Pipelines |>   (5 Minuten) ##
 ############################################
 
 num_vec <- c(5,4,6,1,4)
@@ -72,19 +60,14 @@ num_vec <- c(5,4,6,1,4)
 # Die folgende Codezeile führt diese Operationen aus.                                                                                              #
 ####################################################################################################################################################
 
-round(sqrt(sum(num_vec)),1)
 
 
-library(magrittr)
 ##########################################################################################################################
-# a) Verwende den %>% Operator um die oben stehende Codezeile in eine Pipe im Stile von dplyr umzuwandeln                #
+# a) Verwende den |>  Operator um die oben stehende Codezeile in eine Pipe im Stile von dplyr umzuwandeln                #
 #    Wandle die Zeile in EINE Pipe um OHNE Zwischenergebnisse zu speichern. Verwende den Namen des Vektors nur EINMAL.   #
 ##########################################################################################################################
 
-num_vec %>% 
-  sum() %>% 
-  sqrt() %>% 
-  round(1) 
+
 
 
 
@@ -110,8 +93,6 @@ abstimmungen <- readRDS("rmd/Daten/Abstimmungen.rds")
 #############################################################################################################################################
 
 
-abstimmungen_tidy <- abstimmungen %>% 
-  pivot_wider(names_from = "Ergebnis", values_from = "Volksabstimmungen (Ergebnisse Ebene Kanton seit 1866)")
 
 
 ##################################################################
@@ -119,10 +100,6 @@ abstimmungen_tidy <- abstimmungen %>%
 #     Speichere das Ergebnis unter `abstimmungen_not_tidy`       #
 ##################################################################
 
-abstimmungen_not_tidy <- abstimmungen_tidy %>% 
-  pivot_longer(cols = Stimmberechtigte:`Ja in %`,
-               names_to = "Ergebnis",
-               values_to = "Volksabstimmungen (Ergebnisse Ebene Kanton seit 1866)")
 
 ######################################################################################################
 
@@ -149,15 +126,12 @@ geburten <- readRDS("rmd/Daten/geburten_mod.rds")
 #    Speichere das Resultat in der Variable `geburten_ch_2010`                         #
 ########################################################################################
 
-geburten_ch_2010 <- geburten %>% 
-  dplyr::select(geb_day,geb_mon,geb_year,sex,nat,name) %>% 
-  filter(geb_year > 2010 & nat == 8100)
+
 
 ###################################
 # c) Gebe die ersten 3 Zeilen aus.#
 ###################################
 
-head(geburten_ch_2010,3)
 
 
 ######################################################################################################
@@ -180,8 +154,7 @@ geburten_ch_2010 <- geburten_ch_2010 %>%
 #    Verwende dazu die paste0() Funktion.                                                                        #
 #    Speichre das Resultat unter dem Namen geburten_ch_2010_date                                                 #
 ##################################################################################################################
-geburten_ch_2010_date <- geburten_ch_2010 %>% 
-  mutate(geb_date = paste0(geb_day,".",geb_mon,".",geb_year))
+
 
 # Führe den untenstehenden Code aus, um aus dem dem string value in geb_date ein von R lesbares Datum zu erstellen
 # Hinweis: von R lesbare Datumsangaben sind im Format jjjj-mm-dd
@@ -531,7 +504,7 @@ lapply(fahrzeug_klassen, function(x){
 
 
 # a) Gesamtanzahl aller Fahrzeuge pro Bezirk
-library(purrr)
+
 bezirke <- unique(haush_sample$bezirk_name)
 
 for_loop_list <- list()

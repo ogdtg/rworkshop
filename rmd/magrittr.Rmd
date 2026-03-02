@@ -1,7 +1,7 @@
 ---
-title: "Magrittr"
-author: "Felix lorenz"
-date: '12. Dezember 2022'
+title: "Pipes (magrittr & base R)"
+author: "Felix Lorenz"
+date: "Workshop 2026"
 amt: "Staatskanzlei"
 stelle: "Dienststelle für Statistik"
 output: 
@@ -10,18 +10,13 @@ output:
     highlightlines: true
     highlightSpans: true
     css: ["default","styles_x.css"]
-
-
 ---
 
-
-
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE,dpi=300)
+knitr::opts_chunk$set(echo = FALSE, dpi = 300, message = FALSE, warning = FALSE)
 ```
 
-
-
+---
 ----
 ## Data Manipulation
 
@@ -79,17 +74,32 @@ knitr::opts_chunk$set(echo = FALSE,dpi=300)
   </a>
 </figure>
 
-
 <figure class="logo-fig logo-title10">
   <a href='https://ggplot2.tidyverse.org' target="_blank">
     <img src='https://ggplot2.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/>
   </a>
 </figure>
 
+---
+----
+
+## Pipes: `%>%` und `|>`
+
+* Pipes machen Code **lesbarer**, weil Schritte nacheinander beschrieben werden.
+* Man reduziert Verschachtelung → oft leichter zu debuggen.
+
+**Wichtig (seit 2021 / R 4.1):**
+
+* R hat eine **eingebaute Pipe**: `|>`
+* Das tidyverse nutzt weiterhin häufig `%>%` (magrittr), aber `|>` ist heute Standard in base R.
+
+> Merksatz für Anfänger:innen:
+> **`|>` ist die neue Standard-Pipe.** `%>%` wirst du aber in vielen Beispielen weiterhin sehen.
 
 ---
 ----
-## magrittr:: %>%
+
+## magrittr:: `%>%` (klassisch im tidyverse)
 
 <figure class="logo-fig logo-fig-small">
   <a href='https://magrittr.tidyverse.org' target="_blank">
@@ -97,64 +107,149 @@ knitr::opts_chunk$set(echo = FALSE,dpi=300)
   </a>
 </figure>
 
-- Mit dem `magrittr` package und dem darin enthaltenen Pipeline Operator `%>%` wird euer Code viel einfacher lesbar.
-- Der Code wird durch die Nutzung der Pipe weniger verschachtelt und so einfacher zu debuggen.
-
+* `%>%` kommt aus dem Paket **magrittr** (tidyverse-Ökosystem)
+* Häufig in dplyr-Beispielen, älteren Skripten, Blogs etc.
+* Unterstützt den Platzhalter `.` (praktisch bei manchen Funktionsaufrufen)
 
 .panelset[
 .panel[.panel-name[Ohne Pipe]
-Innerste Klammer wird zuerst usgeführt
+Innerste Klammer wird zuerst ausgeführt
+
 ```{r, echo=TRUE, eval=FALSE}
 h(g(f(df)))
 ```
+
 ]
-.panel[.panel-name[Mit Pipe]
+.panel[.panel-name[Mit %>%]
 Code wird nacheinander ausgeführt (f() dann g() dann h())
+
 ```{r, echo=TRUE, eval=FALSE}
 df %>% 
   f() %>% 
   g() %>% 
   h()
 ```
+
 ]
-.panel[.panel-name[Ohne Platzhalter]
-```{r, echo=TRUE, eval=FALSE}
-langer_variablenname %>%  f(y, z = langer_variablenname)
-```
-]
-.panel[.panel-name[Mit Platzhalter]
-Innerhalb der Pipeline kann anstelle der Variable, auf welche die Operationen angewendet werden auch der `.` als Platzhalter verwendet werden.
+.panel[.panel-name[Platzhalter .]
+Wenn das Ergebnis nicht als 1. Argument verwendet werden soll:
+
 ```{r, echo=TRUE, eval=FALSE}
 langer_variablenname %>%  f(y, z = .)
 ```
+
 ]
 ]
 
 ---
 ----
-## Hands-On: Piping mit magrittr:: %>%
+
+## Base R Pipe: `|>` (heute sehr empfehlenswert)
+
+* `|>` ist in R eingebaut (kein extra Package nötig)
+* Sehr gut für „sauberen“ Code in Projekten & Behördenumgebungen (weniger Abhängigkeiten)
+* Funktionsweise: Ergebnis links wird als **erstes Argument** rechts eingesetzt
+
+.panelset[
+.panel[.panel-name[Mit |>]
+
+```{r, echo=TRUE, eval=FALSE}
+df |>
+  f() |>
+  g() |>
+  h()
+```
+
+]
+.panel[.panel-name[Wichtig: Argumentposition]
+Wenn das Ergebnis nicht als 1. Argument passt, nutzt man ein Hilfsmittel
+(z.B. anonyme Funktion):
+
+```{r, echo=TRUE, eval=FALSE}
+langer_variablenname |>
+  (\(x) f(y, z = x))()
+```
+
+]
+.panel[.panel-name[Merksatz]
+
+* `%>%` hat den Platzhalter `.`
+* `|>` hat **keinen** `.`-Platzhalter
+* Bei `|>` nutzt man dann oft `\(x) ...` (anonyme Funktion)
+  ]
+  ]
+
+---
+----
+
+## Wann nutze ich was?
+
+* **In neuen Projekten**: `|>` (base R)
+* **Wenn ihr tidyverse-Code lest**: `%>%` verstehen können
+* **Im Workshop**: Wir akzeptieren beide – wichtig ist, dass ihr das Prinzip versteht.
+
+> Ziel: Lesbarer Code in klaren Schritten.
+
+---
+----
+
+## Hands-On: Piping (|> oder %>%)
 
 <figure class="logo-fig logo-fig-small">
   <a href='https://magrittr.tidyverse.org' target="_blank">
     <img src='https://magrittr.tidyverse.org/logo.png' class='logo'/>
   </a>
 </figure>
+
 ```{r, echo=TRUE, eval=FALSE}
 num_vec <- c(5,4,6,1,4)
 
-round(sqrt(sum(num_vec)),1)
+round(sqrt(sum(num_vec)), 1)
 ```
-`num_vec` soll aufsummiert und anschliessend soll die Wurzel aus der Summe gezogen werden. 
-Das Ergebnis soll auf eine Nachkommastelle gerundet werden
-Die oben stehende Codezeile führt diese Operationen aus. 
+
+`num_vec` soll aufsummiert werden, anschliessend soll die Wurzel aus der Summe gezogen werden.
+Das Ergebnis soll auf eine Nachkommastelle gerundet werden.
 
 <ol type="a">
   <li>
-  Verwende den <b>%>%</b> Operator um die oben stehende Codezeile in eine Pipe im Stile von dplyr umzuwandeln<br>
-  Wandle die Zeile in EINE Pipe um OHNE Zwischenergebnisse zu speichern. Verwende den Namen des Vektors nur EINMAL.
+  Verwende eine Pipe, um die oben stehende Zeile umzuschreiben.<br>
+  <b>Variante 1:</b> mit <b>|></b> (base R)<br>
+  <b>Variante 2:</b> mit <b>%>%</b> (magrittr)<br>
+  Keine Zwischenergebnisse speichern. Den Namen des Vektors nur <b>einmal</b> verwenden.
   </li>
 </ol>
 
 ```{r}
 countdown::countdown(minutes=10)
 ```
+
+---
+----
+
+## Hands-On: Piping (|> oder %>%)
+
+.panelset[
+.panel[.panel-name[Lösung mit |>]
+
+```{r, echo=TRUE, eval=FALSE}
+num_vec |>
+  sum() |>
+  sqrt() |>
+  round(1)
+```
+
+]
+.panel[.panel-name[Lösung mit %>%]
+
+```{r, echo=TRUE, eval=FALSE}
+num_vec %>%
+  sum() %>%
+  sqrt() %>%
+  round(1)
+```
+
+]
+]
+
+
+

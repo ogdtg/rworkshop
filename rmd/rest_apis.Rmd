@@ -60,14 +60,14 @@ knitr::opts_chunk$set(echo = FALSE,dpi=300)
 .panel[.panel-name[Statuscode]
 Der Statuscode gibt an, ob die Anfrage erfolgreich war und liefert Informationen über den Status der Anfrage. Verschiede Stauscodes sind:
 
-- **2xx (Success): Anfrage war erfolgreich** `r emo::ji("smile")`
+- **2xx (Success): Anfrage war erfolgreich** 
   - `200 OK`: Anfrage erfolgreich verarbeitet.
   - `201 Created`: Ressource erfolgreich erstellt (bei POST-Anfragen).
-- **4xx (Client Error): Problem auf der Seite des Clients** `r emo::ji("thinking")`
+- **4xx (Client Error): Problem auf der Seite des Clients** 
   - `400 Bad Request`: Anfrage ist fehlerhaft.
   - `401 Unauthorized`: Fehlende oder ungültige Authentifizierung.
   - `404 Not Found`: Ressource nicht gefunden.
-- **5xx (Server Error): Problem auf der Seite des Servers** `r emo::ji("rage")`
+- **5xx (Server Error): Problem auf der Seite des Servers** 
   - `500 Internal Server Error`: Unerwarteter Serverfehler.
   - `503 Service Unavailable`: Dienst vorübergehend nicht verfügbar.
 
@@ -355,63 +355,7 @@ referenzdaten
 ```
 ]
 ]
----
-----
-<figure class="logo-fig logo-fig-small">
-  <a href='https://dataspot.apps.ktgcpp01.tg.ch/api/dataspot/manual/rest-api' target="_blank">
-    <img src='img/hex-dataspotR.png' class='logo'/>
-  </a>
-</figure>
-## `dataspotR` Package
 
-- Package um die dataspot Rest API zu nutzen
-
-- derzeit nur ein Entwurf, aber durchaus nutzbar
-
-- mit dem Package können ganz einfach alle möglichen Dataspot Elemente bezogen und auch angelegt werden
-
-Das Package ist derzeit noch nicht auf GitHub, kann aber lokal geladen werden mit 
-
-```{r , echo = TRUE, eval=TRUE}
-devtools::load_all("/r-proj/stat/ogd/dataspotR")
-```
----
-----
-<figure class="logo-fig logo-fig-small">
-  <a href='https://dataspot.apps.ktgcpp01.tg.ch/api/dataspot/manual/rest-api' target="_blank">
-    <img src='img/hex-dataspotR.png' class='logo'/>
-  </a>
-</figure>
-## dataspotR: Referenzdaten beziehen
-
-.panelset[
-.panel[.panel-name[Liste beziehen]
-
-```{r , echo = TRUE, eval=TRUE}
-# Das, was vorhin gemacht wurde in einer Funktion komprimiert
-referenzdaten <- get_referenzdaten_list()
-referenzdaten |> 
-  select(id,label,title,createdBy)  
-```
-
-]
-.panel[.panel-name[Referenzdatenobjekt beziehen]
-```{r , echo = TRUE, eval=TRUE}
-get_referenzdaten("Thurgauer Gemeinden") |> 
-  select(shortText,label,code)
-```
-]
-.panel[.panel-name[Objekte beziehen]
-
-Jedes Objekt auf dataspot besitzt eine ID und kann mit dieser bezogen werden
-
-```{r , echo = TRUE, eval=TRUE}
-# Beispiel Sammlung Open Government Data im A-Anlieferungen
-get_element_by_id("cb0cc89d-e011-4ee1-8c2c-06a631206926")
-
-```
-]
-]
 ---
 ----
 <figure class="logo-fig logo-fig-small">

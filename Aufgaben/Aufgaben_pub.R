@@ -15,12 +15,11 @@
 #    Nenne den data.frame `bev`                                                      #
 #    Benutze die head() Funktion, um die ersten 3 Zeilen von `bev` anzeigen zu lassen#
 ######################################################################################
-
 library(readxl)
 
-bev <- read_excel("rmd/Daten/bevölkerung.xlsx") 
-head(bev, 3)
+bev <- read_excel(path = "rmd/Daten/bevölkerung.xlsx")
 
+head(bev,n = 3)
 
 ##########################################################################################
 # b) CSV                                                                                 #  
@@ -29,10 +28,7 @@ head(bev, 3)
 #    Benutze die head() Funktion, um die ersten 3 Zeilen von `bev_csv` anzeigen zu lassen#
 ##########################################################################################
    
-library(readr)
 
-bev_csv <- read_csv(file = "rmd/Daten/bevölkerung.csv")
-head(bev_csv, 3)
 
 ##########################################################################################
 # c) SAS                                                                                 #
@@ -41,7 +37,6 @@ head(bev_csv, 3)
 #    Benutze die head() Funktion, um die ersten 3 Zeilen von `bevnat` anzeigen zu lassen #
 ##########################################################################################
 
-library(haven)
 
 # DIESE DATEI KANN AUS DATENSCHUTZGRÜNDEN NICHT MITGELIEFERT WERDEN
 # bevnat <- read_sas("rmd/Daten/bevnatgeb2021.sas7bdat")
@@ -53,38 +48,38 @@ library(haven)
 #    Nenne den data.frame `alter`                                                              #  
 #    Benutze die head() Funktion, um die ersten 3 Zeilen von `alter` anzeigen zu lassen        #
 ################################################################################################
-alter <- read_excel("rmd/Daten/bevölkerung.xlsx", sheet = "altersklassen",skip=2) 
-head(alter, 3)
+library(readxl)
 
-write_csv(x=alter,file="rmd/Daten/alter_ergebnis.csv", na ="")
+bev_altersklasse <- read_excel(path = "rmd/Daten/bevölkerung.xlsx" ,
+                                       sheet = "altersklassen", 
+                                       skip = 2)
 
 #############################################################################################
 
 
 ############################################
-## AUFGABE 2: magrittr:: %>%  (5 Minuten) ##
+## AUFGABE 2: Pipelines |>   (5 Minuten) ##
 ############################################
 
 num_vec <- c(5,4,6,1,4)
 
+num_vec |> 
+  sum() |> 
+  sqrt() |> 
+  round(digits=1)
 ####################################################################################################################################################
 # num_vec soll aufsummiert und anschliessend die Wurzel aus der Summe gezogen werden. Das Ergebnis soll auf eine Nachkommastelle gerundet werden   #
 # Die folgende Codezeile führt diese Operationen aus.                                                                                              #
 ####################################################################################################################################################
 
-round(sqrt(sum(num_vec)),1)
 
 
-library(magrittr)
 ##########################################################################################################################
-# a) Verwende den %>% Operator um die oben stehende Codezeile in eine Pipe im Stile von dplyr umzuwandeln                #
+# a) Verwende den |>  Operator um die oben stehende Codezeile in eine Pipe im Stile von dplyr umzuwandeln                #
 #    Wandle die Zeile in EINE Pipe um OHNE Zwischenergebnisse zu speichern. Verwende den Namen des Vektors nur EINMAL.   #
 ##########################################################################################################################
 
-num_vec %>% 
-  sum() %>% 
-  sqrt() %>% 
-  round(1) 
+
 
 
 
@@ -110,8 +105,11 @@ abstimmungen <- readRDS("rmd/Daten/Abstimmungen.rds")
 #############################################################################################################################################
 
 
-abstimmungen_tidy <- abstimmungen %>% 
-  pivot_wider(names_from = "Ergebnis", values_from = "Volksabstimmungen (Ergebnisse Ebene Kanton seit 1866)")
+abstimmungen_tidy <- abstimmungen |> 
+  pivot_wider(names_from = Ergebnis,
+              values_from = `Volksabstimmungen (Ergebnisse Ebene Kanton seit 1866)`) 
+  
+
 
 
 ##################################################################
@@ -119,7 +117,7 @@ abstimmungen_tidy <- abstimmungen %>%
 #     Speichere das Ergebnis unter `abstimmungen_not_tidy`       #
 ##################################################################
 
-abstimmungen_not_tidy <- abstimmungen_tidy %>% 
+abstimmungen_not_tidy <- abstimmungen_tidy |>  
   pivot_longer(cols = Stimmberechtigte:`Ja in %`,
                names_to = "Ergebnis",
                values_to = "Volksabstimmungen (Ergebnisse Ebene Kanton seit 1866)")
@@ -149,15 +147,14 @@ geburten <- readRDS("rmd/Daten/geburten_mod.rds")
 #    Speichere das Resultat in der Variable `geburten_ch_2010`                         #
 ########################################################################################
 
-geburten_ch_2010 <- geburten %>% 
-  dplyr::select(geb_day,geb_mon,geb_year,sex,nat,name) %>% 
-  filter(geb_year > 2010 & nat == 8100)
+geburten |> 
+  filter(geb_year>2010 & nat == "8100") |> 
+  select(geb_day,geb_mon,geb_year,sex,nat,name) 
 
 ###################################
 # c) Gebe die ersten 3 Zeilen aus.#
 ###################################
 
-head(geburten_ch_2010,3)
 
 
 ######################################################################################################
@@ -180,8 +177,7 @@ geburten_ch_2010 <- geburten_ch_2010 %>%
 #    Verwende dazu die paste0() Funktion.                                                                        #
 #    Speichre das Resultat unter dem Namen geburten_ch_2010_date                                                 #
 ##################################################################################################################
-geburten_ch_2010_date <- geburten_ch_2010 %>% 
-  mutate(geb_date = paste0(geb_day,".",geb_mon,".",geb_year))
+
 
 # Führe den untenstehenden Code aus, um aus dem dem string value in geb_date ein von R lesbares Datum zu erstellen
 # Hinweis: von R lesbare Datumsangaben sind im Format jjjj-mm-dd
@@ -196,19 +192,7 @@ geburten_ch_2010_date <- geburten_ch_2010_date %>%
 #########################################################################################
 
 # Wenn du nicht zum richtigen Ergebnis kommst, schreibe auf was theoretisch erledigt werden muss um das gewünschte Ergebnis zu erreichen
-# 1. Abstand zwischen Sys.Date() und geb_date errechnen
-# 2. Resultierende Tage durch 365 teilen um Jahre zu erhalten
-# 3. Ergebnis nach unten Runden um vollendete Lebensjahre zu erhalten
 
-geburten_ch_2010_date <- geburten_ch_2010_date %>%
-  mutate(
-    age = Sys.Date() - geb_date,
-    age = age / 365,
-    age = floor(age),
-    age = as.numeric(age)
-  )
-
-head(geburten_ch_2010_date,3)
 
 
 ###################################################################
@@ -217,22 +201,7 @@ head(geburten_ch_2010_date,3)
 ###################################################################
 
 
-geburten_ch_2010_date %>% 
-  group_by(geb_year) %>% 
-  summarise(n = n())
 
-geburten_ch_2010_date %>% 
-  group_by(geb_year) %>% 
-  count()
-
-
-geburten_ch_2010_date %>% 
-  group_by(geb_year) %>% 
-  mutate(total = n()) %>% 
-  filter(sex == 2) %>% 
-  ungroup() %>% 
-  group_by(geb_year,sex,total) %>% 
-  summarise(girls = n())
 
 ######################################################################################################
 
@@ -262,8 +231,7 @@ geburten_nat <- geburten %>%
 #    Speichere den neuen Datensatz unter dem Namen `geburten_join`                                          #
 #############################################################################################################
 
-geburten_join <- geburten_nat %>% 
-  left_join(codes , by = c("nat"="code"))
+
 
 
 ##############################################################################################################
@@ -271,9 +239,6 @@ geburten_join <- geburten_nat %>%
 ##############################################################################################################
 
 
-geburten_join %>% 
-  filter(country=="Nordmazedonien") %>% 
-  filter(sex == 1)
 
 
 ############################################################################################################
@@ -299,8 +264,6 @@ abstimmungen <- bfs_get_data(language = "de", number_bfs = "px-x-1703030000_100"
 ####################################################################################################################
 
 
-abstimmungen_tidy <- abstimmungen %>% 
-  pivot_wider(names_from = "Ergebnis", values_from = "Volksabstimmungen (Ergebnisse Ebene Kanton seit 1866)")
   
 
 ###################################################################
@@ -309,8 +272,6 @@ abstimmungen_tidy <- abstimmungen %>%
 #    Nutze dafür den Regex \\d\\d\\d\\d-\\d\\d-\\d\\d             #
 ###################################################################
 
-abstimmungen_tidy <- abstimmungen_tidy %>% 
-  mutate(date = str_extract(`Datum und Vorlage`, pattern = "\\d\\d\\d\\d-\\d\\d-\\d\\d"))
 
 
 
@@ -318,17 +279,13 @@ abstimmungen_tidy <- abstimmungen_tidy %>%
 # c) Entferne das Datum aus der Spalte `Datum und Vorlage` und wandle die `date` Spalte in ein von R lesbares Datum um.#
 ########################################################################################################################    
 
-abstimmungen_tidy <- abstimmungen_tidy %>% 
-  mutate(`Datum und Vorlage` = str_remove(`Datum und Vorlage`, pattern = "\\d\\d\\d\\d-\\d\\d-\\d\\d")) %>% 
-  mutate(date = as.Date(date))
 
 
 ##############################################################################################################
 # d) Entferne die Leerzeichen anführenden Leerzeichen aus der Spalte `Datum und Vorlage` (" Test " -> "Test")#
 ##############################################################################################################
 
-abstimmungen_tidy <- abstimmungen_tidy %>% 
-  mutate(`Datum und Vorlage` = str_trim(`Datum und Vorlage`))
+
 
 
 
@@ -348,25 +305,18 @@ library(lubridate)
 #    Füge diese neue Spalte zum Datensatz `geburten` hinzu und verwende das `lubridate` package                          #
 ##########################################################################################################################
 
-geburten_time <- geburten %>% 
-  select(geb_year,geb_mon,geb_day,geb_time) %>% 
-  mutate(geb_fulldate = paste0(geb_year,"/",geb_mon,"/",geb_day," ",geb_time)) %>% 
-  mutate(geb_fulldate = ymd_h(geb_fulldate))
+
 
 #########################################################################################################
 # b) Was ist der Grund für die Warning Message wonach das parsing bei einigen Zeilen fehlgeschlagen ist #
 #########################################################################################################
 
-# geb_time ist 99. Dies steht wahrscheinlich für "unbekannt". Da 99>24 kann lubridate keine Stundenangabe erzeugen
 
 ######################################################
 # c) Wie könnte man dieses Problem theoretisch lösen #
 ######################################################
 
-# 1. 99 zu 0 Uhr umwandeln -> Verfälschung da dies nicht dem wahrenWert entspricht
-# 2. Daten entfernen 
-# 3. NAs belassen
-# 4. Daten nur auf ymd Basis berechnen
+
 
 
 
@@ -381,10 +331,7 @@ geburten_time <- geburten %>%
 #     - Filtern: nur Daten behalten die keine NAs in nat_m oder nat_V enthalten (Staatsangehörigkeit Mutter und Vater) besitzen #
 #################################################################################################################################
 
-geburten_nat_eltern <- geburten %>% 
-  select(stat_jahr,nat_m,nat_V ) %>% 
-  filter(!is.na(nat_m)) %>% 
-  filter(!is.na(nat_V)) 
+
   
 
 #######################################################################################################
@@ -397,14 +344,7 @@ geburten_nat_eltern <- geburten %>%
 #######################################################################################################
 
 
-geburten_nat_eltern <- geburten_nat_eltern %>% 
-  mutate(eltern_nat_type = case_when(
-    nat_m == 8100 & nat_V == 8100 ~ "beide Elternteile Schweizer",
-    nat_m != 8100 & nat_V != 8100 ~ "beide Elternteile Ausländer",
-    nat_m != 8100 & nat_V == 8100 ~ "Mutter Ausländer",
-    nat_m == 8100 & nat_V != 8100 ~ "Vater Ausländer",
-    TRUE ~ "unbekannt"
-  ))
+
 
 
 ##################################################################################
@@ -412,14 +352,7 @@ geburten_nat_eltern <- geburten_nat_eltern %>%
 #    wie hoch die Anzahl der verschiedenen Elternteil-Kombinationen pro Jahr ist #
 ##################################################################################
 
-geburten_nat_eltern_count <- geburten_nat_eltern %>% 
-  group_by(stat_jahr,eltern_nat_type) %>% 
-  count()
 
-library(ggplot2)
-geburten_nat_eltern_count %>% 
-  ggplot(aes(stat_jahr,n, color = eltern_nat_type)) +
-  geom_line()
 
 
 
@@ -450,33 +383,7 @@ firma <- readRDS("rmd/Daten/firma.rds")
 
 lohn_list <- list()
 
-for (i in seq_along(firma$name)) {
-  # Monatslohn über 10000?
-  if (firma$monatslohn[i]>10000){
-    jahreslohn <- firma$monatslohn[i]*12
-    lohn_list[[i]] <- paste0(firma$name[i], " erhält ",jahreslohn," CHF im Jahr. ",firma$name[i]," erhält keinen Bonus.")
-    next # Weiter zur nächsten Iteration
-  }
-  # bewertung sehr gut -> 70% des Monatslohns
-  if (firma$bewertung[i]=="Sehr gut"){
-    bonus <- firma$monatslohn[i]*0.7
-  }else if (firma$bewertung[i]=="Gut") {
-    if (firma$dienstjahre[i]>=10){
-      bonus <- firma$monatslohn[i]*0.5 # Gut und 10 oder mehr Dienstjahre
-    } else {
-      bonus <- firma$monatslohn[i]*0.4 # Gut und weniger als 10 Jahre
-    }
-  } else {
-    bonus <- 300 # Standardbonus
-  }
-  # Auszahlungsbetrag pro Jahr berechnen
-  jahreslohn <- firma$monatslohn[i]*12 + bonus
-  
-  # String erstellen
-  lohn_list[[i]] <- paste0(firma$name[i], " erhält ",jahreslohn," CHF im Jahr inkl. Bonus.")
-}
 
-lohn_list
 
 
 
@@ -509,14 +416,6 @@ haush_sample <- readRDS("rmd/Daten/haushalte_sample.rds")
 
 
 
-lapply(fahrzeug_klassen, function(x){
-  temp <- haush_sample %>% 
-    filter(anzahl>=0) %>% 
-    filter(fahrzeug %in% x) %>% 
-    group_by(bezirk_name) %>% 
-    summarise(gesamtanzahl = sum(anzahl),
-              durchscnitt = mean(anzahl))
-})
 
 
 
@@ -531,7 +430,7 @@ lapply(fahrzeug_klassen, function(x){
 
 
 # a) Gesamtanzahl aller Fahrzeuge pro Bezirk
-library(purrr)
+
 bezirke <- unique(haush_sample$bezirk_name)
 
 for_loop_list <- list()
@@ -543,10 +442,7 @@ for (bezirk in bezirke){
   
 }
 
-map_list_fz <- bezirke %>% 
-  map(~ haush_sample %>% 
-        filter(bezirk_name == .x) %>% 
-        summarise(total_anzahl_fahrzeuge = sum(anzahl)))
+
 
 
 
@@ -564,12 +460,6 @@ anzahl_ortschaften <- sapply(bezirke,function(x){
     nrow()
 })
 
-
-map_anzahl_ortschaften <- bezirke %>% 
-  map_dbl(~ svz %>% 
-            filter(bezirk_bezeichnung == .x)%>% 
-            distinct(ortschaft) %>% 
-            nrow())
 
 #############################################################################################################
 # Gegeben ist die Liste gr_data_bezirke.                                                                    #
@@ -591,12 +481,7 @@ gr_data_bezirke <- readRDS("rmd/Daten/gr_wahlen_bezirk.rds")
 meiste_stimmen_bezirk <- readRDS("rmd/Daten/meiste_stimmen_bezirk.rds")
 
 
-meiste_stimmen <- gr_data_bezirke %>% 
-  map_df(~ .x %>% 
-           group_by(jahr,bezirk_bez,kand_nachname,kand_vorname,liste_kand_id) %>% 
-           summarise(kand_stimmen_total = sum(kand_stimmen_total)) %>% 
-           ungroup() %>% 
-           filter(kand_stimmen_total ==max(kand_stimmen_total)))
+
 
 
 ############################
@@ -608,13 +493,7 @@ meiste_stimmen <- gr_data_bezirke %>%
 #    (siehe Folie)                                                                                            #
 ###############################################################################################################
 
-varianz <- function(x){
-  vals <- sapply(x, function(xi){
-    temp <- (xi-mean(x))^2
-  })
-  result <- 1/(length(x)-1)*sum(vals)
-  return(result)
-}
+
 
 test_vec <- c(4,5,6,4,9,7,2,9,1,4)
 var(test_vec)
@@ -656,27 +535,6 @@ df_it_1999 <- geburten %>%
   left_join(codes, by = c("nat"="code"))
 
 
-summarise_geburten <- function(land,jahr,df = geburten,country_codes = codes){
-
-  code <- country_codes %>% 
-    filter(country==land) %>% 
-    pull(code)
-  
-  result <- geburten %>% 
-    filter(nat == code) %>% 
-    filter(stat_jahr == jahr) %>% 
-    group_by(stat_jahr,sex,nat) %>%
-    summarise(n = n ()) %>% 
-    left_join(codes, by = c("nat"="code"))
-  
-  return(result)
-}
-
-
-df_ch_2010_2 <- summarise_geburten(land = "Schweiz", jahr = 2010)
-df_alb_2015_2 <- summarise_geburten(land = "Albanien", jahr = 2015)
-df_de_2020_2 <- summarise_geburten(land = "Deutschland", jahr = 2020)
-df_it_1999_2 <- summarise_geburten(land = "Italien", jahr = 1999)
 
 #################################################
 ## AUFGABE 14: Daten visualisieren mit ggplot2 ##
@@ -706,11 +564,6 @@ heirat_mod <- heirat %>%
   filter(SJAHR_N<2022) %>% 
   pivot_longer(cols = c("Frau","Mann"), names_to = "geschlecht", values_to = "alter") 
 
-heirat_mod %>% 
-  ggplot(aes(x=SJAHR_N,y = alter)) +
-  geom_line(aes(color = geschlecht)) +
-  labs(title = "Thurgauer heiraten immer später", x = "Jahr", y="Durchschnittliches Alter bei Heirat")+
-  theme_light()
 
 
 
@@ -719,7 +572,6 @@ heirat_mod %>%
 ##########################################
 ## AUFGABE 15: Daten in Excel schreiben ##
 ##########################################
-library(tidyverse)
 library(openxlsx)
 
 #############################################################################
@@ -729,24 +581,6 @@ library(openxlsx)
 #############################################################################
 
 
-wb <- createWorkbook()
-sheetname <- "Iris Data"
-data <- iris
-
-# Sheet hinzufügen
-addWorksheet(wb,sheetname)
-
-# Dateneintragen
-writeData(wb,x=data,sheet = sheetname)
-
-# Style erzeugen
-header_style <- createStyle(fontColour = "white",fgFill = "red", textDecoration = "bold")
-
-# Style anwenden
-addStyle(wb,sheetname,header_style,rows = 1,cols = 1:ncol(data),gridExpand = TRUE)
-
-# Workbook abspeichern 
-saveWorkbook(wb,"rmd/Daten/openxlsx_table.xlsx",overwrite = TRUE)
 
 
 ##########################################
@@ -774,38 +608,10 @@ geburten_24 <- readRDS("rmd/Daten/geburten_24.rds")
 
 
 
-excel_data <- gemeinde_order |> 
-  left_join(geburten_24, by = c("BFS-Nr.1"="bfs_nr")) |> 
-  select(anzahl_geburten) |> 
-  setNames("2024")
 
 
 
-wb <- TGexcel::create_xlsx_spalte(xlsx_path = "rmd/Daten/2023_Gde_Geb_ab2000.xlsx",data = excel_data,year = 2024,dataStart = 4)
-
-save_tg_workbook(wb, "rmd/Daten/2024_Gde_Geb_ab2000_FL.xlsx",tg_header = F,overwrite = T)
-
-
-
-##########################################
-## AUFGABE 17: Referenzdaten beziehen   ##
-##########################################
-
-# NUR INTERN LÖSBAR
-devtools::load_all("/r-proj/stat/ogd/dataspotR")
-
-# Sys.setenv(DATASPOT_PW="XXXXXXXX")
-# Sys.setenv(DATASPOT_USER="XXXXXXXX")
-
-ref_reduced <- get_referenzdaten_list() |> 
-  select(id,label,title,createdBy)
-
-
-r1 <- get_referenzdaten("Religion (ReligionII) SE") |> 
-  select(id,shortText,code,createdBy) |> 
-  filter(code==9)
-
-paste0("Dem Wert 9 entspricht ",r1$shortText)
+# AUFGBAE 17 DS intern
 
 
 ############################################
@@ -824,15 +630,6 @@ library(tidyverse)
 
 con <- dbConnect(RSQLite::SQLite(), "rmd/Daten/landing_local.db")
 
-tbl(con,"geres_bestand_2015_2022") %>% 
-  mutate(ausl = ifelse(StaatsangehoerigkeitID==8100,"Schweiz","Ausland")) %>% 
-  collect() %>% 
-  group_by(Statistikjahr,ausl,BFS_Nr) %>% 
-  summarise(n = sum(Anz_StBev)) %>% 
-  tidyr::pivot_wider(names_from = ausl,values_from = n) %>% 
-  mutate(total = Ausland+Schweiz) %>% 
-  mutate(auslaenderanteil = Ausland/total*100) %>% 
-  select(Statistikjahr,BFS_Nr,auslaenderanteil ) %>% 
-  head(4)
+
 
 

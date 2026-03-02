@@ -1,9 +1,9 @@
 ---
 title: "R Workshop"
 author: "Felix lorenz"
-date: '12. Dezember 2022'
-amt: "Staatskanzlei"
-stelle: "Dienststelle für Statistik"
+date: '24. Februar 2026'
+amt: "Amt für Daten und Statistik"
+stelle: ""
 output: 
   xaringan::moon_reader:
     highlightStyle: github

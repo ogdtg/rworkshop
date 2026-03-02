@@ -26,7 +26,7 @@ class: center, middle, inverse, title-slide
 ### Felix lorenz
 ]
 .date[
-### 12. Dezember 2022
+### 24. Februar 2026
 ]
 
 ---
@@ -65,8 +65,8 @@ top:1em;right:1em;
 })()</script>
 </div>
 
-<script>document.addEventListener('DOMContentLoaded',function(){new xeBanner(JSON.parse('{"left":"<h6>Staatskanzlei<\/h6><h7>Dienststelle für Statistik<\/h7>","exclude":["title-slide"],"position":"top"}'))})</script>
-<script>document.addEventListener('DOMContentLoaded',function(){new xeBanner(JSON.parse('{"left":"12. Dezember 2022","center":"© Staatskanzlei","exclude":["title-slide"],"position":"bottom"}'))})</script>
+<script>document.addEventListener('DOMContentLoaded',function(){new xeBanner(JSON.parse('{"left":"<h6>Amt für Daten und Statistik<\/h6><h7><\/h7>","exclude":["title-slide"],"position":"top"}'))})</script>
+<script>document.addEventListener('DOMContentLoaded',function(){new xeBanner(JSON.parse('{"left":"24. Februar 2026","center":"© Amt für Daten und Statistik","exclude":["title-slide"],"position":"bottom"}'))})</script>
 
 
 
@@ -102,10 +102,22 @@ top:1em;right:1em;
 
 
 
+----
+## Vorstellungsrunde
+
+Was ist meine Motivation für meine Teilnahme?
+
+Bei welchem konkreten Projekt/welcher Aufgabe aus meinem Arbeitsalltag könnte/möchte ich R einsetzen?
+
+Welche Kenntnisse möchte ich im Kurs erlangen?
 
 
 
 
+
+
+
+---
 ----
 ## Ziele des Workshops
 
@@ -175,7 +187,7 @@ Das Buch ist kostenlos [hier](https://r4ds.had.co.nz/index.html) zu finden und i
 In der Regel folgen Projekte dem untenstehenden Aufbau. Dieser ist dem Aufbau eines Packages nachempfunden. Dies ist jedoch kein Muss und kann variiert werden.
 
 
-```r
+``` r
 # Project
 - data
   -&gt; dataset.csv
@@ -223,7 +235,7 @@ R besitzt verschiedene Basisobjekte, die ihr bereits im *DataCamp* Kurs kennenge
 - grundlegenstes und kleinstes R Objekt
 - kann `numeric`, `character` oder `logical` sein
 
-```r
+``` r
 x &lt;- 10
 y  = "Das ist ein String"
 x
@@ -233,7 +245,7 @@ x
 ## [1] 10
 ```
 
-```r
+``` r
 y
 ```
 
@@ -245,7 +257,7 @@ y
 - eindimensionales Objekt. Alle Elemente müssen den gleichen Datentyp haben.
 - am häufigsten verwendet werden `numeric`, `character` oder `logical`
 
-```r
+``` r
 vec_num &lt;- c(1,5,2)
 vec_char &lt;- c("one","five",NA)
 var_log &lt;- c(FALSE,TRUE,TRUE)
@@ -256,7 +268,7 @@ vec_num
 ## [1] 1 5 2
 ```
 
-```r
+``` r
 vec_char
 ```
 
@@ -268,7 +280,7 @@ vec_char
 - vergleichbar mit klassischer Tabelle (alle Spalten müssen gleich lang sein)
 - einzelne Spalten sind im Prinzip Vektoren und besitzen die gleichen Eigenschaften
 
-```r
+``` r
 df &lt;- data.frame(col_1 = c(1,5,2),col_2 = vec_char)
 df
 ```
@@ -285,7 +297,7 @@ df
 - Boxen die unterschiedlichste Objekte enthalten können
 - in einer Liste kann prinzipiell alles gespeichert werden
 
-```r
+``` r
 temp_list &lt;- list(x,y,vec_num, vec_char,df)
 temp_list[[5]]
 ```
@@ -313,7 +325,7 @@ temp_list[[5]]
 
 R besitzt viele "built-in" Funktionen, wie z. B. mathematischen Grundlagen (`mean()`,`sum()`,`sqrt()`, etc.)
 
-```r
+``` r
 values &lt;- c(3,9,6,8)
 mean(values)
 ```
@@ -328,11 +340,11 @@ Einzelne Funktionen aus packages können mit voransgestelltem `packagename::` au
 
 Die `library` Funktion lädt alle Funktionen des Packages. Der vorangestellte package Name kann dann weggeleassen werden.
 
-```r
+``` r
 library(dplyr)
 ```
 
-```r
+``` r
 dplyr::dense_rank(values)
 ```
 
@@ -345,14 +357,14 @@ dplyr::dense_rank(values)
 Funktionen können auch vom User selbst ersetellt werden
 
 
-```r
+``` r
 greetings &lt;- function(name){
   result &lt;- paste0("Hello ",name,". Nice to meet you.")
   print(result)
 }
 ```
 
-```r
+``` r
 greetings(name="Joe")
 ```
 
@@ -376,7 +388,7 @@ greetings(name="Joe")
 - Jede/r kann Packages entwickeln 
 
 
-```r
+``` r
 # CRAN
 install.packages("package_name")
 install.packages("dplyr")
@@ -408,24 +420,17 @@ devtools::install_gitlab("username/packagename")
 
 
 
+---
 
-
-
-
-
-
-
-
-----
-## "Programmierweisheiten"
+## „Programmierweisheiten“
 
 --
 
-**1. Jedes Problem hatte irgendjemand anders schon einmal...**
+**1. Jedes Problem hatte irgendjemand anders schon einmal…**
 
 --
 
-**2. "Richtiges" Googlen ist die halbe Miete beim Programmieren.**
+**2. „Richtiges“ Recherchieren ist die halbe Miete beim Programmieren.**
 
 --
 
@@ -433,66 +438,113 @@ devtools::install_gitlab("username/packagename")
 
 --
 
-**4. Automatisierung bring *immer* einen Mehrwert.**
+**4. Automatisierung bringt fast immer einen Mehrwert – spätestens bei Wiederholungen.**
 
 --
 
-**5. Viele Wege führen nach Rom.**
+**5. Viele Wege führen nach Rom – wichtig ist ein funktionierender, verständlicher Weg.**
 
 ---
 ----
-## Jedes Problem hatte irgendjemand anders schon einmal...
 
-...die Lösung ist daher meistens auch irgendwo zu finden.
+## Jedes Problem hatte irgendjemand anders schon einmal…
 
-- Code übernehmen und reproduzieren, anstatt das Rad jedes Mal neu erfinden
+…die Lösung ist daher meistens auch irgendwo zu finden.
 
-- [Stack Overflow](https://stackoverflow.com/) hilft (fast) immer. (*"Every data scientist has a tab open to Stack Overflow"*)
+* Code übernehmen und reproduzieren, statt das Rad jedes Mal neu zu erfinden
+* **Lösungen verstehen, nicht blind kopieren**
+* Bewährte Quellen:
 
-- Unzählige weitere Hilfeseiten z.B. [Rbloggers](https://www.r-bloggers.com/), [Geeks for Geeks](https://www.geeksforgeeks.org/r-programming-language-introduction/), etc.
+  * [Stack Overflow](https://stackoverflow.com/)
+  * [R-bloggers](https://www.r-bloggers.com/)
+  * Package-Dokumentationen &amp; Vignetten
 
-&lt;br&gt;
-&lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="https://upload.wikimedia.org/wikipedia/commons/0/02/Stack_Overflow_logo.svg" alt="https://upload.wikimedia.org/wikipedia/commons/0/02/Stack_Overflow_logo.svg" width="40%" /&gt;
-&lt;p class="caption"&gt;https://upload.wikimedia.org/wikipedia/commons/0/02/Stack_Overflow_logo.svg&lt;/p&gt;
-&lt;/div&gt;
+**Neu seit 2023:**
 
-
----
-----
-## "Richtiges" Googlen ist die halbe Miete
-
-- Programmieren ist ein englischsprachiges Feld &amp;#10140; auf Englisch googlen bringt die besten Ergebnisse
-
-- Bei Fehlermeldungen kann als erster Schritt einfach der Text der Meldung gegooglet werden &amp;#10140; bringt meistens schon ersten Anhaltspunkt
+* KI/LLMs (z. B. ChatGPT) können beim **Verstehen, Erklären und Debuggen** unterstützen
 
 ---
 ----
-## Man kann oft mehr automatisieren als man im ersten Moment denkt
-&lt;br&gt;
-- Prozesse als Ganzes betrachten! Kann ich vielleicht noch mehr automatisieren, als diesen einen spezifischen Prozessschritt?
 
-- Kann ich meine Arbeit skalieren und für andere Prozesse nutzen?
+## Recherchieren heute: Google **und** KI
 
-- Wie kann ich meinen Code so generisch wie möglich schreiben?
+* Programmieren ist weiterhin ein englischsprachiges Feld → Englisch liefert die besten Treffer
+* Fehlermeldungen lassen sich oft direkt googlen
+* **KI kann ergänzend helfen**, z. B.:
+
+  * Fehlermeldungen verständlich erklären
+  * Beispielcode kommentieren
+  * alternative Lösungsansätze vorschlagen
+
+&gt; **Wichtig:**
+&gt; KI ist ein Werkzeug – kein Ersatz für eigenes Denken.
 
 ---
 ----
-## Automatisierung bring immer einen Mehrwert
 
---
+## Arbeiten mit KI (LLMs) im Programmieren
 
-- Automatisierung spart oft Zeit
+**✅ Sinnvolle Einsatzbereiche**
 
---
+* Code erklären lassen („Was passiert hier Zeile für Zeile?“)
+* Fehlermeldungen einordnen
+* Ideen strukturieren („Wie gehe ich das Problem an?“)
+* Refactoring-Vorschläge für besseren, lesbareren Code
+* Kommentare oder Dokumentation vorschlagen lassen
 
-- Automatisierung reduziert meistens die Fehleranfälligkeit
+---
+----
 
---
+## Arbeiten mit KI (LLMs) im Programmieren
 
-- Automatisierung bringt **immer** einen Lerneffekt
+**❌ Grenzen &amp; Risiken**
 
---
+* ❌ Code ungeprüft übernehmen
+* ❌ Fachliche Entscheidungen an KI delegieren
+* ❌ Ergebnisse ohne Plausibilisierung verwenden
+
+&gt; **Merksatz:**
+&gt; KI hilft beim Lernen – Lernen übernimmt sie nicht.
+
+---
+----
+## Arbeiten mit KI (LLMs) im Programmieren
+
+**Datenschutz &amp; Verantwortung (Behördenkontext)**
+
+* ❌ Keine personenbezogenen oder sensiblen Daten eingeben
+* ❌ Keine internen Dokumente oder unveröffentlichten Zahlen hochladen
+* ✅ Wenn nötig: Daten anonymisieren oder mit synthetischen Beispielen arbeiten
+
+&gt; **Faustregel:**
+&gt; Alles, was nicht öffentlich ist, gehört nicht in externe KI-Tools.
+
+---
+----
+
+## So stellt man gute Fragen an KI
+
+Statt:
+*„Warum geht das nicht?“*
+
+Besser:
+
+* „Ich habe folgendes Ziel: …“
+* „Das ist mein Code: …“
+* „Das ist die Fehlermeldung: …“
+* „Nenne mir mögliche Ursachen und wie ich sie prüfen kann.“
+
+&gt; Gute Fragen → bessere Antworten.
+
+---
+----
+
+## Man kann oft mehr automatisieren, als man denkt
+
+* Prozesse als Ganzes betrachten
+* Wiederkehrende Schritte identifizieren
+* Code möglichst generisch schreiben
+
 
 &lt;div class="figure" style="text-align: center"&gt;
 &lt;img src="https://marcgg.com/assets/blog/automation-win.png" alt="https://marcgg.com/assets/blog/automation-win.png" width="55%" /&gt;
@@ -502,23 +554,67 @@ devtools::install_gitlab("username/packagename")
 
 ---
 ----
-## Viele Wege führen nach Rom
 
-- Es gibt niemals "die eine Lösung"
+## Automatisierung bringt (fast immer) einen Mehrwert
 
-- Probleme können auf die unterschiedlichste Art, mit den unterschiedlichsten Funktionen und den unterschiedlichsten Packages gelöst werden
-&lt;br&gt;
-&lt;br&gt;
-&lt;h2 align="center"&gt;&lt;i&gt;"Der beste Code ist der, der verlässlich funktioniert" &lt;/i&gt;&lt;/p&gt;
+--
+
+* spart Zeit bei Wiederholungen
+
+--
+
+* reduziert Fehleranfälligkeit
+
+--
+
+* erhöht Reproduzierbarkeit und Nachvollziehbarkeit
+
+--
+
+* bringt einen nachhaltigen Lerneffekt
+
+&gt; **Faustregel:**
+&gt; Was man mehr als einmal macht, lohnt sich zu automatisieren.
 
 ---
 ----
+
+## Viele Wege führen nach Rom
+
+* Es gibt selten „die eine richtige Lösung“
+* Unterschiedliche Funktionen &amp; Packages können zum Ziel führen
+* **Im Team sind gemeinsame Konventionen trotzdem wichtig**
+
+&lt;br&gt;&lt;br&gt;
+
+&lt;h2 align="center"&gt;&lt;i&gt;„Der beste Code ist der, der verständlich und verlässlich funktioniert.“&lt;/i&gt;&lt;/h2&gt;
+
+---
+----
+
 ## Programmieren lernt man nur durch Anwendung!
 
-&lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="./img/how_much_I_think_I_know_about_R.PNG" alt="https://tidyverse.tidyverse.org/logo.png" width="598" /&gt;
-&lt;p class="caption"&gt;https://tidyverse.tidyverse.org/logo.png&lt;/p&gt;
-&lt;/div&gt;
+* Lesen hilft – **machen ist entscheidend**
+* Fehler gehören dazu
+* Jeder Fehler ist ein Lernmoment
+
+**Heute zusätzlich:**
+
+* KI kann beim Lernen unterstützen
+* Aber: selbst tippen, selbst denken, selbst ausprobieren
+
+---
+----
+
+## Zusammenfassung
+
+* Programmieren ist ein Handwerk
+* Recherchieren gehört dazu
+* Automatisierung schafft Freiraum
+* KI ist ein neues Werkzeug – kein Ersatz für Kompetenz
+* Übung ist durch nichts zu ersetzen
+
+
 ---
 
 
@@ -775,7 +871,7 @@ Sie unterscheiden sich jedoch in ihrer Perfomance.
 .panelset[
 .panel[.panel-name[CSV]
 
-```r
+``` r
 library(readr)
 # Comma separated
 df_comma &lt;- read_csv("path/to/comma_separated.csv")
@@ -789,14 +885,14 @@ df_tab &lt;- read_tsv("path/to/tab_separated.csv")
 ]
 .panel[.panel-name[Excel]
 
-```r
+``` r
 library(readxl)
 df_excel &lt;- read_excel("path/to/excel_file.xlsx")
 ```
 ]
 .panel[.panel-name[SAS]
 
-```r
+``` r
 library(haven)
 df_sas &lt;- read_sas("path/to/sas_file.sas7bdat")
 ```
@@ -804,7 +900,7 @@ df_sas &lt;- read_sas("path/to/sas_file.sas7bdat")
 .panel[.panel-name[fwf]
 - *"fixed width file"* wie teilweise vom BFS erhalten
 
-```r
+``` r
 library(readr)
 df_fwf &lt;- read_fwf("path/to/fwf_data.txt",
                  fwf_positions(start=vec_start_col,
@@ -817,7 +913,7 @@ df_fwf &lt;- read_fwf("path/to/fwf_data.txt",
 - `rds` und `rda` sind die R-internen Datenfromate
 - sie sind optimiert für R, können schnell geladen werden und sind speichereffizient
 
-```r
+``` r
 # speichern
 saveRDS(dataset, "data.rds")
 
@@ -872,10 +968,7 @@ dataset &lt;- readRDS("data.rds")
 
 Benutze jeweils die `head()` Funktion um **die ersten 3 Zeilen** des Datensatzes anzeigen zu lassen. 
 
-<div class="countdown" id="timer_eb743e62" data-update-every="1" tabindex="0" style="right:0;bottom:0;">
-<div class="countdown-controls"><button class="countdown-bump-down">&minus;</button><button class="countdown-bump-up">&plus;</button></div>
-<code class="countdown-time"><span class="countdown-digits minutes">10</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
-</div>
+<countdown-timer class="countdown" id="timer_6cb6ab37" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 
 ---
 ----
@@ -904,7 +997,7 @@ Benutze jeweils die `head()` Funktion um **die ersten 3 Zeilen** des Datensatzes
 
 
 
-```r
+``` r
 library(readr)
 df &lt;- read_csv("Data/Geburten.csv")
 head(df,3)
@@ -915,7 +1008,7 @@ head(df,3)
 
 
 
-```r
+``` r
 library(haven)
 df &lt;- read_sas("bevnatgeb2020.sas7bdat")
 head(df,3)
@@ -926,7 +1019,7 @@ head(df,3)
 
 
 
-```r
+``` r
 library(readxl)
 df &lt;- read_excel("Daten/test.xlsx")
 head(df,3)
@@ -935,7 +1028,7 @@ head(df,3)
 .panel[.panel-name[Lösung d)]
 
 
-```r
+``` r
 df &lt;- read_excel("Daten/test.xlsx",sheet="Bonus")
 head(df,3)
 write_csv(df,"Felix/Output/alter.csv", na ="")
@@ -968,7 +1061,7 @@ write_csv(df,"Felix/Output/alter.csv", na ="")
 &lt;p style="margin-top:70px;"&gt;&lt;p/&gt;
 Sollen mehrere Files aus einem Ordner eingelesen werden, kann die `list.files()` Funktion verwendet werden. Mit dieser Funktion werden alle Files mit einer spezifischen Endung innerhalb eines Ordners aufgelistet. Diese können dann mit einem `for`-Loop oder einer der `apply` Funktionen schnell eingelesen werden.
 
-```r
+``` r
 # Listet alle CSV Files im Ordner
 list.files(path = "path/to/directory", pattern = "*.csv")
 ```
@@ -994,12 +1087,7 @@ Im hier verlinkten [Tutorial](https://inbo.github.io/tutorials/tutorials/r_large
 
 
 
-
-
-
-
-
-
+---
 ----
 ## Data Manipulation
 
@@ -1057,17 +1145,32 @@ Im hier verlinkten [Tutorial](https://inbo.github.io/tutorials/tutorials/r_large
   &lt;/a&gt;
 &lt;/figure&gt;
 
-
 &lt;figure class="logo-fig logo-title10"&gt;
   &lt;a href='https://ggplot2.tidyverse.org' target="_blank"&gt;
     &lt;img src='https://ggplot2.tidyverse.org/logo.png' class='logo' style ="opacity: 0.5;"/&gt;
   &lt;/a&gt;
 &lt;/figure&gt;
 
+---
+----
+
+## Pipes: `%&gt;%` und `|&gt;`
+
+* Pipes machen Code **lesbarer**, weil Schritte nacheinander beschrieben werden.
+* Man reduziert Verschachtelung → oft leichter zu debuggen.
+
+**Wichtig (seit 2021 / R 4.1):**
+
+* R hat eine **eingebaute Pipe**: `|&gt;`
+* Das tidyverse nutzt weiterhin häufig `%&gt;%` (magrittr), aber `|&gt;` ist heute Standard in base R.
+
+&gt; Merksatz für Anfänger:innen:
+&gt; **`|&gt;` ist die neue Standard-Pipe.** `%&gt;%` wirst du aber in vielen Beispielen weiterhin sehen.
 
 ---
 ----
-## magrittr:: %&gt;%
+
+## magrittr:: `%&gt;%` (klassisch im tidyverse)
 
 &lt;figure class="logo-fig logo-fig-small"&gt;
   &lt;a href='https://magrittr.tidyverse.org' target="_blank"&gt;
@@ -1075,46 +1178,98 @@ Im hier verlinkten [Tutorial](https://inbo.github.io/tutorials/tutorials/r_large
   &lt;/a&gt;
 &lt;/figure&gt;
 
-- Mit dem `magrittr` package und dem darin enthaltenen Pipeline Operator `%&gt;%` wird euer Code viel einfacher lesbar.
-- Der Code wird durch die Nutzung der Pipe weniger verschachtelt und so einfacher zu debuggen.
-
+* `%&gt;%` kommt aus dem Paket **magrittr** (tidyverse-Ökosystem)
+* Häufig in dplyr-Beispielen, älteren Skripten, Blogs etc.
+* Unterstützt den Platzhalter `.` (praktisch bei manchen Funktionsaufrufen)
 
 .panelset[
 .panel[.panel-name[Ohne Pipe]
-Innerste Klammer wird zuerst usgeführt
+Innerste Klammer wird zuerst ausgeführt
 
-```r
+
+``` r
 h(g(f(df)))
 ```
+
 ]
-.panel[.panel-name[Mit Pipe]
+.panel[.panel-name[Mit %&gt;%]
 Code wird nacheinander ausgeführt (f() dann g() dann h())
 
-```r
+
+``` r
 df %&gt;% 
   f() %&gt;% 
   g() %&gt;% 
   h()
 ```
-]
-.panel[.panel-name[Ohne Platzhalter]
 
-```r
-langer_variablenname %&gt;%  f(y, z = langer_variablenname)
-```
 ]
-.panel[.panel-name[Mit Platzhalter]
-Innerhalb der Pipeline kann anstelle der Variable, auf welche die Operationen angewendet werden auch der `.` als Platzhalter verwendet werden.
+.panel[.panel-name[Platzhalter .]
+Wenn das Ergebnis nicht als 1. Argument verwendet werden soll:
 
-```r
+
+``` r
 langer_variablenname %&gt;%  f(y, z = .)
 ```
+
 ]
 ]
 
 ---
 ----
-## Hands-On: Piping mit magrittr:: %&gt;%
+
+## Base R Pipe: `|&gt;` (heute sehr empfehlenswert)
+
+* `|&gt;` ist in R eingebaut (kein extra Package nötig)
+* Sehr gut für „sauberen“ Code in Projekten &amp; Behördenumgebungen (weniger Abhängigkeiten)
+* Funktionsweise: Ergebnis links wird als **erstes Argument** rechts eingesetzt
+
+.panelset[
+.panel[.panel-name[Mit |&gt;]
+
+
+``` r
+df |&gt;
+  f() |&gt;
+  g() |&gt;
+  h()
+```
+
+]
+.panel[.panel-name[Wichtig: Argumentposition]
+Wenn das Ergebnis nicht als 1. Argument passt, nutzt man ein Hilfsmittel
+(z.B. anonyme Funktion):
+
+
+``` r
+langer_variablenname |&gt;
+  (\(x) f(y, z = x))()
+```
+
+]
+.panel[.panel-name[Merksatz]
+
+* `%&gt;%` hat den Platzhalter `.`
+* `|&gt;` hat **keinen** `.`-Platzhalter
+* Bei `|&gt;` nutzt man dann oft `\(x) ...` (anonyme Funktion)
+  ]
+  ]
+
+---
+----
+
+## Wann nutze ich was?
+
+* **In neuen Projekten**: `|&gt;` (base R)
+* **Wenn ihr tidyverse-Code lest**: `%&gt;%` verstehen können
+* **Im Workshop**: Wir akzeptieren beide – wichtig ist, dass ihr das Prinzip versteht.
+
+&gt; Ziel: Lesbarer Code in klaren Schritten.
+
+---
+----
+
+## Hands-On: Piping (|&gt; oder %&gt;%)
 
 &lt;figure class="logo-fig logo-fig-small"&gt;
   &lt;a href='https://magrittr.tidyverse.org' target="_blank"&gt;
@@ -1122,26 +1277,59 @@ langer_variablenname %&gt;%  f(y, z = .)
   &lt;/a&gt;
 &lt;/figure&gt;
 
-```r
+
+``` r
 num_vec &lt;- c(5,4,6,1,4)
 
-round(sqrt(sum(num_vec)),1)
+round(sqrt(sum(num_vec)), 1)
 ```
-`num_vec` soll aufsummiert und anschliessend soll die Wurzel aus der Summe gezogen werden. 
-Das Ergebnis soll auf eine Nachkommastelle gerundet werden
-Die oben stehende Codezeile führt diese Operationen aus. 
+
+`num_vec` soll aufsummiert werden, anschliessend soll die Wurzel aus der Summe gezogen werden.
+Das Ergebnis soll auf eine Nachkommastelle gerundet werden.
 
 &lt;ol type="a"&gt;
   &lt;li&gt;
-  Verwende den &lt;b&gt;%&gt;%&lt;/b&gt; Operator um die oben stehende Codezeile in eine Pipe im Stile von dplyr umzuwandeln&lt;br&gt;
-  Wandle die Zeile in EINE Pipe um OHNE Zwischenergebnisse zu speichern. Verwende den Namen des Vektors nur EINMAL.
+  Verwende eine Pipe, um die oben stehende Zeile umzuschreiben.&lt;br&gt;
+  &lt;b&gt;Variante 1:&lt;/b&gt; mit &lt;b&gt;|&gt;&lt;/b&gt; (base R)&lt;br&gt;
+  &lt;b&gt;Variante 2:&lt;/b&gt; mit &lt;b&gt;%&gt;%&lt;/b&gt; (magrittr)&lt;br&gt;
+  Keine Zwischenergebnisse speichern. Den Namen des Vektors nur &lt;b&gt;einmal&lt;/b&gt; verwenden.
   &lt;/li&gt;
 &lt;/ol&gt;
 
-<div class="countdown" id="timer_fa425a05" data-update-every="1" tabindex="0" style="right:0;bottom:0;">
-<div class="countdown-controls"><button class="countdown-bump-down">&minus;</button><button class="countdown-bump-up">&plus;</button></div>
-<code class="countdown-time"><span class="countdown-digits minutes">10</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
-</div>
+<countdown-timer class="countdown" id="timer_c1ee739c" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+
+---
+----
+
+## Hands-On: Piping (|&gt; oder %&gt;%)
+
+.panelset[
+.panel[.panel-name[Lösung mit |&gt;]
+
+
+``` r
+num_vec |&gt;
+  sum() |&gt;
+  sqrt() |&gt;
+  round(1)
+```
+
+]
+.panel[.panel-name[Lösung mit %&gt;%]
+
+
+``` r
+num_vec %&gt;%
+  sum() %&gt;%
+  sqrt() %&gt;%
+  round(1)
+```
+
+]
+]
+
+
+
 ---
 
 
@@ -1340,7 +1528,7 @@ Für detailliertere Informationen findet sich [hier](https://github.com/rstudio/
 .panel[.panel-name[pivot_longer]
 Fasst mehrere Spalten zusammen und "verlängert" den Datensatz
 
-```r
+``` r
 df_tidy_m %&gt;% 
   tidyr::pivot_longer(cols = c("cases","deaths"), names_to = c("indicator"))
 ```
@@ -1362,7 +1550,7 @@ df_tidy_m %&gt;%
 .panel[.panel-name[pivot_wider]
 "Verbreitert" den Datensatz
 
-```r
+``` r
 df_tidy_m %&gt;% 
   tidyr::pivot_wider(names_from = "kanton", values_from = c("cases","deaths"))
 ```
@@ -1378,7 +1566,7 @@ df_tidy_m %&gt;%
 .panel[.panel-name[separate]
 Spalten können mit `separate` in mehrere Spalten aufgeteilt werden.
 
-```r
+``` r
 df_tidy_m %&gt;% 
   tidyr::separate(col="date",sep = "-", into = c("year","month","day"))
 ```
@@ -1406,7 +1594,7 @@ df_tidy_m %&gt;%
 &lt;/figure&gt;
 
 
-```r
+``` r
 library(tidyr)
 
 abstimmungen &lt;- readRDS("Daten/Abstimmungen.rds")
@@ -1419,10 +1607,7 @@ abstimmungen &lt;- readRDS("Daten/Abstimmungen.rds")
 2. Bringe die Daten wieder in die Ursprungsform (long format)&lt;br&gt;
   Speichere das Ergebnis unter "abstimmungen_not_tidy" 
   
-<div class="countdown" id="timer_8cff0f24" data-update-every="1" tabindex="0" style="right:0;bottom:0;">
-<div class="countdown-controls"><button class="countdown-bump-down">&minus;</button><button class="countdown-bump-up">&plus;</button></div>
-<code class="countdown-time"><span class="countdown-digits minutes">10</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
-</div>
+<countdown-timer class="countdown" id="timer_19301a7a" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 
 
@@ -1464,7 +1649,7 @@ abstimmungen &lt;- readRDS("Daten/Abstimmungen.rds")
 .panelset[
 .panel[.panel-name[Ausgangsdaten]
 
-```r
+``` r
 df_tidy
 ```
 
@@ -1483,7 +1668,7 @@ df_tidy
 - Genauso können Variablen auch als Vektor mit `c()` angegeben werden.
 
 
-```r
+``` r
 df_tidy %&gt;% 
   select(date,cases)
 ```
@@ -1501,7 +1686,7 @@ df_tidy %&gt;%
 .panel[.panel-name[Bsp. 2]
 Variablen können auch als *range* ausgewählt werden
 
-```r
+``` r
 df_tidy %&gt;% 
   select(date:cases)
 ```
@@ -1519,7 +1704,7 @@ df_tidy %&gt;%
 .panel[.panel-name[Bsp. 3]
 Auswahl per Spaltenindex ist ebenfalls möglich
 
-```r
+``` r
 df_tidy %&gt;% 
   select(1,3:5)
 ```
@@ -1537,7 +1722,7 @@ df_tidy %&gt;%
 .panel[.panel-name[Bsp. 4]
 Mit vorangestelltem minus (`-`) können Variablen entfernt werden
 
-```r
+``` r
 df_tidy %&gt;% 
   select(-c(date:cases))
 ```
@@ -1555,7 +1740,7 @@ df_tidy %&gt;%
 .panel[.panel-name[Bsp. 5]
 `select` kann z.B. mit `contains`, `ends_with` oder `starts_with`
 
-```r
+``` r
 df_tidy %&gt;% 
   select(contains("death"))
 ```
@@ -1591,7 +1776,7 @@ df_tidy %&gt;%
 .panelset[
 .panel[.panel-name[Ausgangsdaten]
 
-```r
+``` r
 df_tidy
 ```
 
@@ -1608,7 +1793,7 @@ df_tidy
 .panel[.panel-name[Bsp. 1]
 Für `filter` können sog. Operatoren verwendet werden (`==`, `!=`, `&gt;=`, `&lt;=`, `&lt;`, `&gt;`) 
 
-```r
+``` r
 df_tidy %&gt;% 
   filter(kanton == "TG")
 ```
@@ -1624,7 +1809,7 @@ df_tidy %&gt;%
 .panel[.panel-name[Bsp. 2]
 Filteroptionen können mit `&amp;` (*und*) und `|` (*oder*) verbunden werden.
 
-```r
+``` r
 df_tidy %&gt;% 
   filter(kanton == "TG" &amp; date== "2022-12-10")
 ```
@@ -1639,7 +1824,7 @@ df_tidy %&gt;%
 .panel[.panel-name[Bsp. 3]
 Für den Abgleich mit einem Vektor kann der `%in%` Operator verwendet werden.
 
-```r
+``` r
 df_tidy %&gt;% 
   filter(cases %in% c(140484,102405))
 ```
@@ -1656,7 +1841,7 @@ df_tidy %&gt;%
 .panel[.panel-name[Bsp. 4]
 Wie die meisten dplyr Funktionen, können auch `filter` Statements beliebig oft aneinander gereiht werden 
 
-```r
+``` r
 df_tidy %&gt;% 
   filter(kanton == "TG") %&gt;% 
   filter(date == "2022-12-10")
@@ -1691,10 +1876,7 @@ df_tidy %&gt;%
 4. Speichere das Resultat in der Variable **geburten_ch_2010**
 
 
-<div class="countdown" id="timer_188370fe" data-update-every="1" tabindex="0" style="right:0;bottom:0;">
-<div class="countdown-controls"><button class="countdown-bump-down">&minus;</button><button class="countdown-bump-up">&plus;</button></div>
-<code class="countdown-time"><span class="countdown-digits minutes">10</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
-</div>
+<countdown-timer class="countdown" id="timer_d638db52" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 
 ---
 ----
@@ -1713,7 +1895,7 @@ df_tidy %&gt;%
 Lies die Datei **geburten_mod.rds** aus dem Ordner **Daten** als data.frame ein.
 
 
-```r
+``` r
 library(dplyr)
 # Aus Datenschutzgründen ist der Datensatz anonymisiert
 geburten &lt;- readRDS("Daten/geburten_mod.rds")
@@ -1725,7 +1907,7 @@ geburten &lt;- readRDS("Daten/geburten_mod.rds")
 Wähle nur die Spalten `geb_day`,`geb_mon`,`geb_year`, `sex`, `nat` und `name` aus.
 
 
-```r
+``` r
 geburten_ch_2010 &lt;- geburten %&gt;%
   select(geb_day,geb_mon,geb_year,sex,nat,name)
 ```
@@ -1736,7 +1918,7 @@ geburten_ch_2010 &lt;- geburten %&gt;%
 Behalte nur Geburten **nach 2010** deren Staatsangehörigkeit **Schweiz** (8100) ist.
 
 
-```r
+``` r
 geburten_ch_2010 &lt;- geburten %&gt;%
   select(geb_day,geb_mon,geb_year,sex,nat,name) %&gt;%
   filter(geb_year &gt; 2010 &amp; nat == 8100)
@@ -1772,7 +1954,7 @@ head(geburten_ch_2010,3)
 .panelset[
 .panel[.panel-name[Ausgangsdaten]
 
-```r
+``` r
 df_tidy
 ```
 
@@ -1790,7 +1972,7 @@ df_tidy
 .panel[.panel-name[Bsp. 1]
 
 
-```r
+``` r
 df_tidy %&gt;% 
   mutate(kanton_long = case_when(kanton == "TG" ~ "Thurgau",
                    kanton == "BS" ~ "Basel-Stadt"))
@@ -1810,7 +1992,7 @@ df_tidy %&gt;%
 .panel[.panel-name[Bsp. 2]
 
 
-```r
+``` r
 df_tidy %&gt;% 
   mutate(death_percent = deaths/cases *100) %&gt;% 
   mutate(death_percent = round(death_percent,2)) %&gt;% 
@@ -1844,7 +2026,7 @@ Mit `mutate_all` oder `mutate_at` können alle Variablen bzw. alle Variablen mit
 Das ist nützlich, wenn man die gleiche Operation auf mehrere Spalten anwenden will.
 
 
-```r
+``` r
 df_tidy %&gt;% 
   mutate_all(as.character) %&gt;% 
   head(3)
@@ -1876,7 +2058,7 @@ df_tidy %&gt;%
 .panelset[
 .panel[.panel-name[Ausgangsdaten]
 
-```r
+``` r
 head(geburten_ch_2010,5)
 ```
 
@@ -1897,7 +2079,7 @@ head(geburten_ch_2010,5)
 Neue Variablen nach Gruppen erstellen mit `group_by` und `mutate`
 
 
-```r
+``` r
 geburten_ch_2010 %&gt;% 
   group_by(geb_year,name) %&gt;% 
   mutate(sum_name_year = n()) %&gt;% head(2)
@@ -1918,7 +2100,7 @@ geburten_ch_2010 %&gt;%
 Daten zusammenfassen mit `group_by` und `summarise`
 
 
-```r
+``` r
 geburten_ch_2010 %&gt;% 
   group_by(geb_year) %&gt;% 
   summarise(geb_per_year = n()) %&gt;% head(2)
@@ -1956,7 +2138,7 @@ Nach einem `summarise` ist diese Auflösung nicht nötig.
 - Ohne `ungroup` 
 
 
-```r
+``` r
 geburten_group &lt;- geburten_ch_2010 %&gt;% 
   group_by(geb_year,name) %&gt;% 
   mutate(sum_name_year = n())
@@ -1988,7 +2170,7 @@ geburten_group %&gt;%
 - Mit `ungroup`
 
 
-```r
+``` r
 geburten_ungroup &lt;- geburten_ch_2010 %&gt;% 
   group_by(geb_year,name) %&gt;% 
   mutate(sum_name_year = n()) %&gt;% 
@@ -2039,10 +2221,7 @@ Speichere das Resultat unter dem Namen **geburten_ch_2010_date**
 3. Zähle die Geburten pro (Geburts-)Jahr im Datensatz&lt;br&gt;
 **Tipp:** Nutze `group_by()` sowie `count()` bzw. `summarise()` und `n()`
 
-<div class="countdown" id="timer_17e10d33" data-update-every="1" tabindex="0" style="right:0;bottom:0;">
-<div class="countdown-controls"><button class="countdown-bump-down">&minus;</button><button class="countdown-bump-up">&plus;</button></div>
-<code class="countdown-time"><span class="countdown-digits minutes">10</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
-</div>
+<countdown-timer class="countdown" id="timer_4eb3c6bc" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 ----
 
@@ -2155,7 +2334,7 @@ Es wird dabei zwischen [Filtering joins](https://dplyr.tidyverse.org/reference/f
 .panel[.panel-name[left_join]
 
 
-```r
+``` r
 df1 %&gt;% 
   left_join(df2,by=c("nat"="code"))
 ```
@@ -2176,7 +2355,7 @@ df1 %&gt;%
 ]
 .panel[.panel-name[right_join]
 
-```r
+``` r
 df1 %&gt;% 
   right_join(df2,by=c("nat"="code"))
 ```
@@ -2198,7 +2377,7 @@ df1 %&gt;%
 .panel[.panel-name[inner_join]
 
 
-```r
+``` r
 df1 %&gt;% 
   inner_join(df2,by=c("nat"="code"))
 ```
@@ -2218,7 +2397,7 @@ df1 %&gt;%
 .panel[.panel-name[full_join]
 
 
-```r
+``` r
 df1 %&gt;% 
   full_join(df2,by=c("nat"="code"))
 ```
@@ -2257,7 +2436,7 @@ df1 %&gt;%
 .panel[.panel-name[semi_join]
 
 
-```r
+``` r
 df1 %&gt;% 
   semi_join(df2,by=c("nat"="code"))
 ```
@@ -2277,7 +2456,7 @@ df1 %&gt;%
 ]
 .panel[.panel-name[anti_join]
 
-```r
+``` r
 df1 %&gt;% 
   anti_join(df2,by=c("nat"="code"))
 ```
@@ -2409,10 +2588,7 @@ Speichere den neuen Datensatz unter dem Namen `geburten_join`
 
 2. Wie lautet der häufigste männliche Vorname für Kinder mit der Nationalität Nordmazedonien im Datensatz?
 
-<div class="countdown" id="timer_d93b9a24" data-update-every="1" tabindex="0" style="right:0;bottom:0;">
-<div class="countdown-controls"><button class="countdown-bump-down">&minus;</button><button class="countdown-bump-up">&plus;</button></div>
-<code class="countdown-time"><span class="countdown-digits minutes">10</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
-</div>
+<countdown-timer class="countdown" id="timer_4caeab0a" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 ----
 ## Good to know: Joins
@@ -2448,7 +2624,7 @@ Das Package ermöglicht "inexact matching", wie z.B:
 Mit arrange kann die Reihenfolge der Zeilen nach einer Variable im Datensatz sortiert werden. Standardmässig werden die Daten dann aufsteigend sortiert. 
 
 
-```r
+``` r
 geburten_ch_2010 %&gt;% 
   arrange(geb_year) %&gt;% head(2)
 ```
@@ -2465,7 +2641,7 @@ geburten_ch_2010 %&gt;%
 .panel[.panel-name[arrange + desc]
 Mit der `desc()` Funktion kann man die Daten auch in eine absteigende Sortierung bringen.
 
-```r
+``` r
 geburten_ch_2010 %&gt;% 
   arrange(desc(geb_year)) %&gt;% head(2)
 ```
@@ -2481,7 +2657,7 @@ geburten_ch_2010 %&gt;%
 .panel[.panel-name[slice]
 Zeilen können auch per Index gefiltert werden
 
-```r
+``` r
 # extrahiert die Zeilen 10,11 und 12
 geburten_ch_2010 %&gt;% 
   slice(10:12)
@@ -2500,7 +2676,7 @@ geburten_ch_2010 %&gt;%
 .panel[.panel-name[top_n]
 Mit `top_n()` können die Zeilen mit den höchsten (oder niedrigsten) Werten für eine bestimmte Variable gefiltert werden
 
-```r
+``` r
 geburten_ch_2010 %&gt;% 
   group_by(geb_year,name) %&gt;% 
   count() %&gt;% 
@@ -2524,7 +2700,7 @@ Mit `distinct()` können Duplikate entfernt werden. Dazu werden einfach die Vari
 
 
 
-```r
+``` r
 popular_names %&gt;% 
   distinct(geb_year,.keep_all = TRUE) %&gt;% 
   head(2)
@@ -2601,7 +2777,7 @@ Ermitteln, ob eine bestimmte Zeichenfolge im String enthalten ist.
 
 
 
-```r
+``` r
 str_detect(c("Das ist ein Test", "Hello World"),
            pattern = "Test")
 ```
@@ -2615,7 +2791,7 @@ str_detect(c("Das ist ein Test", "Hello World"),
 Text extrahieren
 
 
-```r
+``` r
 str_extract(c("dasisteinTestmitstrings",
               "das_ist_ein_Test_mit_strings"), 
             pattern = "Test")
@@ -2629,7 +2805,7 @@ str_extract(c("dasisteinTestmitstrings",
 .panel[.panel-name[str_replace]
 Text ersetzen
 
-```r
+``` r
 str_replace(c("dasisteinTestmitstrings",
               "das_ist_ein_Test_mit_strings_Test"), 
             pattern = "Test",
@@ -2645,7 +2821,7 @@ str_replace(c("dasisteinTestmitstrings",
 .panel[.panel-name[str_remove]
 Text entfernen
 
-```r
+``` r
 str_remove(c("dasisteinTestmitstrings",
               "das_ist_ein_Test_mit_strings"), 
             pattern = "Test")
@@ -2660,7 +2836,7 @@ str_remove(c("dasisteinTestmitstrings",
 .panel[.panel-name[str_split]
 Text zerteilen
 
-```r
+``` r
 str_split(c("dasisteinTestmitstrings",
               "das_ist_ein_Test_mit_strings"), 
             pattern = "_")
@@ -2678,7 +2854,7 @@ str_split(c("dasisteinTestmitstrings",
 .panel[.panel-name[str_trim]
 Leerzeichen an Anfang und Ende eines Strings entfernen
 
-```r
+``` r
 str_trim(c("    Hello World      ", "    Test"))
 ```
 
@@ -2717,7 +2893,7 @@ Beispiele für den Einsatz von Regex sind das Extrahieren von Telefonnummern aus
 .panel[.panel-name[Telefonnummern extrahieren]
 - Jede Zahl (digit) kann mit dem regex `\d` extrahiert werden.
 
-```r
+``` r
 str_extract_all(c("Meine Nummer ist die 058345-5367",
                   "Meine Adresse ist Grabenstrasse 8, 8510 Frauenfeld"), 
                 pattern = "\\d{6}-\\d{4}")
@@ -2740,7 +2916,7 @@ str_extract_all(c("Meine Nummer ist die 058345-5367",
 - `[^\\s]`: matcht alles ausser Whitespaces
 - `?\\.ch` und `?@`: Match muss mit `\\.ch` bzw. `@` enden
 
-```r
+``` r
 str_extract_all(c("Meine Mailadresse ist felix.lorenz@tg.ch",
                   "felix.lorenz@tg wird nicht gematcht"), 
                 pattern = "[^\\s]*?@.+?\\.ch")
@@ -2786,10 +2962,7 @@ Nutze dafür den Regex `\\d\\d\\d\\d-\\d\\d-\\d\\d`
 
 4. Entferne die Leerzeichen anführenden Leerzeichen aus der Spalte `Datum und Vorlage` (" Test " -&gt; "Test")
 
-<div class="countdown" id="timer_eff8de06" data-update-every="1" tabindex="0" style="right:0;bottom:0;">
-<div class="countdown-controls"><button class="countdown-bump-down">&minus;</button><button class="countdown-bump-up">&plus;</button></div>
-<code class="countdown-time"><span class="countdown-digits minutes">10</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
-</div>
+<countdown-timer class="countdown" id="timer_feb0bd0d" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 ----
 ## Good to know: stringi
@@ -2849,7 +3022,7 @@ Nutze dafür den Regex `\\d\\d\\d\\d-\\d\\d-\\d\\d`
 
 
 
-```r
+``` r
 ymd("20221212")
 ```
 
@@ -2857,7 +3030,7 @@ ymd("20221212")
 ## [1] "2022-12-12"
 ```
 
-```r
+``` r
 dmy("02.03.2023")
 ```
 
@@ -2870,7 +3043,7 @@ dmy("02.03.2023")
 .panel[.panel-name[datetime]
 -  gleiches gilt für Daten vom Typ `datetime` (gleiches Prinzip)
 
-```r
+``` r
 dmy_hms("02.03.2023 11:41:12 Uhr")
 ```
 
@@ -2882,7 +3055,7 @@ dmy_hms("02.03.2023 11:41:12 Uhr")
 - will man Daten auf z.B. auf Jahresbasis zusammenfassen müssen tgesaktuelle Daten gerundet werden
 
 
-```r
+``` r
 new_date &lt;- round_date(dmy_hms("02.03.2023 11:41:12 Uhr"),unit = "year")
 new_date
 ```
@@ -2894,7 +3067,7 @@ new_date
 - wenn nun nur das Jahr angezeigt werden soll, bietet `lubridate` ebenfalls eine Lösung
 
 
-```r
+``` r
 year(new_date)
 ```
 
@@ -2921,10 +3094,7 @@ Erstelle einen neuen Datensatz `geburten_time` und füge die neue Spalte hinzu.
 
 3. Wie könnte man dieses Problem theoretisch lösen?
 
-<div class="countdown" id="timer_f29d0c5b" data-update-every="1" tabindex="0" style="right:0;bottom:0;">
-<div class="countdown-controls"><button class="countdown-bump-down">&minus;</button><button class="countdown-bump-up">&plus;</button></div>
-<code class="countdown-time"><span class="countdown-digits minutes">10</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
-</div>
+<countdown-timer class="countdown" id="timer_e9059d70" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 
 
@@ -2965,7 +3135,7 @@ Erstelle einen neuen Datensatz `geburten_time` und füge die neue Spalte hinzu.
 - auf Listenelmente kann *direkt* über deren Index oder Namen (wenn vorhanden) zugegriffen werden
 - wichtig dabei sind die doppelten eckigen Klammern `[[]]` für direkten Zugriff
 
-```r
+``` r
 new_list &lt;- list(a="hallo",4)
 new_list[["a"]]
 ```
@@ -2974,7 +3144,7 @@ new_list[["a"]]
 ## [1] "hallo"
 ```
 
-```r
+``` r
 new_list[[2]]
 ```
 
@@ -2986,7 +3156,7 @@ new_list[[2]]
 - mit einfachen eckigen Klammern `[]` greift man über den Index auf den Container zu und erhält als Ergebnis eine Liste
 
 
-```r
+``` r
 new_list[2]
 ```
 
@@ -2995,7 +3165,7 @@ new_list[2]
 ## [1] 4
 ```
 
-```r
+``` r
 class(new_list[2])
 ```
 
@@ -3008,7 +3178,7 @@ class(new_list[2])
 - hierfür wird `list()` innerhalb der Liste verwendet
 - Listen können so z.B. einfach in `JSON` umgewandelt werden (ähnliches Prinzip)
 
-```r
+``` r
 nested_list &lt;- list(char = list(a = "halo",b="hi"), nums = list(1,2))
 jsonlite::toJSON(nested_list,auto_unbox = T) %&gt;% jsonlite::prettify()
 ```
@@ -3032,7 +3202,7 @@ jsonlite::toJSON(nested_list,auto_unbox = T) %&gt;% jsonlite::prettify()
 - auch der `$`-Operator kann verwendet werden
 
 
-```r
+``` r
 nested_list &lt;- list(char = list(a = "halo",b="hi"), nums = list(1,2))
 nested_list$char$a
 ```
@@ -3041,7 +3211,7 @@ nested_list$char$a
 ## [1] "halo"
 ```
 
-```r
+``` r
 nested_list[["nums"]][[2]]
 ```
 
@@ -3059,7 +3229,7 @@ nested_list[["nums"]][[2]]
 .panel[.panel-name[Listen Bearbeiten]
 - neue Listenelmente können einfach per Namen oder Index hinzugefügt werden
 
-```r
+``` r
 new_list[[3]] &lt;- "neues Element"
 new_list[["test"]] &lt;- "neu"
 new_list
@@ -3083,7 +3253,7 @@ new_list
 - Listen können mit `unlist()` zu Vektoren (soweit möglich) umgewandelt werden
 - eine Liste von `data.frames` kann mit `dplyr::bind_rows` zu einem zusammenhängenden Datensatz umgewandelt werden
 
-```r
+``` r
 unlist(new_list)
 ```
 
@@ -3096,7 +3266,7 @@ unlist(new_list)
 - mehrere Listen können mit dem `c()` Operator zusammengefügt werden
 
 
-```r
+``` r
 full_list &lt;- c(new_list,nested_list)
 ```
 ]
@@ -3157,13 +3327,13 @@ full_list &lt;- c(new_list,nested_list)
 .panel[.panel-name[Syntax]
 
 
-```r
+``` r
 # Genereller Syntax
 ifelse(Bedingung,wenn_wahr,wenn_falsch)
 ```
 Mehrere `ifelse` Funktionen können auch verschachtelt werden. Anstelle eines `wenn_falsch` Wert wird dann ein weiteres `ifelse` Statement eingefügt.
 
-```r
+``` r
 ifelse(Bedingung1,wenn_wahr1,
        ifelse(Bedingung2, wenn_wahr2, wenn_falsch))
 ```
@@ -3171,7 +3341,7 @@ ifelse(Bedingung1,wenn_wahr1,
 ]
 .panel[.panel-name[Anwendung]
 
-```r
+``` r
 geburten %&gt;% 
   select(age_m) %&gt;% 
   mutate(age_class = ifelse(age_m&lt;18,"unter 18",
@@ -3193,7 +3363,7 @@ geburten %&gt;%
 Bei vielen verschachtelten `ifelse` Funktionen wird der Code unübersichtlich (zu viele Klammern, schwer zu bearbeiten)
 
 
-```r
+``` r
 geburten %&gt;% 
   select(age_m) %&gt;% 
   mutate(age_class = ifelse(age_m &lt; 20,"unter 20",
@@ -3226,14 +3396,14 @@ geburten %&gt;%
 - das Tilde-Symbol (`~`) kann mit `Ctrl+Alt+^` (zweimal drücken) erzeugt werden
 
 
-```r
+``` r
 # Genereller Syntax
 case_when(Bedingung ~ wenn_wahr,
           TRUE ~ wenn_falsch)
 ```
 Mehrere Bedingungen werden einfach mit Komma getrennt. `TRUE ~ x` kennzeichnet den Wert der zurückgegeben wird, wenn keine Bedingung zutrifft.
 
-```r
+``` r
 case_when(Bedingung1 ~ wenn_wahr1,
           Bedingung2 ~ wenn_wahr2,
           TRUE ~ wenn_falsch)
@@ -3242,7 +3412,7 @@ case_when(Bedingung1 ~ wenn_wahr1,
 ]
 .panel[.panel-name[Anwendung]
 
-```r
+``` r
 geburten %&gt;% 
   select(age_m) %&gt;% 
   mutate(age_class = case_when(age_m&lt;18 ~"unter 18",
@@ -3266,7 +3436,7 @@ Mehrere Bedingungen können einfach unterinander geschrieben werden, ohne das je
 
 Der Code wird leichter lesbar und einfacher zu bearbeiten.
 
-```r
+``` r
 geburten %&gt;% 
   select(age_m) %&gt;% 
   mutate(age_class = case_when(age_m &lt; 20 ~ "unter 20",
@@ -3332,7 +3502,7 @@ Verwende Conditional Statements um die neue Variable `eltern_nat_type` zu erstel
 .panel[.panel-name[mit else]
 
 
-```r
+``` r
 x = 3
 
 if (x %% 2 == 0){
@@ -3349,7 +3519,7 @@ if (x %% 2 == 0){
 ]
 .panel[.panel-name[ohne else]
 
-```r
+``` r
 x = 4
 
 if (x %% 2 == 0){
@@ -3374,7 +3544,7 @@ if (x %% 2 == 0){
 .panel[.panel-name[Bsp. 1]
 Ein `else` Statement ist nicht unbedingt notwendig, wenn nur in einem einzigen Prüffall etwas unternommen werden soll
 
-```r
+``` r
 x = 3
 
 if (x %% 2 != 0){
@@ -3393,7 +3563,7 @@ x
 Wenn mehrere, sich gegenseitig ausschliessende Bedingungen abgeprüft werden sollen, kann die spezielle `else if` Schreibweise verwendet werden
 
 
-```r
+``` r
 alter &lt;- 45
 
 if (alter &gt;= 70) {
@@ -3414,7 +3584,7 @@ print(altersklasse)
 .panel[.panel-name[Bsp. 3]
 Für kompliziertere Prüfungen können `if` statements auch verschachtelt werden
 
-```r
+``` r
 dienstjahre &lt;- 5
 bewertung &lt;- "Gut"
 
@@ -3490,7 +3660,7 @@ if (bewertung == "Sehr gut"){
 
 
 
-```r
+``` r
 for (i in x){ # Kopfzeile
    # Hauptteil
   do_something()
@@ -3518,7 +3688,7 @@ for (i in x){ # Kopfzeile
 - Wenn Daten nicht zugewiesen werden sind sie nachher nicht im  Environment verfügbar
 - Zuweisungen die ausschliesslich innerhalb des loops geschehen sind nicht im globalen environment verfügbar
 
-```r
+``` r
 for (i in 1:3){
   temp &lt;- paste0("Iteration Nr. ",i)
 }
@@ -3533,7 +3703,7 @@ temp
 .panel[.panel-name[Bsp. 2]
 - Elemente können auch direkt verwendet werden
 
-```r
+``` r
 new_list &lt;- list()
 for (elem in c("A","B","C")){
   new_list[[elem]] &lt;- tolower(elem)
@@ -3556,7 +3726,7 @@ new_list
 - mit `seq_along` werden die Indizes (=Positionen) für einen Vektor gebildet
 
 
-```r
+``` r
 vec &lt;- c("A","B","C")
 for (i in seq_along(vec)){
   print(paste0(vec[i],i))
@@ -3586,7 +3756,7 @@ for (i in seq_along(vec)){
 
 
 
-```r
+``` r
 i = 1
 while (i &lt;= y){
   do_something()
@@ -3611,7 +3781,7 @@ while (i &lt;= y){
 .panel[.panel-name[Bsp. 1]
 Wie oft wird `"Hello World"` im unten stehenden while Loop ausgegeben?
 
-```r
+``` r
 y = 3
 i = 1
 
@@ -3624,7 +3794,7 @@ while (i &lt;= y){
 .panel[.panel-name[Lösung. 1]
 Abbruchbedingungen müssen korrekt initialisert werden um einen unendlichen Loop zu vermeiden
 
-```r
+``` r
 y = 3
 i = 1
 
@@ -3653,7 +3823,7 @@ while (i &lt;= y){
 .panel[.panel-name[break]
 Mit `break` kann ein Loop an einer bestimmten Stelle (z.B. bei Erfüllung einer bestimmten Bedingung) vorzeitigabgebrochen werden.
 
-```r
+``` r
 for (i in c(1,3,6,8)){
   if (i %% 2 == 0){
     print(i)
@@ -3670,7 +3840,7 @@ for (i in c(1,3,6,8)){
 .panel[.panel-name[next]
 Mit `next` kann zur nächsten Iteration gesprungen werden ohne den gesamten Codebody auszuführen
 
-```r
+``` r
 for (i in c(1,2,3,5)){
   if (i %% 2 == 0){
     next # alles nach dieser Zeile wird übersprungen
@@ -3779,7 +3949,7 @@ Aus der Erfahrung sind `lapply, sapply` und `apply` die am meisten genutzen Funk
 Anwendung einer Funktion auf jedes Element einer Liste/eines Vektors und gibt eine Liste zurück.
 
 
-```r
+``` r
 num_list &lt;- list(a = c(3,8,6), b = c(1,15,3), c = c(32,15,16))
 
 lapply(num_list, mean)
@@ -3801,7 +3971,7 @@ lapply(num_list, mean)
 Gleiche Funktionsweise wie `lapply`, gibt aber - wenn möglich - einen Vektor und sonst eine Matrix als Ergebnis zurück.
 
 
-```r
+``` r
 sapply(num_list, mean)
 ```
 
@@ -3813,7 +3983,7 @@ sapply(num_list, mean)
 .panel[.panel-name[tapply &amp; aggregate]
 Berechnung einer Kennzahl (mean, median, min, max, etc.) für jede Faktor-Variable in einem Vektor.
 
-```r
+``` r
 df &lt;- data.frame(fac = c("a","a","b","b","c","c"),
                 num = c(4,8,6,5,7,9))
 
@@ -3829,7 +3999,7 @@ tapply(df$num, as.factor(df$fac),mean)
 .panel[.panel-name[mapply]
 Anwendung einer Funktion auf die korrespondierenden Elemente von mehreren Listen.
 
-```r
+``` r
 num_list &lt;- list(a = c(3,8,6), b = c(1,15,3), c = c(32,15,16))
 num_list2 &lt;- list(a = c(1,2,3), b = c(4,5,6), c = c(7,8,9))
 
@@ -3846,7 +4016,7 @@ mapply(sum, num_list, num_list2)
 Anwendung einer Funktion auf die Elemente eines data.frames oder einer Matrix. Gibt Vektor oder Liste zurück.
 Apply kann entweder reihenweise, spaltenweise oder elementweise operieren.
 
-```r
+``` r
 df &lt;- data.frame(fac = c("a","a","b","b","c","c"),
                 num = c(4,8,6,5,7,9))
 
@@ -3871,7 +4041,7 @@ Bei allen `apply`-Funktionen muss ein Objekt (oder mehrere) sowie eine Funktion 
 Bei `lapply` kann dies eine Liste oder ein Vektor sein, welche als erstes Argument an die Funktion mitgegeben wird. Das zweite Argument ist die Funktion.
 
 
-```r
+``` r
 # Generell
 lapply(vec_or_list, func)
 ```
@@ -3880,7 +4050,7 @@ lapply(vec_or_list, func)
 Wenn keine zusätzlichen Argumente für diei Funktion benötigt werden (z.B. `mean()`), kann die Funktion einfach **ohne Klammern** als Argument mitgegeben werden.
 
 
-```r
+``` r
 # Keine Argumente
 lapply(num_list, mean)
 ```
@@ -3900,7 +4070,7 @@ lapply(num_list, mean)
 Argumente, welche normalerweise in die Klammer hinter der Funktion geschrieben werden (`mean(.,na.rm=TRUE)`), werden im Falle von `apply`-Funktionen mit Komma getrennt aufgelistet (`mean,na.rm=TRUE`)
 
 
-```r
+``` r
 # Mit Argumenten
 lapply(num_list[1:2], mean,na.rm=TRUE)
 ```
@@ -3917,7 +4087,7 @@ lapply(num_list[1:2], mean,na.rm=TRUE)
 [Anonymus Functions](https://coolbutuseless.github.io/2019/03/13/anonymous-functions-in-r-part-1/) (auch *lambda expression* genannt) sind Funktionen, denen kein Name zugeordnet wird und die nur im Zusammehang der apply Funktion existieren
 
 
-```r
+``` r
 # Mit Argumenten
 lapply(num_list[1:2], function(x){
   temp &lt;- paste0("Die Summe ist ",sum(x))
@@ -3937,7 +4107,7 @@ lapply(num_list[1:2], function(x){
 Um den Code übersichtlicher zu gestalten und die ungewohnte Schreibweise mit der Kommatrenung zu vermeiden, können auch andere Funktionen als `Anonymus Functions` notiert werden.  
 
 
-```r
+``` r
 # Mit Argumenten
 lapply(num_list[1:2], function(x){
   mean(x,na.rm=TRUE)
@@ -3962,7 +4132,7 @@ lapply(num_list[1:2], function(x){
 
 
 
-```r
+``` r
 abstimmungen_path &lt;- "Daten/Ebene_Gemeinden" 
 csv_files &lt;- list.files(path = abstimmungen_path, pattern = "*.csv", full.names = T) 
 ```
@@ -3971,7 +4141,7 @@ Alle gezeigten Beispiele liefern dasselbe Ergebnis
 .panelset[
 .panel[.panel-name[for-loop]
 
-```r
+``` r
 for_list &lt;- list()
 for(file in csv_files){
   for_list[[file]] &lt;- read_csv2(file,
@@ -3983,7 +4153,7 @@ for(file in csv_files){
 ]
 .panel[.panel-name[while-loop]
 
-```r
+``` r
 while_list &lt;- list()
 i = 1
 while(i &lt;= length(csv_files)){
@@ -3997,7 +4167,7 @@ while(i &lt;= length(csv_files)){
 ]
 .panel[.panel-name[lapply]
 
-```r
+``` r
 lapply_list &lt;- lapply(csv_files,function(file){
   df &lt;- read_csv2(file,
                   locale = locale(encoding = "latin1"),
@@ -4045,7 +4215,7 @@ Für jede Fahrzeuklasse soll ein Datensatz erstellt werden, welcher den Mittelwe
 .panelset[
 .panel[.panel-name[for-loop]
 
-```r
+``` r
 for_list &lt;- list()
 for(file in csv_files){
   for_list[[file]] &lt;- read_csv2(file,
@@ -4057,7 +4227,7 @@ for(file in csv_files){
 ]
 .panel[.panel-name[while-loop]
 
-```r
+``` r
 while_list &lt;- list()
 i = 1
 while(i &lt;= length(csv_files)){
@@ -4071,7 +4241,7 @@ while(i &lt;= length(csv_files)){
 ]
 .panel[.panel-name[lapply]
 
-```r
+``` r
 lapply_list &lt;- lapply(csv_files,function(file){
   df &lt;- read_csv2(file,
                   locale = locale(encoding = "latin1"),
@@ -4083,7 +4253,7 @@ lapply_list &lt;- lapply(csv_files,function(file){
 ]
 .panel[.panel-name[map]
 
-```r
+``` r
 map_list &lt;- csv_files %&gt;% 
   map(read_csv2,
       locale = locale(encoding = "latin1"),
@@ -4106,7 +4276,7 @@ map_list &lt;- csv_files %&gt;%
 
 **Aus**
 
-```r
+``` r
 function(x){
   sum(x)
 }
@@ -4115,7 +4285,7 @@ function(x){
 **wird** 
 
 
-```r
+``` r
 ~{sum(.x)}
 ```
 
@@ -4137,7 +4307,7 @@ Diese Schreibweise ist kein Muss, wird aber bei `purrr` oft verwendet. Es ist da
 .panel[.panel-name[map]
 - `map` ist im Prinzip äquivalent zu `lapply`
 
-```r
+``` r
 # Liste von CSV files einlesen
 # Wir erhalten eine Liste von data.frames bzw. tibbles
 map_list &lt;- csv_files %&gt;% 
@@ -4155,7 +4325,7 @@ class(map_list)
 ]
 .panel[.panel-name[map_df (1)]
 
-```r
+``` r
 # Ja Anteil nach Bezirk berechnen und alles in einen zusammenhängenden Datensatz schreiben
 map_dataframe &lt;- map_list %&gt;% 
   map_df(~ .x %&gt;% 
@@ -4174,7 +4344,7 @@ class(map_dataframe)
 ]
 .panel[.panel-name[map_df (2)]
 
-```r
+``` r
 head(map_dataframe,5)
 ```
 
@@ -4194,7 +4364,7 @@ head(map_dataframe,5)
 .panel[.panel-name[map_chr]
 - bei `map_chr` muss das Ergebnis der Funktion innerhalb von `map_chr` immer die Länge `1` haben. Sonst kann kein Vektor erstellt werden
 
-```r
+``` r
 # Namen der einzelnen Vorlagen extrahieren als vektor
 map_character &lt;- map_list %&gt;% 
   map_chr(~ .x[["VORLAGE_BEZEICHNUNG"]] %&gt;% unique())
@@ -4212,7 +4382,7 @@ map_character[c(1:4)]
 .panel[.panel-name[map_dbl]
 - bei `map_dbl` muss das Ergebnis der Funktion innerhalb von `map_dbl` immer ein einzelner `double` (Fliesskommazahl oder Integer) sein.
 
-```r
+``` r
 # Gesamtanzahl der Stimmberechtigten bei den jeweiligen Abstimmungen
 map_double &lt;- map_list %&gt;% 
   map_dbl(~ sum(as.numeric(.x$STIMMBERECHTIGTE)))
@@ -4244,7 +4414,7 @@ map_double
 .panel[.panel-name[keep]
 `keep` behält nur die Elemente, die eine bestimmte Bedingung erfüllen 
 
-```r
+``` r
 # Abstimmungen mit im Schnitt mehr als 50% Stimmbeteiligung pro gGemeinde
 hohe_beteiligung &lt;- map_list %&gt;% 
   keep(~{mean(as.numeric(.x[["STIMMBETEILIGUNG"]]))&gt;50})
@@ -4255,7 +4425,7 @@ length(map_list)
 ## [1] 34
 ```
 
-```r
+``` r
 length(hohe_beteiligung)
 ```
 
@@ -4266,7 +4436,7 @@ length(hohe_beteiligung)
 .panel[.panel-name[discard]
 `discard` bildet das gegenstück zu `keep`
 
-```r
+``` r
 # Abstimmungen mit im Schnitt 50% oder weniger Stimmbeteiligung pro Gemeinde
 niedrige_beteiligung &lt;- map_list %&gt;% 
   discard(~{mean(as.numeric(.x[["STIMMBETEILIGUNG"]]))&gt;50})
@@ -4277,7 +4447,7 @@ length(hohe_beteiligung)
 ## [1] 6
 ```
 
-```r
+``` r
 length(niedrige_beteiligung)
 ```
 
@@ -4289,7 +4459,7 @@ length(niedrige_beteiligung)
 .panel[.panel-name[every]
 Trifft Bedingung auf **jedes** Element der Liste zu?
 
-```r
+``` r
 # Ist die durchschnittliche Stimmbeteilung in den Gemeinden immer über 30%?
 map_list %&gt;% 
   some(~{mean(as.numeric(.x[["STIMMBETEILIGUNG"]]))&gt;30})
@@ -4303,7 +4473,7 @@ map_list %&gt;%
 .panel[.panel-name[some]
 Trifft Bedingung auf **mindestens ein** Element der Liste zu?
 
-```r
+``` r
 # Gibt es Abstimmungen mit durchschnittlicher Stimmbeteilung in den Gemeinden von über 70%?
 map_list %&gt;% 
   some(~{mean(as.numeric(.x[["STIMMBETEILIGUNG"]]))&gt;70})
@@ -4331,7 +4501,7 @@ map_list %&gt;%
 .panel[.panel-name[pluck (1)]
 `pluck` hilft dabei auf Elemente in einer Liste zuzugreifen. Besonders hilfreich ist dies wenn Listen stark verschachtelt sind
 
-```r
+``` r
 nested_list &lt;-
   list(
     a = list(1, 2, 3),
@@ -4346,7 +4516,7 @@ nested_list &lt;-
 .panel[.panel-name[pluck (2)]
 Es kann Ebene für Ebene das Element nach Namen ausgewählt werden
 
-```r
+``` r
 nested_list %&gt;% 
   pluck("b","b1")
 ```
@@ -4355,14 +4525,14 @@ nested_list %&gt;%
 ## [1] "a" "b"
 ```
 
-```r
+``` r
 # Gleich wie nested_list[["b"]][["b1"]]
 ```
 ]
 .panel[.panel-name[pluck (3)]
 Ebenso können auch die Indizes der einzelnen Listen verwendet werden
 
-```r
+``` r
 nested_list %&gt;% 
   pluck(2,1)
 ```
@@ -4371,14 +4541,14 @@ nested_list %&gt;%
 ## [1] "a" "b"
 ```
 
-```r
+``` r
 # Gleich wie nested_list[[2]][[1]]
 ```
 ]
 .panel[.panel-name[pluck (4)]
 Wenn ein Element nicht existiert, wird kein `Error`, sondern `NULL` zurückgegeben (Vorteil wenn man es z.B. in Funktionen verwendet)
 
-```r
+``` r
 nested_list %&gt;% 
   pluck(2,1)
 ```
@@ -4387,14 +4557,14 @@ nested_list %&gt;%
 ## [1] "a" "b"
 ```
 
-```r
+``` r
 # Gleich wie nested_list[[2]][[1]]
 ```
 ]
 .panel[.panel-name[pluck (5)]
 Listen Werte können auch gesetzt werden
 
-```r
+``` r
 #set
 pluck(nested_list,2,1) &lt;- "test"
 #get
@@ -4503,7 +4673,7 @@ Eigene Funktionen sind hilfreich, wenn Code immer wieder ausgeführt werden muss
 - eine Liste von Argumenten, die an die Funktion übergeben werden
 - jedes Argument hat einen Namen (hier `vektor`) und es kann ein Objekt (Wert, oder sogar Funktion zugewisen werden)
 
-```r
+``` r
 durchschnitt &lt;- function(`vektor`){
   # Ein Kommentar, der den Body beschreibt
   temp &lt;- sum(vektor)/length(vektor)
@@ -4513,7 +4683,7 @@ durchschnitt &lt;- function(`vektor`){
 
 Mit der `formals()` Funktionen können die Argumente aufgerufen werden. mit `?durchschnitt` kann ausserdem die Dokumentation (sofern vorhanden) eingesehen werden. 
 
-```r
+``` r
 formals(durchschnitt)
 ```
 
@@ -4524,7 +4694,7 @@ formals(durchschnitt)
 .panel[.panel-name[body (1)]
 - der Code der in der Funktion ausgeführt wird und zwischen `{ }` steht
 
-```r
+``` r
 durchschnitt &lt;- function(vektor)`{`
   # Ein Kommentar, der den Body beschreibt
   temp &lt;- sum(vektor)/length(vektor) #&lt;&lt;
@@ -4535,16 +4705,12 @@ durchschnitt &lt;- function(vektor)`{`
 .panel[.panel-name[body (2)]
 Mit `attr(funktionsname, "srcref")` können sowohl der Funktions-Body als auch Inline-Kommentare sichtbar gemacht werden.
 
-```r
+``` r
 attr(durchschnitt, "srcref")
 ```
 
 ```
-## function(`vektor`){
-##   # Ein Kommentar, der den Body beschreibt
-##   temp &lt;- sum(vektor)/length(vektor)
-##   return(temp)
-## }
+## NULL
 ```
 Die `body()` Funktion zeigt nur den Body ohne Kommentare
 ]
@@ -4561,7 +4727,7 @@ Die `body()` Funktion zeigt nur den Body ohne Kommentare
 .panel[.panel-name[Name Masking]
 Namen, die innerhalb einer Funktion definiert werden, "maskieren" Namen, die ausserhalb derFunktion definiert wurden.
 
-```r
+``` r
 x &lt;- 10
 f1 &lt;- function() {
   x &lt;- 1
@@ -4586,7 +4752,7 @@ Daher ist wichtig zu vermeiden, dass dieser Fall auftritt. Namen sollten jeweils
 .panel[.panel-name[Dynamic Lookup]
 Vorsicht ist geboten, wenn man eine Variable ausserhalb der Funktion definiert und diese dann in der Funktion verwendet.
 
-```r
+``` r
 x &lt;- 10
 f2 &lt;- function() {
   return(x)
@@ -4604,7 +4770,7 @@ R sieht, schaut als erstes, ob die Variable `x` irgendwo in der Funktion definie
 .panel[.panel-name["Neustart"]
 Das Environment einer Funktion wird bei jeder Ausführung zurückgesetzt. Zuweisungen bleiben somit nur für einen Durchlauf bestehen.
 
-```r
+``` r
 f3 &lt;- function() {
   if (!exists("a")) { 
     a &lt;- 1 
@@ -4632,7 +4798,7 @@ f3()
 - Wenn ein Argument in einer Funktion nie verwendet wird, entsteht auch keine Fehlermeldung
 - Das bietet den Vorteil dass potentiell aufwändige Berechnungen nur dann ausgeführt werden, wenn diese wirklich benötigt werden
 
-```r
+``` r
 f4 &lt;- function(y) {
   x &lt;- 1
   return(x)
@@ -4649,7 +4815,7 @@ f4()
 - Wenn kein expliziter Wert angegeben wird, verwendet die Funktion den default Wert
 - Diese können jedoch auch einfach überschrieben werden
 
-```r
+``` r
 f5 &lt;- function(y=10) {
   return(y)
 }
@@ -4660,7 +4826,7 @@ f5()
 ## [1] 10
 ```
 
-```r
+``` r
 f5(50)
 ```
 
@@ -4698,7 +4864,7 @@ Alles, was innerhalb einer Funktion verwendet werden muss, sollte als Argument �
 
 Eine Funktion wird mit dem `function()` Keyword definiert.
 
-```r
+``` r
 durchschnitt &lt;- function(vektor){
   temp &lt;- sum(vektor)/length(vektor)
   return(temp)
@@ -4731,7 +4897,7 @@ In R- Funktionen gibt es implizite als auch explizite `return` Statements.
 .panel[.panel-name[Implizites Return]
 Wenn kein `return()` definiert wird, wird der letzte **ausgegebene** Wert in der Funktion zurückgegben.
 
-```r
+``` r
 f5 &lt;- function(y) {
   y
 }
@@ -4745,7 +4911,7 @@ f5(20)
 .panel[.panel-name[Explizites Return]
 Meiner Meinung nach empfiehlt es sich **immer** ein `return()` Statement zu verwenden, wenn ein Wert zurückgegeben werden soll. Dies macht den Code einfacher lesbar.
 
-```r
+``` r
 f6 &lt;- function(y) {
   return(y)
 }
@@ -4782,7 +4948,7 @@ Best Practice laut [R for Data Science](https://r4ds.had.co.nz/functions.html#fu
 - generell sollten Funktionen Verben sein und Argumente Nomen
 - Nomen sollten nur dann als Funktionsnamen verwendet werden, wenn das angedachte Verb zu "generisch" klingt (z.B. “get”, “compute”, “calculate” oder “determine”)
 
-```r
+``` r
 # Zu kurzer Name
 f()
 # Weder ein Verb noch beschreibend
@@ -4797,7 +4963,7 @@ collapse_years()
 - alternativ kann *camelCase* verwendet werden (erstes Wort klein, alle folgenden Worte mit grosse Anfangsbuchstaben)
 - Wichtig ist **Konsistenz** (mische nicht *snake_case* und *camelCase*, wenn mehrere Funktionen erstellt werden)
 
-```r
+``` r
 camelCaseFunction()
 
 snake_case_function()
@@ -4849,7 +5015,7 @@ In Funktionen können eigene `conditions` erzeugt werden. Das ist wichtig, da es
 .panel[.panel-name[stop]
 Mit `stop()` kann ein *Error* erzeugt werden
 
-```r
+``` r
 f7 &lt;- function(x){
   if (!is.numeric(x)){
     stop(paste0("Der Wert für x (",x,") ist nicht numerisch."))
@@ -4867,7 +5033,7 @@ f7("2")
 Mit `warning()` kann eine *Warning Message* erzeugt werden
 
 
-```r
+``` r
 f7 &lt;- function(x){
   if (!is.numeric(x)){
     x &lt;- as.numeric(x)
@@ -4879,17 +5045,13 @@ f7("2")
 ```
 
 ```
-## Warning in f7("2"): x wurde zu numeric konvertiert
-```
-
-```
 ## [1] 14
 ```
 ]
 .panel[.panel-name[message]
 `message()` erzeugt eine `Info Message` 
 
-```r
+``` r
 f8 &lt;- function(x){
   if (is.numeric(x)){
     message("x ist ein numerischer Wert")
@@ -4897,10 +5059,6 @@ f8 &lt;- function(x){
   return(x*7)
 }
 f8(2)
-```
-
-```
-## x ist ein numerischer Wert
 ```
 
 ```
@@ -5053,7 +5211,7 @@ Eine Grafik in ggplot2 wird immer über den `ggplot()` Befehl initialisiert und 
 .panel[.panel-name[Code]
 
 
-```r
+``` r
 library(ggplot2)
 set.seed(1234)
 index &lt;- sample(1:nrow(geburten),2000)
@@ -5066,7 +5224,7 @@ ggplot(data = geburten_sample, aes(x=age_v, y=age_m))+
 .panel[.panel-name[Grafik]
 Alter des Vaters auf der x-Achse und Alter der Mutter auf der y-Achses
 
-&lt;img src="index_files/figure-html/unnamed-chunk-475-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-479-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 ]
 
@@ -5092,35 +5250,35 @@ Alter des Vaters auf der x-Achse und Alter der Mutter auf der y-Achses
 .panel[.panel-name[Bsp 1]
 Die Datenpunkte sollen je nach Geschlecht (`sex`) unterschiedlich eingefärbt werden
 
-```r
+``` r
 ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = sex))+
   geom_point()
 ```
 ]
 .panel[.panel-name[Fig 1]
-&lt;img src="index_files/figure-html/unnamed-chunk-477-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-481-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 .panel[.panel-name[Bsp 2]
 `sex` wird als numerische Variable erkannt weshalb eine Umwandlung nötig ist
 
-```r
+``` r
 ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = as.factor(sex)))+
   geom_point()
 ```
 ]
 .panel[.panel-name[Fig 2]
-&lt;img src="index_files/figure-html/unnamed-chunk-479-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-483-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 .panel[.panel-name[Bsp 3]
 Ausserhalb des `aes()` Befehls können auch statische Variablen als aesthetics definiert werden (siehe [hier](https://ggplot2-book.org/layers.html#setting-mapping))
 
-```r
+``` r
 ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = as.factor(sex)))+
   geom_point(shape = 15)
 ```
 ]
 .panel[.panel-name[Fig 3]
-&lt;img src="index_files/figure-html/unnamed-chunk-481-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-485-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 ]
 
@@ -5148,13 +5306,13 @@ ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = as.factor(sex)))+
 - Die Grafik leidet bisher unter *overplotting* (= mehrere Datenpunkte liegen direkt übereinander)
 - Mit `geom_jitter` anstelle von `geom_point` kann eine minimale künstliche Varianz erzeugt werden, welche die Grafik aussagekräftiger macht
 
-```r
+``` r
 ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = as.factor(sex)))+
   geom_jitter(shape = 15)
 ```
 ]
 .panel[.panel-name[Fig]
-&lt;img src="index_files/figure-html/unnamed-chunk-483-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-487-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 ]
 
@@ -5173,7 +5331,7 @@ ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = as.factor(sex)))+
 - Balkendiagramm des Altersunterschied zwischen Vätern und Müttern über Zeit
 - Pipeline enthält sowohl Datenaufbereitung als auch -visualisierung (nicht immer empfehlenswert)
 
-```r
+``` r
 geburten %&gt;% 
   mutate(age_diff = age_v-age_m) %&gt;% 
   group_by(stat_jahr) %&gt;% 
@@ -5185,12 +5343,12 @@ geburten %&gt;%
 
 ]
 .panel[.panel-name[Fig 1]
-&lt;img src="index_files/figure-html/unnamed-chunk-485-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-489-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 .panel[.panel-name[Bsp 2]
 - Hinzufügen einer Linie als zusätzlicher Layer
 
-```r
+``` r
 geburten %&gt;% 
   mutate(age_diff = age_v-age_m) %&gt;% 
   group_by(stat_jahr) %&gt;% 
@@ -5201,13 +5359,13 @@ geburten %&gt;%
 ```
 ]
 .panel[.panel-name[Fig 2]
-&lt;img src="index_files/figure-html/unnamed-chunk-487-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-491-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 .panel[.panel-name[Bsp 3]
 - Durchschnittliches Alter der Mutter und des Vaters bei Geburt
 - Mehrere Linien mit unterscheidlichen Positionen
 
-```r
+``` r
 geburten %&gt;% 
   group_by(stat_jahr) %&gt;% 
   summarise(mean_m =mean(age_m,na.rm = T), #Durchschnittliches Alter der Mutter
@@ -5218,12 +5376,12 @@ geburten %&gt;%
 ```
 ]
 .panel[.panel-name[Fig 3]
-&lt;img src="index_files/figure-html/unnamed-chunk-489-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-493-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 .panel[.panel-name[Bsp 4]
 - Ermittlung von Missing Values
 
-```r
+``` r
 geburten %&gt;% 
   group_by(stat_jahr) %&gt;% 
   summarise(age_m_na =sum(is.na(age_m))/n(), #Anteil NAs beim Alter der Mutter
@@ -5234,7 +5392,7 @@ geburten %&gt;%
 ```
 ]
 .panel[.panel-name[Fig 3]
-&lt;img src="index_files/figure-html/unnamed-chunk-491-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-495-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 ]
 
@@ -5264,10 +5422,7 @@ Stelle das erreichte Alter von Männern und Frauen im Zeitverlauf gegenüber.
 - Füge einen Titel sowie eine Beschriftung für X- und Y-Achse hinzu.
 - Verwende dafür die labs() Funktion (`?ggplot2::labs()` für Hilfe)
 
-<div class="countdown" id="timer_d0e01bc0" data-update-every="1" tabindex="0" style="right:0;bottom:0;">
-<div class="countdown-controls"><button class="countdown-bump-down">&minus;</button><button class="countdown-bump-up">&plus;</button></div>
-<code class="countdown-time"><span class="countdown-digits minutes">10</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
-</div>
+<countdown-timer class="countdown" id="timer_9b678b82" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 
 ---
 ----
@@ -5444,20 +5599,9 @@ Wird die Datei mit falschem Encoding gelesen:
 **UTF-8 und Komma als Trennzeichen**
 
 
-```r
+``` r
 library(readr)
 csv_v1 &lt;- read_csv("Daten/geb_csv1.csv")
-```
-
-```
-## Rows: 4 Columns: 5
-## ── Column specification ────────────────────────────────────────────────────────
-## Delimiter: ","
-## chr (3): id, name, gemeinde_m
-## dbl (2): stat_jahr, geb_year
-## 
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ```
 ]
 .panel[.panel-name[Variante 2]
@@ -5465,19 +5609,9 @@ csv_v1 &lt;- read_csv("Daten/geb_csv1.csv")
 **latin1 und Komma als Trennzeichen**
 
 
-```r
+``` r
 library(readr)
 csv_v2 &lt;- read_csv("Daten/geb_csv2.csv")
-```
-
-```
-## Rows: 4 Columns: 1
-## ── Column specification ────────────────────────────────────────────────────────
-## Delimiter: ","
-## chr (1): stat_jahr,"id","geb_year","name","gemeinde_m"
-## 
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ```
 ]
 .panel[.panel-name[Variante 3]
@@ -5485,19 +5619,9 @@ csv_v2 &lt;- read_csv("Daten/geb_csv2.csv")
 **UTF-8 und Semikolon als Trennzeichen**
 
 
-```r
+``` r
 library(readr)
 csv_v3 &lt;- read_csv("Daten/geb_csv3.csv")
-```
-
-```
-## Rows: 5 Columns: 1
-## ── Column specification ────────────────────────────────────────────────────────
-## Delimiter: ","
-## chr (1): stat_jahr;id;geb_year;name;gemeinde_m
-## 
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ```
 ]
 .panel[.panel-name[Variante 4]
@@ -5505,19 +5629,9 @@ csv_v3 &lt;- read_csv("Daten/geb_csv3.csv")
 **latin1-8 und Semikolon als Trennzeichen**
 
 
-```r
+``` r
 library(readr)
 csv_v4 &lt;- read_csv("Daten/geb_csv4.csv")
-```
-
-```
-## Rows: 7 Columns: 1
-## ── Column specification ────────────────────────────────────────────────────────
-## Delimiter: ","
-## chr (1): stat_jahr;id;geb_year;name;gemeinde_m
-## 
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ```
 ]
 ]
@@ -5539,7 +5653,7 @@ csv_v4 &lt;- read_csv("Daten/geb_csv4.csv")
 **UTF-8 und Komma als Trennzeichen**
 
 
-```r
+``` r
 head(csv_v1,3)
 ```
 
@@ -5557,7 +5671,7 @@ head(csv_v1,3)
 **latin1 und Komma als Trennzeichen**
 
 
-```r
+``` r
 head(csv_v2,3)
 ```
 
@@ -5575,7 +5689,7 @@ head(csv_v2,3)
 **UTF-8 und Semikolon als Trennzeichen**
 
 
-```r
+``` r
 head(csv_v3,3)
 ```
 
@@ -5593,7 +5707,7 @@ head(csv_v3,3)
 **latin1-8 und Semikolon als Trennzeichen**
 
 
-```r
+``` r
 head(csv_v4,3)
 ```
 
@@ -5624,7 +5738,7 @@ head(csv_v4,3)
 - keine Anpassung nötig, da Daten bereits korrekt eingelesen sind
 
 
-```r
+``` r
 csv_v1 &lt;- read_csv("Daten/geb_csv1.csv",show_col_types = FALSE)
 head(csv_v1,3)
 ```
@@ -5644,7 +5758,7 @@ head(csv_v1,3)
 - Anpassung des Encodings mithilfe der `locale()` Funktion
 
 
-```r
+``` r
 csv_v2 &lt;- read_csv("Daten/geb_csv2.csv", locale = locale(encoding = "latin1"),show_col_types = FALSE)
 head(csv_v2,3)
 ```
@@ -5665,7 +5779,7 @@ head(csv_v2,3)
 - `read_delim` ist die Basisfunktion für alle `read_`-Funktionen. Hier können sämtliche Optionen selbst definiert werden
 
 
-```r
+``` r
 csv_v3 &lt;- read_delim("Daten/geb_csv3.csv", delim = ";",show_col_types = FALSE)
 head(csv_v3,3)
 ```
@@ -5685,7 +5799,7 @@ head(csv_v3,3)
 - Anpassung des Trennzeichens und des Encodings.
 
 
-```r
+``` r
 csv_v4 &lt;- read_delim("Daten/geb_csv4.csv", delim = ";",locale = locale(encoding = "latin1"),show_col_types = FALSE)
 head(csv_v4,3)
 ```
@@ -5734,23 +5848,9 @@ head(csv_v4,3)
 - in `latin1` kodierte Daten ohne Umwandlung als `utf-8` abspeichern
 
 
-```r
+``` r
 csv_v2 &lt;- read_csv("Daten/geb_csv2.csv",show_col_types = FALSE)
 write.csv(csv_v2,"Daten/geb_csv2_falsch.csv",fileEncoding = "utf-8",row.names = F)
-```
-
-```
-## Warning in utils::write.table(csv_v2, "Daten/geb_csv2_falsch.csv", fileEncoding
-## = "utf-8", : invalid char string in output conversion
-
-## Warning in utils::write.table(csv_v2, "Daten/geb_csv2_falsch.csv", fileEncoding
-## = "utf-8", : invalid char string in output conversion
-
-## Warning in utils::write.table(csv_v2, "Daten/geb_csv2_falsch.csv", fileEncoding
-## = "utf-8", : invalid char string in output conversion
-
-## Warning in utils::write.table(csv_v2, "Daten/geb_csv2_falsch.csv", fileEncoding
-## = "utf-8", : invalid char string in output conversion
 ```
 ]
 .panel[.panel-name[Einlesen (1)]
@@ -5758,18 +5858,8 @@ write.csv(csv_v2,"Daten/geb_csv2_falsch.csv",fileEncoding = "utf-8",row.names = 
 - Einlesen im beim Zwischenspeichern definierten `utf-8` 
 
 
-```r
+``` r
 csv_v2_falsch &lt;- read_csv("Daten/geb_csv2_falsch.csv",show_col_types = FALSE)
-```
-
-```
-## Warning: One or more parsing issues, call `problems()` on your data frame for details,
-## e.g.:
-##   dat &lt;- vroom(...)
-##   problems(dat)
-```
-
-```r
 head(csv_v2_falsch,3)
 ```
 
@@ -5787,18 +5877,8 @@ head(csv_v2_falsch,3)
 - Daten sind falsch abgelegt. Das Ändern des Encodings hat nun keine Auswirkung mehr
 
 
-```r
+``` r
 csv_v2_falsch &lt;- read_csv("Daten/geb_csv2_falsch.csv",locale = locale(encoding = "latin1"),show_col_types = FALSE)
-```
-
-```
-## Warning: One or more parsing issues, call `problems()` on your data frame for details,
-## e.g.:
-##   dat &lt;- vroom(...)
-##   problems(dat)
-```
-
-```r
 head(csv_v2_falsch,3)
 ```
 
@@ -5841,7 +5921,7 @@ head(csv_v2_falsch,3)
 
 
 
-```r
+``` r
 csv_sas &lt;- read_delim("Daten/1_Sozialhilfequote_Bezüger_Dossiers_Gde_2023.csv",delim = ";",show_col_types = F)
 csv_sas |&gt; slice(42) |&gt; select(GdenameTG,Quote_Kategorie)
 ```
@@ -5857,7 +5937,7 @@ csv_sas |&gt; slice(42) |&gt; select(GdenameTG,Quote_Kategorie)
 
 
 
-```r
+``` r
 csv_sas_lat &lt;- read_delim("Daten/1_Sozialhilfequote_Bezüger_Dossiers_Gde_2023.csv",delim = ";",locale = locale(encoding = "latin1"),show_col_types = F)
 csv_sas_lat |&gt; slice(42) |&gt; select(GdenameTG,Quote_Kategorie)
 ```
@@ -5873,7 +5953,7 @@ csv_sas_lat |&gt; slice(42) |&gt; select(GdenameTG,Quote_Kategorie)
 
 
 
-```r
+``` r
 csv_sas_win &lt;- read_delim("Daten/1_Sozialhilfequote_Bezüger_Dossiers_Gde_2023.csv",delim = ";",locale = locale(encoding = "Windows-1252"),show_col_types = F)
 csv_sas_win |&gt; slice(42) |&gt; select(GdenameTG,Quote_Kategorie)
 ```
@@ -5912,7 +5992,7 @@ csv_sas_win |&gt; slice(42) |&gt; select(GdenameTG,Quote_Kategorie)
 &lt;/figure&gt;
 ## Daten Zwischenspeichern
 
-![](index_files/figure-html/unnamed-chunk-534-1.png)&lt;!-- --&gt;
+![](index_files/figure-html/unnamed-chunk-538-1.png)&lt;!-- --&gt;
 ---
 
 
@@ -5975,7 +6055,7 @@ csv_sas_win |&gt; slice(42) |&gt; select(GdenameTG,Quote_Kategorie)
 ]
 .panel[.panel-name[Code]
 
-```r
+``` r
 library(openxlsx)
 
 # Workbook neu erstellen
@@ -6018,7 +6098,7 @@ saveWorkbook(wb,"Daten/wb1.xlsx",overwrite = TRUE)
 ]
 .panel[.panel-name[Code]
 
-```r
+``` r
 library(openxlsx)
 # Workbook laden
 wb &lt;- loadWorkbook("Daten/wb1.xlsx")
@@ -6062,7 +6142,7 @@ saveWorkbook(wb,"Daten/wb2.xlsx",overwrite = TRUE)
 ]
 .panel[.panel-name[Code]
 
-```r
+``` r
 library(openxlsx)
 # Workbook laden
 wb &lt;- loadWorkbook("Daten/wb2.xlsx")
@@ -6097,10 +6177,7 @@ Repliziere die Tabelle in `Slides/Daten/openxlsx_table.xlsx`.
 Speichere die Datei unter `Slides/Daten/openxlsx_table_DEIN_KÜRZEL.xlsx`.
 
 ![openxlsx Aufgabe](img/openxlsx_exercise.png)
-<div class="countdown" id="timer_d6c0328e" data-update-every="1" tabindex="0" style="right:0;bottom:0;">
-<div class="countdown-controls"><button class="countdown-bump-down">&minus;</button><button class="countdown-bump-up">&plus;</button></div>
-<code class="countdown-time"><span class="countdown-digits minutes">10</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
-</div>
+<countdown-timer class="countdown" id="timer_613cd0e4" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 ----
 &lt;figure class="logo-fig logo-fig-small"&gt;
@@ -6142,7 +6219,7 @@ Speichere die Datei unter `Slides/Daten/openxlsx_table_DEIN_KÜRZEL.xlsx`.
 .panel[.panel-name[Ausgangsdaten]
          
 
-```r
+``` r
 # Dummy Data addiert mit 50
 dummy_data &lt;- openxlsx::read.xlsx("Daten/excel_spalte.xlsx", sheet = 1, cols = 7, rows = 3:89) + 50
 names(dummy_data) &lt;- "2025"
@@ -6167,7 +6244,7 @@ head(dummy_data, 5)
 .panel[.panel-name[Code]
          
 
-```r
+``` r
 library(TGexcel)
 # WB des letzten Jahres laden
 wb &lt;- loadWorkbook("Daten/excel_spalte.xlsx")
@@ -6182,10 +6259,6 @@ wb &lt;- create_xlsx_spalte(
 
 # Speichern
 save_tg_workbook(wb, "Daten/excel_spalte_new.xlsx", tg_header = FALSE, overwrite = TRUE)
-```
-
-```
-## File saved without header
 ```
 ]
 .panel[.panel-name[Ergebnis]
@@ -6219,7 +6292,7 @@ save_tg_workbook(wb, "Daten/excel_spalte_new.xlsx", tg_header = FALSE, overwrite
 .panel[.panel-name[Ausgangsdaten]
          
 
-```r
+``` r
 # Dummy Data multipliziert mit 0.96
 dummy_data &lt;- openxlsx::read.xlsx("Daten/excel_zeile.xlsx", sheet = 1, cols = 1:4, rows = 8,colNames = FALSE) |&gt; 
   rename(jahr = "X1") |&gt; 
@@ -6242,7 +6315,7 @@ head(dummy_data, 5)
 .panel[.panel-name[Code]
          
 
-```r
+``` r
 library(TGexcel)
 # WB des letzten Jahres laden
 wb &lt;- loadWorkbook("Daten/excel_zeile.xlsx")
@@ -6257,10 +6330,6 @@ wb &lt;- create_xlsx_zeile(
 
 # Speichern
 save_tg_workbook(wb, "Daten/excel_zeile_new.xlsx", tg_header = FALSE, overwrite = TRUE)
-```
-
-```
-## File saved without header
 ```
 ]
 .panel[.panel-name[Ergebnis]
@@ -6294,7 +6363,7 @@ save_tg_workbook(wb, "Daten/excel_zeile_new.xlsx", tg_header = FALSE, overwrite 
 .panel[.panel-name[Ausgangsdaten]
          
 
-```r
+``` r
 # Dummy Data multipliziert mit 0.96
 dummy_data &lt;- openxlsx::read.xlsx("Daten/excel_zeile.xlsx", sheet = 1, cols = 1:4, rows = 8,colNames = FALSE) |&gt; 
   rename(jahr = "X1") |&gt; 
@@ -6317,7 +6386,7 @@ head(dummy_data, 5)
 .panel[.panel-name[Code]
          
 
-```r
+``` r
 library(TGexcel)
 # WB des letzten Jahres laden
 wb &lt;- loadWorkbook("Daten/excel_zeile.xlsx")
@@ -6332,10 +6401,6 @@ wb &lt;- create_xlsx_zeile(
 
 # Speichern
 save_tg_workbook(wb, "Daten/excel_zeile_new.xlsx", tg_header = FALSE, overwrite = TRUE)
-```
-
-```
-## File saved without header
 ```
 ]
 .panel[.panel-name[Ergebnis]
@@ -6400,7 +6465,7 @@ Somit ergibt sich folgendes:
 ]
 .panel[.panel-name[Code]
 
-```r
+``` r
 # Workbook neu erstellen
 wb &lt;- createWorkbook()
 addWorksheet(wb,"Test")
@@ -6443,10 +6508,7 @@ Gegeben ist ausserdem die Datei `Slides/Daten/2023_Gde_Geb_ab2000.xlsx`
                                                                                                          
 Füge die Geburtenzahlen für das Jahr 2024 in die Excel `2023_Gde_Geb_ab2000.xlsx` ein und speichere sie als **`Slides/Daten/2024_Gde_Geb_ab2000_DEIN_KÜRZEL.xlsx`** neu ab         
 
-<div class="countdown" id="timer_0532bcd5" data-update-every="1" tabindex="0" style="right:0;bottom:0;">
-<div class="countdown-controls"><button class="countdown-bump-down">&minus;</button><button class="countdown-bump-up">&plus;</button></div>
-<code class="countdown-time"><span class="countdown-digits minutes">10</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
-</div>
+<countdown-timer class="countdown" id="timer_cd287575" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 
 
@@ -6510,14 +6572,14 @@ Füge die Geburtenzahlen für das Jahr 2024 in die Excel `2023_Gde_Geb_ab2000.xl
 .panel[.panel-name[Statuscode]
 Der Statuscode gibt an, ob die Anfrage erfolgreich war und liefert Informationen über den Status der Anfrage. Verschiede Stauscodes sind:
 
-- **2xx (Success): Anfrage war erfolgreich** 😄
+- **2xx (Success): Anfrage war erfolgreich** 
   - `200 OK`: Anfrage erfolgreich verarbeitet.
   - `201 Created`: Ressource erfolgreich erstellt (bei POST-Anfragen).
-- **4xx (Client Error): Problem auf der Seite des Clients** 🤔
+- **4xx (Client Error): Problem auf der Seite des Clients** 
   - `400 Bad Request`: Anfrage ist fehlerhaft.
   - `401 Unauthorized`: Fehlende oder ungültige Authentifizierung.
   - `404 Not Found`: Ressource nicht gefunden.
-- **5xx (Server Error): Problem auf der Seite des Servers** 😡
+- **5xx (Server Error): Problem auf der Seite des Servers** 
   - `500 Internal Server Error`: Unerwarteter Serverfehler.
   - `503 Service Unavailable`: Dienst vorübergehend nicht verfügbar.
 
@@ -6596,7 +6658,7 @@ Headers sind zusätzliche Informationen, die mit der Antwort geliefert werden. S
 ]
 .panel[.panel-name[Code]
 
-```r
+``` r
 library(httr2)
 base_url &lt;- "https://data.tg.ch/api/explore/v2.1"
 endpoint &lt;- "/catalog/datasets/sk-stat-56/exports/json"
@@ -6611,7 +6673,7 @@ data &lt;- response %&gt;% resp_body_json()
 ]
 .panel[.panel-name[Response]
 
-```r
+``` r
 response
 ```
 
@@ -6623,7 +6685,7 @@ response
 ## Body: In memory (229996 bytes)
 ```
 
-```r
+``` r
 response$status_code
 ```
 
@@ -6633,7 +6695,7 @@ response$status_code
 ]
 .panel[.panel-name[Data]
 
-```r
+``` r
 data[[1]]
 ```
 
@@ -6659,7 +6721,7 @@ data[[1]]
 ]
 .panel[.panel-name[Data (aufbereitet)]
 
-```r
+``` r
 data |&gt; bind_rows()
 ```
 
@@ -6705,7 +6767,7 @@ data |&gt; bind_rows()
 ]
 .panel[.panel-name[Code]
 
-```r
+``` r
 response &lt;- request(url) %&gt;%
   req_url_query(
     select = "gemeinde_name,anzahl_personen", 
@@ -6718,7 +6780,7 @@ data &lt;- response %&gt;% resp_body_json() |&gt; bind_rows()
 ]
 .panel[.panel-name[Response]
 
-```r
+``` r
 response
 ```
 
@@ -6730,7 +6792,7 @@ response
 ## Body: In memory (61 bytes)
 ```
 
-```r
+``` r
 response$status_code
 ```
 
@@ -6740,7 +6802,7 @@ response$status_code
 ]
 .panel[.panel-name[Data]
 
-```r
+``` r
 data
 ```
 
@@ -6806,7 +6868,7 @@ data
 - `Sys.setenv()` überschreibt Umgebungsvariablen aus dem `.Renviron` File für die Dauer der Session.
 
 
-```r
+``` r
 Sys.setenv(PASSWORT="meinpasswort",
            USER="meinname")
 ```
@@ -6816,7 +6878,7 @@ Sys.setenv(PASSWORT="meinpasswort",
 - Egal, wie die Umgebungsvariablen definiert wurden, beziehen kann man sie mit `Sys.getenv()`
 
 
-```r
+``` r
 Sys.getenv("PASSWORT")
 ```
 
@@ -6824,7 +6886,7 @@ Sys.getenv("PASSWORT")
 ## [1] "meinpasswort"
 ```
 
-```r
+``` r
 Sys.getenv("USER")
 ```
 
@@ -6856,7 +6918,7 @@ Sys.getenv("USER")
 ]
 .panel[.panel-name[Code]
 
-```r
+``` r
 library(httr2)
 base_url &lt;- "https://dataspot.apps.ktgcpp01.tg.ch/rest/dataspot"
 endpoint &lt;- "/schemes/Referenzdaten/enumerations"
@@ -6873,7 +6935,7 @@ data &lt;- response |&gt; resp_body_json()
 ]
 .panel[.panel-name[Response]
 
-```r
+``` r
 response
 ```
 
@@ -6882,10 +6944,10 @@ response
 ## GET https://dataspot.apps.ktgcpp01.tg.ch/rest/dataspot/schemes/Referenzdaten/enumerations
 ## Status: 200 OK
 ## Content-Type: application/hal+json
-## Body: In memory (384666 bytes)
+## Body: In memory (549741 bytes)
 ```
 
-```r
+``` r
 response$status_code
 ```
 
@@ -6900,153 +6962,40 @@ response$status_code
 
 Daten können dieses Mal nicht so einfach verwendet werden, sondern es bedarf einer etwas komplizierteren Aufbereitung
 
-```r
+``` r
 # dataspotR Package
 devtools::load_all("/r-proj/stat/ogd/dataspotR")
-```
 
-```
-## ℹ Loading dataspotR
-```
-
-```r
 # Funktion zum aufbereiten aus dem Package
 referenzdaten &lt;- prepare_raw_results(data)
 referenzdaten
 ```
 
 ```
-## # A tibble: 317 × 36
-##    `_type`      id    `_version` tenantId publicState modelId href  label status
-##    &lt;chr&gt;        &lt;chr&gt;      &lt;int&gt; &lt;chr&gt;    &lt;chr&gt;       &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; 
-##  1 ReferenceOb… 8a4a…          2 51584d0… DRAFT       13ae8d… /web… Haus… WORKI…
-##  2 ReferenceOb… 018c…          6 51584d0… DRAFT       13ae8d… /web… Fünf… WORKI…
-##  3 ReferenceOb… f3e0…          1 51584d0… DRAFT       13ae8d… /web… Anga… WORKI…
-##  4 ReferenceOb… eb55…          3 51584d0… DRAFT       13ae8d… /web… schw… WORKI…
-##  5 ReferenceOb… 9628…          2 51584d0… DRAFT       13ae8d… /web… Beit… WORKI…
-##  6 ReferenceOb… 3bc5…          5 51584d0… DRAFT       13ae8d… /web… List… WORKI…
-##  7 ReferenceOb… c9eb…          1 51584d0… DRAFT       13ae8d… /web… NOGA… WORKI…
-##  8 ReferenceOb… cffe…          4 51584d0… DRAFT       13ae8d… /web… gros… WORKI…
-##  9 ReferenceOb… 5ba6…          3 51584d0… DRAFT       13ae8d… /web… Haus… WORKI…
-## 10 ReferenceOb… fb7e…          3 51584d0… DRAFT       13ae8d… /web… Haus… WORKI…
-## # ℹ 307 more rows
-## # ℹ 27 more variables: title &lt;chr&gt;, db &lt;chr&gt;, createdBy &lt;chr&gt;,
-## #   dateCreated &lt;dbl&gt;, parentId &lt;chr&gt;, stringType &lt;chr&gt;, description &lt;chr&gt;,
-## #   favorite &lt;lgl&gt;, validFrom &lt;dbl&gt;, tags &lt;chr&gt;, self &lt;chr&gt;, derivedFrom &lt;chr&gt;,
-## #   inCollection &lt;chr&gt;, literals &lt;chr&gt;, rangeOf &lt;chr&gt;, deployedIn &lt;chr&gt;,
-## #   fromMappings &lt;chr&gt;, toMappings &lt;chr&gt;, fromRules &lt;chr&gt;, subordinateOf &lt;chr&gt;,
-## #   transformations &lt;chr&gt;, subordinates &lt;chr&gt;, attributedTo &lt;chr&gt;, …
+## # A tibble: 490 × 37
+##    `_type` id    `_version` tenantId publicState modelId href  description label
+##    &lt;chr&gt;   &lt;chr&gt;      &lt;int&gt; &lt;chr&gt;    &lt;chr&gt;       &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt;
+##  1 Refere… 9283…          4 51584d0… PUBLIC      13ae8d… /web… "ev. auch … Schw…
+##  2 Refere… 6a57…          1 51584d0… DRAFT       13ae8d… /web…  &lt;NA&gt;       Trae…
+##  3 Refere… 1127…          3 51584d0… DRAFT       13ae8d… /web… "nicht anw… Anza…
+##  4 Refere… 3eae…          1 51584d0… DRAFT       13ae8d… /web…  &lt;NA&gt;       Ehe/…
+##  5 Refere… 4412…          3 51584d0… DRAFT       13ae8d… /web… "Zählung d… Zaeh…
+##  6 Refere… d283…         11 51584d0… DRAFT       13ae8d… /web… "Privathau… Haus…
+##  7 Refere… 8a4a…          2 51584d0… DRAFT       13ae8d… /web…  &lt;NA&gt;       Haus…
+##  8 Refere… 018c…          6 51584d0… DRAFT       13ae8d… /web… "Berechnet… Fünf…
+##  9 Refere… eaa6…          2 51584d0… DRAFT       13ae8d… /web…  &lt;NA&gt;       Herk…
+## 10 Refere… a228…          1 51584d0… DRAFT       13ae8d… /web…  &lt;NA&gt;       Pfle…
+## # ℹ 480 more rows
+## # ℹ 28 more variables: status &lt;chr&gt;, title &lt;chr&gt;, createdBy &lt;chr&gt;, db &lt;chr&gt;,
+## #   dateCreated &lt;dbl&gt;, parentId &lt;chr&gt;, stringType &lt;chr&gt;,
+## #   hierarchicalUnique &lt;lgl&gt;, favorite &lt;lgl&gt;, validFrom &lt;dbl&gt;, tags &lt;chr&gt;,
+## #   self &lt;chr&gt;, inCollection &lt;chr&gt;, literals &lt;chr&gt;, rangeOf &lt;chr&gt;,
+## #   toMappings &lt;chr&gt;, derivedFrom &lt;chr&gt;, deployedIn &lt;chr&gt;, fromMappings &lt;chr&gt;,
+## #   subordinateOf &lt;chr&gt;, transformations &lt;chr&gt;, subordinates &lt;chr&gt;, …
 ```
 ]
 ]
----
-----
-&lt;figure class="logo-fig logo-fig-small"&gt;
-  &lt;a href='https://dataspot.apps.ktgcpp01.tg.ch/api/dataspot/manual/rest-api' target="_blank"&gt;
-    &lt;img src='img/hex-dataspotR.png' class='logo'/&gt;
-  &lt;/a&gt;
-&lt;/figure&gt;
-## `dataspotR` Package
 
-- Package um die dataspot Rest API zu nutzen
-
-- derzeit nur ein Entwurf, aber durchaus nutzbar
-
-- mit dem Package können ganz einfach alle möglichen Dataspot Elemente bezogen und auch angelegt werden
-
-Das Package ist derzeit noch nicht auf GitHub, kann aber lokal geladen werden mit 
-
-
-```r
-devtools::load_all("/r-proj/stat/ogd/dataspotR")
-```
-
-```
-## ℹ Loading dataspotR
-```
----
-----
-&lt;figure class="logo-fig logo-fig-small"&gt;
-  &lt;a href='https://dataspot.apps.ktgcpp01.tg.ch/api/dataspot/manual/rest-api' target="_blank"&gt;
-    &lt;img src='img/hex-dataspotR.png' class='logo'/&gt;
-  &lt;/a&gt;
-&lt;/figure&gt;
-## dataspotR: Referenzdaten beziehen
-
-.panelset[
-.panel[.panel-name[Liste beziehen]
-
-
-```r
-# Das, was vorhin gemacht wurde in einer Funktion komprimiert
-referenzdaten &lt;- get_referenzdaten_list()
-referenzdaten |&gt; 
-  select(id,label,title,createdBy)  
-```
-
-```
-## # A tibble: 317 × 4
-##    id                                   label                    title createdBy
-##    &lt;chr&gt;                                &lt;chr&gt;                    &lt;chr&gt; &lt;chr&gt;    
-##  1 8a4a1ba1-bb81-49ed-9c6c-7dc297ff1556 Haushalte nach Bevölker… Haus… negloff  
-##  2 018cca2a-fc08-41ee-8cc0-7cbc5eddbff4 Fünfjahresaltersklasse   Fünf… lparment…
-##  3 f3e0c6ca-ac1f-415a-8bb9-9cd6a6416ee8 Angabe zur Anzahl der P… Anga… negloff  
-##  4 eb551fb0-2abd-41de-911f-cfd57a214a22 schweizerisch-ausländis… schw… negloff  
-##  5 96289c85-4a26-47f4-a671-37fc30c9af1c Beitragsart Listenspital Art … cwalser  
-##  6 3bc5ee07-5f08-49f1-871b-ca45cf8f1221 Listenspital TG (mit BU… &lt;NA&gt;  cwalser  
-##  7 c9eb8943-7197-42fa-b3a4-597cef7b8f33 NOGA Abschnitt           NOGA… florenz  
-##  8 cffe10e3-63c8-45a1-81c5-fa64e2bd7fed grosser Privathaushalt … (pla… negloff  
-##  9 5ba690c0-d60c-4bbb-8466-f0f32f1cbf9f Haushalte mit ständiger… Haus… negloff  
-## 10 fb7e5a9f-8919-4452-99c5-927979ee8628 Haushalte nach Meldever… Haus… negloff  
-## # ℹ 307 more rows
-```
-
-]
-.panel[.panel-name[Referenzdatenobjekt beziehen]
-
-```r
-get_referenzdaten("Thurgauer Gemeinden") |&gt; 
-  select(shortText,label,code)
-```
-
-```
-## # A tibble: 80 × 3
-##    shortText  label             code 
-##    &lt;chr&gt;      &lt;chr&gt;             &lt;chr&gt;
-##  1 Arbon      4401 - Arbon      4401 
-##  2 Dozwil     4406 - Dozwil     4406 
-##  3 Egnach     4411 - Egnach     4411 
-##  4 Hefenhofen 4416 - Hefenhofen 4416 
-##  5 Horn       4421 - Horn       4421 
-##  6 Kesswil    4426 - Kesswil    4426 
-##  7 Roggwil    4431 - Roggwil    4431 
-##  8 Romanshorn 4436 - Romanshorn 4436 
-##  9 Salmsach   4441 - Salmsach   4441 
-## 10 Sommeri    4446 - Sommeri    4446 
-## # ℹ 70 more rows
-```
-]
-.panel[.panel-name[Objekte beziehen]
-
-Jedes Objekt auf dataspot besitzt eine ID und kann mit dieser bezogen werden
-
-
-```r
-# Beispiel Sammlung Open Government Data im A-Anlieferungen
-get_element_by_id("cb0cc89d-e011-4ee1-8c2c-06a631206926")
-```
-
-```
-## # A tibble: 1 × 21
-##   `_type`    id     `_version` tenantId publicState modelId favorite href  label
-##   &lt;chr&gt;      &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;    &lt;chr&gt;       &lt;chr&gt;   &lt;lgl&gt;    &lt;chr&gt; &lt;chr&gt;
-## 1 Collection cb0cc…          2 51584d0… PUBLIC      f4f20d… TRUE     /web… ogd …
-## # ℹ 12 more variables: description &lt;chr&gt;, status &lt;chr&gt;, title &lt;chr&gt;, db &lt;chr&gt;,
-## #   createdBy &lt;chr&gt;, dateCreated &lt;dbl&gt;, parentId &lt;chr&gt;, self &lt;chr&gt;,
-## #   assets &lt;chr&gt;, collections &lt;chr&gt;, inScheme &lt;chr&gt;, endpoint &lt;chr&gt;
-```
-]
-]
 ---
 ----
 &lt;figure class="logo-fig logo-fig-small"&gt;
@@ -7071,7 +7020,7 @@ get_element_by_id("cb0cc89d-e011-4ee1-8c2c-06a631206926")
 ]
 .panel[.panel-name[Beispiel]
 
-```r
+``` r
 response &lt;- request("https://jsonplaceholder.typicode.com/posts") %&gt;%
   req_body_json(list(
     title = "Neuer Beitrag",
@@ -7125,7 +7074,7 @@ response %&gt;% resp_body_json()
 ]
 .panel[.panel-name[Beispiel]
 
-```r
+``` r
 response &lt;- request("https://jsonplaceholder.typicode.com/posts/1") %&gt;%
   req_method("PUT") %&gt;%
   req_body_json(list(
@@ -7183,7 +7132,7 @@ response %&gt;% resp_body_json()
 ]
 .panel[.panel-name[Beispiel]
 
-```r
+``` r
 response &lt;- request("https://jsonplaceholder.typicode.com/posts/1") %&gt;%
   req_method("DELETE") %&gt;%
   req_perform()
@@ -7219,7 +7168,7 @@ response$status_code
 ]
 .panel[.panel-name[Beispiel]
 
-```r
+``` r
 request("https://jsonplaceholder.typicode.com/posts") %&gt;%
   req_method("POST") %&gt;%
   req_body_json(list(
@@ -7233,11 +7182,11 @@ request("https://jsonplaceholder.typicode.com/posts") %&gt;%
 ```
 ## POST /posts HTTP/1.1
 ## accept: */*
-## accept-encoding: deflate, gzip, br, zstd
+## accept-encoding: deflate, gzip
 ## content-length: 54
 ## content-type: application/json
 ## host: jsonplaceholder.typicode.com
-## user-agent: httr2/1.1.2.9000 r-curl/6.4.0 libcurl/7.81.0
+## user-agent: httr2/1.2.1 r-curl/6.4.0 libcurl/7.76.1
 ## 
 ## {
 ##   "title": "Test",
@@ -7313,7 +7262,7 @@ Beachte dass du, wenn du das `dataspotR` benutzen möchtest die Umgebungsvariabl
 .panel[.panel-name[Intern]
 
 
-```r
+``` r
 library(DBI)
 con &lt;- dbConnect(odbc::odbc(), 
                  Driver="sqlserver", 
@@ -7326,7 +7275,7 @@ con &lt;- dbConnect(odbc::odbc(),
 ]
 .panel[.panel-name[Öfeentlich]
 
-```r
+``` r
 library(RSQLite)
 con &lt;- dbConnect(RSQLite::SQLite(), "Daten/landing_local.db")
 ```
@@ -7346,7 +7295,7 @@ con &lt;- dbConnect(RSQLite::SQLite(), "Daten/landing_local.db")
 
 
 
-```r
+``` r
 dbo_tables &lt;- dbListTables(con)
 dbo_tables
 ```
@@ -7371,7 +7320,7 @@ dbo_tables
 - Felder einer Tabelle können mit `dbListFields()` abegrufen werden
 
 
-```r
+``` r
 dbListFields(con, "geres_bestand_2015_2022")
 ```
 
@@ -7413,7 +7362,7 @@ dbListFields(con, "geres_bestand_2015_2022")
 ]
 .panel[.panel-name[Query erstellen]
 
-```r
+``` r
 query &lt;- tbl(con,"geres_bestand_2015_2022") |&gt; 
   filter(Statistikjahr==2020) |&gt; 
   group_by(StaatsangehoerigkeitID) |&gt; 
@@ -7425,7 +7374,7 @@ query
 
 ```
 ## # Source:     SQL [?? x 2]
-## # Database:   sqlite 3.45.0 [/r-proj/stat/workshop/R Workshop DS/Slides/rmd/Daten/landing_local.db]
+## # Database:   sqlite 3.51.2 [/r-proj/workshop/rworkshop/rmd/Daten/landing_local.db]
 ## # Ordered by: desc(summe)
 ##    StaatsangehoerigkeitID  summe
 ##                     &lt;dbl&gt;  &lt;dbl&gt;
@@ -7439,12 +7388,13 @@ query
 ##  8                   8230    125
 ##  9                   8252     76
 ## 10                   8248     12
-## # ℹ more rows
+## 11                   8362     11
+## 12                   8232     11
 ```
 ]
 .panel[.panel-name[Query anzeigen]
 
-```r
+``` r
 query |&gt; show_query()
 ```
 
@@ -7463,7 +7413,7 @@ query |&gt; show_query()
 ]
 .panel[.panel-name[Query ausführen]
 
-```r
+``` r
 data &lt;- query |&gt; collect()
 data
 ```
@@ -7489,7 +7439,7 @@ data
 ]
 .panel[.panel-name[SQL]
 
-```r
+``` r
 sql_query &lt;- 'SELECT "StaatsangehoerigkeitID", SUM("Anz_StBev") AS "summe"
  FROM (
    SELECT "geres_bestand_2015_2022".*
@@ -7547,7 +7497,7 @@ dbGetQuery(con,sql_query)
 ]
 .panel[.panel-name[Query erstellen]
 
-```r
+``` r
 query &lt;- tbl(con,"geres_bestand_2015_2022") |&gt; 
   filter(Statistikjahr==2020) |&gt; 
   group_by(StaatsangehoerigkeitID) |&gt; 
@@ -7559,7 +7509,7 @@ query
 
 ```
 ## # Source:     SQL [?? x 2]
-## # Database:   sqlite 3.45.0 [/r-proj/stat/workshop/R Workshop DS/Slides/rmd/Daten/landing_local.db]
+## # Database:   sqlite 3.51.2 [/r-proj/workshop/rworkshop/rmd/Daten/landing_local.db]
 ## # Ordered by: desc(summe)
 ##    StaatsangehoerigkeitID  summe
 ##                     &lt;dbl&gt;  &lt;dbl&gt;
@@ -7573,12 +7523,13 @@ query
 ##  8                   8230    125
 ##  9                   8252     76
 ## 10                   8248     12
-## # ℹ more rows
+## 11                   8362     11
+## 12                   8232     11
 ```
 ]
 .panel[.panel-name[join lokal]
 
-```r
+``` r
 # Daten aus dataspot
 # staaten &lt;- dataspotR::get_referenzdaten("Staaten, Regionen (det/ aggr)") |&gt; 
 #   select(shortText,code) |&gt; 
@@ -7593,15 +7544,10 @@ data_join_lokal &lt;- query |&gt;
   arrange(desc(summe))
 ```
 
-```
-## Warning: ORDER BY is ignored in subqueries without LIMIT
-## ℹ Do you need to move arrange() later in the pipeline or use window_order() instead?
-```
-
 ]
 .panel[.panel-name[join lokal (2)]
 
-```r
+``` r
 data_join_lokal
 ```
 
@@ -7682,10 +7628,7 @@ Beachte, dass der finale Datensatz lokal als normaler R data.frame nutzbar sein 
 ## 4          2015   4471             4.10
 ```
 
-<div class="countdown" id="timer_cd1a8728" data-update-every="1" tabindex="0" style="right:0;bottom:0;">
-<div class="countdown-controls"><button class="countdown-bump-down">&minus;</button><button class="countdown-bump-up">&plus;</button></div>
-<code class="countdown-time"><span class="countdown-digits minutes">10</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
-</div>
+<countdown-timer class="countdown" id="timer_58f4a792" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 
 

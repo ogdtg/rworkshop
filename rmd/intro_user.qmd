@@ -1,0 +1,120 @@
+---
+title: "Willkommen im R-Workshop"
+format:
+  html:
+    toc: true
+execute:
+  echo: false
+engine: knitr
+params:
+  vorname: "Teilnehmer:in"
+---
+  
+
+## Hallo `r params$vorname` 👋
+
+Schön, dass du dabei bist! In diesem Dokument findest du eine kurze Einführung, wie du dich in **Posit Workbench / RStudio** richtig zurechtfindest und wie du dein Arbeitsverzeichnis für den Workshop öffnest.
+
+Warum das wichtig ist:
+In R hängt sehr vieles davon ab, **wo du gerade arbeitest** (dein „Ordner-Kontext“). Wenn du im falschen Ordner bist, können z.B. Dateien nicht gefunden werden oder R speichert Output an unerwarteten Orten.
+
+---
+  
+## 1. Immer zuerst zu `/r-proj/` navigieren (Posit Workbench)
+  
+**Was du tun sollst:**
+  
+1. Öffne links in RStudio den **File Explorer** (Datei-Browser).
+2. Klicke oben im File Explorer auf die **drei kleinen Punkte** (⋯).
+3. Wähle **„Go to Folder…“** (oder ähnlich).
+4. Gib ein: `/r-proj`
+5. du solltest den Ordner `workshop` sehen
+
+**Warum das so ist:**
+  
+* In Posit Workbench liegen Projekte oft in fest definierten Bereichen.
+* `/r-proj` ist bei uns der „Startpunkt“, von dem aus die Workshop-Dateien zuverlässig erreichbar sind.
+* So stellst du sicher, dass alle Pfade im Workshop bei allen gleich funktionieren.
+
+---
+  
+## 2. Zum Workshop-Ordner navigieren: `workshop/rworkshop`
+  
+**Was du tun sollst:**
+  
+* Im Ordner `/r-proj/` gehst du weiter nach:
+  
+* `workshop/`
+* dann `rworkshop/`
+
+**Warum das so ist:**
+  
+* Dort liegt unser gesamtes Workshop-Material.
+* Wenn du dort arbeitest, findest du Aufgaben, Daten und Skripte immer an der richtigen Stelle.
+
+---
+  
+## 3. Das RStudio-Projekt `Slides.Rproj` öffnen
+  
+**Was du tun sollst:**
+  
+* Im Ordner `workshop/rworkshop` öffnest du die Datei:
+  
+* `Slides.Rproj` (anklicken)
+
+**Warum das so ist (Projekt = „saubere Arbeitsumgebung“):**
+  
+* Ein **RStudio-Projekt** setzt automatisch:
+  
+* den richtigen Arbeitsordner („working directory“)
+* passende Projekt-Einstellungen
+* Das verhindert typische Anfängerfehler wie:
+  
+* „Datei nicht gefunden“
+* Output landet im falschen Ordner
+* Pfade funktionieren nur auf deinem Rechner, aber nicht bei anderen
+
+---
+  
+## 4. Wo du arbeiten sollst: Teilnehmer-Ordner in `022026_rworkshop`
+  
+**Was du tun sollst:**
+  
+* Im Unterordner `022026_rworkshop` findest du die Teilnehmerordner.
+* Dort hat jede Person einen eigenen Ordner – **hier arbeitest du**.
+
+**Warum das so ist:**
+  
+* Du überschreibst niemandes Dateien.
+* Deine Ergebnisse bleiben sauber getrennt.
+* Man kann bei Fragen schnell in „deinen“ Ordner schauen.
+
+---
+  
+## Vorbereitung: Packages installieren (wichtig!)
+  
+Damit alles funktioniert, müssen die benötigten R-Pakete installiert sein.
+**Wichtig:** Dieser Schritt muss nur einmal ausgeführt werden.
+
+**Was du tun sollst:**
+  
+1. Öffne das Skript `requirements.R`(im Überordner)
+2. Führe es aus (alles markieren und dann `Ctrl + Enter` drücken)
+
+**Woran du erkennst, dass es noch läuft:**
+  
+* Solange das **rote Stoppschild** (🛑) in RStudio sichtbar ist, läuft noch ein Prozess.
+* In dieser Zeit ist R „beschäftigt“ und du solltest warten.
+
+**Warum das so ist:**
+  
+* Pakete sind wie „Erweiterungen“ für R.
+* Installation und Laden kann einige Minuten dauern, weil:
+  
+  * Dateien heruntergeladen werden
+  * Abhängigkeiten installiert werden
+
+* Wenn du zu früh weiterarbeitest, fehlen evtl. Funktionen und es kommen Fehlermeldungen.
+
+
+
