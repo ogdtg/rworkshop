@@ -278,6 +278,117 @@ geburten_join %>%
 
 ############################################################################################################
 
+
+
+##########################################################################
+## AUFGABE: Meldungen, Warnungen & Fehler (10 Minuten)                  ##
+##########################################################################
+
+####################################################################################
+# a) Error, Warning oder Message?                                                  #
+#    Welchen Ausgabetyp gibt R bei den folgenden Codezeilen aus?                   #
+#    Schreibe den Typ (Error / Warning / Message) als Kommentar hinter jede Zeile. #
+#    Führe den Code erst aus, wenn du eine Vermutung notiert hast.                 #
+####################################################################################
+
+library(dplyr)                                    # Message  – Hinweis auf maskierte Funktionen
+
+as.integer(c("1", "zwei", "3"))                   # Warning  – "NAs introduced by coercion"
+
+mean(c(1, 2, 3))                                  # (keine Meldung) – normales Ergebnis
+
+log(-1)                                           # Warning  – "NaNs produced"
+
+filter(kanton == "TG")                            # Error    – kein data.frame als erstes Argument
+
+
+####################################################################################
+# b) Finde und behebe den Fehler                                                   #
+#    In jedem Abschnitt ist ein Fehler eingebaut.                                  #
+#    Erkläre den Fehler kurz als Kommentar und korrigiere den Code.                #
+####################################################################################
+
+# --- Fehler 1 ---
+# Fehler: `Mean` mit grossem M existiert nicht – R unterscheidet Gross-/Kleinschreibung
+meine_zahlen <- c(10, 20, 30, 40, 50)
+mittelwert   <- mean(meine_zahlen)   # Korrektur: mean() klein schreiben
+
+
+# --- Fehler 2 ---
+# Fehler: die schliessende Klammer bei read_csv() fehlt
+library(readr)
+df <- read_csv("rmd/Daten/bevölkerung.csv")   # Korrektur: ) am Ende ergänzen
+head(df, 3)
+
+
+# --- Fehler 3 ---
+# Fehler: `rund()` gibt es nicht – die korrekte Funktion heisst `round()`
+zahlen <- c(1, 4, 9, 16, 25)
+zahlen |>
+  sqrt() |>
+  round(digits = 2)   # Korrektur: round() statt rund()
+
+
+# --- Fehler 4 ---
+# Fehler: = statt == im filter() – = ist Zuweisung, == ist Vergleich
+df_fehler <- data.frame(
+  kanton = c("TG", "ZH", "BE"),
+  wert   = c(100, 200, 150)
+)
+df_fehler |> filter(kanton == "TG")   # Korrektur: doppeltes ==
+
+
+# --- Fehler 5 ---
+# Fehler: das öffnende Anführungszeichen des Strings wurde nie geschlossen
+mein_text <- "Hallo, Welt"   # Korrektur: schliessende " ergänzen
+nchar(mein_text)
+
+
+####################################################################################
+# c) Hilfe benutzen                                                                #
+#    Öffne die Hilfedokumentation zur Funktion `str_pad()` (Package stringr).     #
+#    Beantworte die Fragen als Kommentar.                                          #
+####################################################################################
+
+library(stringr)
+?str_pad
+
+# 1. Was macht str_pad()?
+#    Antwort: str_pad() füllt einen String auf eine bestimmte Mindestbreite (`width`) auf,
+#    indem vorne, hinten oder beidseitig ein Füllzeichen (`pad`, Standard: Leerzeichen)
+#    eingefügt wird.
+
+# 2. Was bewirkt der Parameter `side`? Welche Werte kann er annehmen?
+#    Antwort: `side` legt fest, auf welcher Seite aufgefüllt wird.
+#    Mögliche Werte: "left" (links auffüllen), "right" (rechts), "both" (beidseitig).
+
+# 3. Erstes Beispiel von der Hilfeseite:
+str_pad("hadley", 10)
+str_pad("hadley", 10, "left")
+str_pad("hadley", 10, "both")
+
+
+####################################################################################
+# d) Bonus: Warning verstehen und beheben                                          #
+#    Führe den Code aus. Welche Warnung gibt R aus, und warum?                    #
+#    Wie kannst du die Summe trotzdem korrekt berechnen?                           #
+####################################################################################
+
+messwerte <- c("12.5", "8.3", "keine Angabe", "15.1", "n/a")
+zahlen    <- as.numeric(messwerte)
+summe     <- sum(zahlen)   # Ergebnis ist NA weil NAs vorhanden
+summe
+
+# Warnung lautet: "NAs introduced by coercion"
+# Warum: "keine Angabe" und "n/a" können nicht in Zahlen umgewandelt werden → NA
+
+# Lösung: na.rm = TRUE verwenden, damit NAs bei der Summenbildung ignoriert werden
+summe_korrekt <- sum(zahlen, na.rm = TRUE)
+summe_korrekt   # 35.9
+
+
+############################################################################################################
+
 #############################################################
 ## AUFGABE 7: Arbeiten mit stringr und Regular Expressions ##
 #############################################################
