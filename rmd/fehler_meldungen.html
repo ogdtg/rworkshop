@@ -1,20 +1,31 @@
----
-title: "R Grundlagen: Meldungen, Warnungen & Fehler"
-author: "Felix Lorenz"
-date: "Workshop 2026"
-amt: "Amt für Daten und Statistik"
-stelle: ""
-output:
-  xaringan::moon_reader:
-    highlightStyle: github
-    highlightlines: true
-    highlightSpans: true
-    css: ["default","styles_x.css"]
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>R Grundlagen: Meldungen, Warnungen &amp; Fehler</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Felix Lorenz" />
+    <script src="fehler_meldungen_files/header-attrs-2.29/header-attrs.js"></script>
+    <link href="fehler_meldungen_files/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="styles_x.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# R Grundlagen: Meldungen, Warnungen &amp; Fehler
+]
+.author[
+### Felix Lorenz
+]
+.date[
+### Workshop 2026
+]
+
 ---
 
-```{r setup-fehler, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, dpi = 300, message = FALSE, warning = FALSE)
-```
+
+
 
 ---
 ----
@@ -25,7 +36,7 @@ R kommuniziert auf drei Arten mit uns:
 --
 
 .pull-left[
-<br>
+&lt;br&gt;
 🔵 **Message** – *„Zur Information"*
 
 🟡 **Warning** – *„Ich hab's gemacht, aber schau mal…"*
@@ -36,10 +47,10 @@ R kommuniziert auf drei Arten mit uns:
 --
 
 .pull-right[
-<br>
+&lt;br&gt;
 
-> Die Farbe im Konsolenoutput hilft nicht immer –
-> entscheidend ist das **Schlüsselwort** am Anfang der Meldung.
+&gt; Die Farbe im Konsolenoutput hilft nicht immer –
+&gt; entscheidend ist das **Schlüsselwort** am Anfang der Meldung.
 ]
 
 ---
@@ -48,7 +59,8 @@ R kommuniziert auf drei Arten mit uns:
 
 Messages sind **rein informativ**. Der Code wird **vollständig ausgeführt**.
 
-```{r, echo=TRUE, eval=FALSE}
+
+``` r
 library(dplyr)
 ```
 
@@ -66,7 +78,7 @@ library(dplyr)
 - Beim Laden von Packages: normal und erwartet
 - Messages können mit `suppressMessages()` unterdrückt werden
 
-> **Merksatz:** Blauer Text in der Konsole = meistens kein Problem.
+&gt; **Merksatz:** Blauer Text in der Konsole = meistens kein Problem.
 
 ---
 ----
@@ -74,7 +86,8 @@ library(dplyr)
 
 Warnungen bedeuten: Der Code wurde **ausgeführt**, aber etwas war **nicht ganz richtig**.
 
-```{r, echo=TRUE, eval=FALSE}
+
+``` r
 as.numeric(c("1", "2", "drei"))
 ```
 
@@ -91,8 +104,8 @@ as.numeric(c("1", "2", "drei"))
 - Ergebnis auf **Plausibilität prüfen** – ist das Resultat noch korrekt?
 - Manchmal ist eine Warnung harmlos, manchmal ein Hinweis auf einen Fehler im Code
 
-> **Vorsicht:** Warnungen nicht einfach ignorieren! Sie können auf
-> falsche Daten oder unerwartetes Verhalten hinweisen.
+&gt; **Vorsicht:** Warnungen nicht einfach ignorieren! Sie können auf
+&gt; falsche Daten oder unerwartetes Verhalten hinweisen.
 
 ---
 ----
@@ -100,7 +113,8 @@ as.numeric(c("1", "2", "drei"))
 
 Ein Error bedeutet: Der Code wurde **nicht ausgeführt**. R konnte den Befehl nicht durchführen.
 
-```{r, echo=TRUE, eval=FALSE}
+
+``` r
 sqrt("zehn")
 ```
 
@@ -117,8 +131,8 @@ sqrt("zehn")
 3. Fehlermeldung **googeln** oder einer **KI** zeigen
 4. Schrittweise debuggen: Code in kleinere Teile aufteilen
 
-> **Merksatz:** Kein Error = kein Ergebnis. Erst wenn der Fehler behoben ist,
-> läuft der Code durch.
+&gt; **Merksatz:** Kein Error = kein Ergebnis. Erst wenn der Fehler behoben ist,
+&gt; läuft der Code durch.
 
 ---
 ----
@@ -130,7 +144,7 @@ sqrt("zehn")
 | **Warning** | 🟡 | Ausgeführt, aber mit Vorbehalt | ✅ Ja |
 | **Error** | 🔴 | Abbruch, etwas stimmt nicht | ❌ Nein |
 
-<br>
+&lt;br&gt;
 
 .panelset[
 .panel[.panel-name[Erkennungsmerkmal]
@@ -153,7 +167,8 @@ Error    → Fehler finden und beheben, bevor weitergegangen wird
 ----
 ## Häufige Fehler (1): `could not find function`
 
-```{r, echo=TRUE, eval=FALSE}
+
+``` r
 read_excel("daten/datei.xlsx")
 ```
 
@@ -168,22 +183,24 @@ read_excel("daten/datei.xlsx")
 
 **Lösung:**
 
-```{r, echo=TRUE, eval=FALSE}
+
+``` r
 library(readxl)           # Package zuerst laden!
 read_excel("daten/datei.xlsx")
 ```
 
 --
 
-> **Häufige Fallen:**
-> - Package installiert, aber vergessen zu laden
-> - Tippfehler im Funktionsnamen (z. B. `Read_csv` statt `read_csv`)
+&gt; **Häufige Fallen:**
+&gt; - Package installiert, aber vergessen zu laden
+&gt; - Tippfehler im Funktionsnamen (z. B. `Read_csv` statt `read_csv`)
 
 ---
 ----
 ## Häufige Fehler (2): `object not found`
 
-```{r, echo=TRUE, eval=FALSE}
+
+``` r
 summary(mein_datensatz)
 ```
 
@@ -203,8 +220,9 @@ summary(mein_datensatz)
 
 **Lösung:**
 
-```{r, echo=TRUE, eval=FALSE}
-mein_datensatz <- read_csv("daten/datei.csv")   # erst einlesen
+
+``` r
+mein_datensatz &lt;- read_csv("daten/datei.csv")   # erst einlesen
 summary(mein_datensatz)                          # dann verwenden
 ```
 
@@ -212,8 +230,9 @@ summary(mein_datensatz)                          # dann verwenden
 ----
 ## Häufige Fehler (3): Syntaxfehler
 
-```{r, echo=TRUE, eval=FALSE}
-df %>% filter(kanton == "TG"
+
+``` r
+df %&gt;% filter(kanton == "TG"
 ```
 
 ```
@@ -240,14 +259,15 @@ RStudio hilft:
 ]
 ]
 
-> **Strategie:** Klammern und Anführungszeichen immer von innen nach
-> aussen prüfen.
+&gt; **Strategie:** Klammern und Anführungszeichen immer von innen nach
+&gt; aussen prüfen.
 
 ---
 ----
 ## Häufige Fehler (4): Package nicht installiert
 
-```{r, echo=TRUE, eval=FALSE}
+
+``` r
 library(janitor)
 ```
 
@@ -260,16 +280,17 @@ library(janitor)
 
 **Lösung:** Package zuerst installieren, dann laden.
 
-```{r, echo=TRUE, eval=FALSE}
+
+``` r
 install.packages("janitor")   # einmalig installieren
 library(janitor)               # bei jedem Session-Start laden
 ```
 
 --
 
-> **Wichtig:**
-> - `install.packages()` → **einmalig** (installiert auf dem Computer)
-> - `library()` → **jedes Mal** beim Start einer neuen R-Session
+&gt; **Wichtig:**
+&gt; - `install.packages()` → **einmalig** (installiert auf dem Computer)
+&gt; - `library()` → **jedes Mal** beim Start einer neuen R-Session
 
 ---
 ----
@@ -277,14 +298,16 @@ library(janitor)               # bei jedem Session-Start laden
 
 .panelset[
 .panel[.panel-name[NAs durch Umwandlung]
-```{r, echo=TRUE, eval=FALSE}
+
+``` r
 as.numeric(c("1", "zwei", "3"))
 # Warning: NAs introduced by coercion
 ```
 Nicht-numerische Werte werden zu `NA`. **Ergebnis prüfen!**
 ]
 .panel[.panel-name[Fehlende Werte in Berechnungen]
-```{r, echo=TRUE, eval=FALSE}
+
+``` r
 mean(c(1, 2, NA))
 # [1] NA  ← weil NA nicht ignoriert wird
 mean(c(1, 2, NA), na.rm = TRUE)
@@ -308,7 +331,8 @@ Code funktioniert noch, aber Funktion wird in Zukunft entfernt.
 
 R hat eine eingebaute Hilfe für **jede Funktion**.
 
-```{r, echo=TRUE, eval=FALSE}
+
+``` r
 ?read_csv          # Hilfeseite öffnen
 help(read_csv)     # identisch
 ```
@@ -327,28 +351,29 @@ help(read_csv)     # identisch
 
 --
 
-> **Tipp:** Die **Examples** am Ende der Hilfeseite sind oft der
-> schnellste Einstieg.
+&gt; **Tipp:** Die **Examples** am Ende der Hilfeseite sind oft der
+&gt; schnellste Einstieg.
 
 ---
 ----
 ## Hilfe finden: Weitere Quellen
 
-
+.pull-left[
 **Selbsthilfe in R**
-```{r, echo=TRUE, eval=FALSE}
+
+``` r
 ?read_csv            # Funktionshilfe
 ??csv                # Suche in allen Hilfeseiten
 vignette("readr")    # ausführliches Tutorial
 ```
+]
 
 
-
-> **Strategie bei Fehlern:**
-> 1. Fehlermeldung lesen
-> 2. Fehlermeldung googeln (auf Englisch)
-> 3. KI fragen und Erklärung verstehen
-> 4. Lösung selbst nachvollziehen und testen
+&gt; **Strategie bei Fehlern:**
+&gt; 1. Fehlermeldung lesen
+&gt; 2. Fehlermeldung googeln (auf Englisch)
+&gt; 3. KI fragen und Erklärung verstehen
+&gt; 4. Lösung selbst nachvollziehen und testen
 
 ---
 ----
@@ -356,7 +381,8 @@ vignette("readr")    # ausführliches Tutorial
 
 R sucht Dateien immer **relativ zum aktuellen Arbeitsverzeichnis**.
 
-```{r, echo=TRUE, eval=FALSE}
+
+``` r
 getwd()   # aktuelles Verzeichnis anzeigen
 ```
 
@@ -368,17 +394,15 @@ getwd()   # aktuelles Verzeichnis anzeigen
 
 **Typischer Anfängerfehler:**
 
-```{r, echo=TRUE, eval=FALSE}
+
+``` r
 read_csv("bevölkerung.csv")
 # Error: 'bevölkerung.csv' does not exist
 ```
 
 → Die Datei liegt in einem Unterordner, R sucht aber im falschen Ort.
 
----
-----
-## Das Arbeitsverzeichnis (Working Directory)
-
+--
 
 **Lösung mit RStudio-Projekten:**
 
@@ -388,7 +412,8 @@ read_csv("bevölkerung.csv")
 - Relative Pfade funktionieren zuverlässig
 ]
 .pull-right[
-```{r, echo=TRUE, eval=FALSE}
+
+``` r
 # Mit Projektstruktur:
 read_csv("daten/bevölkerung.csv")
 # ✅ Funktioniert immer
@@ -408,7 +433,8 @@ Im **Environment-Panel** (oben rechts in RStudio) sieht man alle aktuell geladen
 - Selbst definierte Funktionen
 
 **Nützliche Befehle:**
-```{r, echo=TRUE, eval=FALSE}
+
+``` r
 ls()              # alle Objekte auflisten
 rm(mein_objekt)   # ein Objekt löschen
 rm(list = ls())   # alles löschen
@@ -417,11 +443,11 @@ rm(list = ls())   # alles löschen
 
 .pull-right[
 **Wichtig:**
-> Eine neue R-Session startet mit einer **leeren Umgebung**.
-> Objekte aus der letzten Session sind weg – Code muss neu ausgeführt werden.
+&gt; Eine neue R-Session startet mit einer **leeren Umgebung**.
+&gt; Objekte aus der letzten Session sind weg – Code muss neu ausgeführt werden.
 
-> **Empfehlung:** Nie auf gespeicherte Workspaces verlassen –
-> immer den **Code** speichern und neu ausführen.
+&gt; **Empfehlung:** Nie auf gespeicherte Workspaces verlassen –
+&gt; immer den **Code** speichern und neu ausführen.
 ]
 
 ---
@@ -452,8 +478,8 @@ rm(list = ls())   # alles löschen
 
 --
 
-> **Warum wichtig?** Wer immer in derselben Session arbeitet, merkt nicht,
-> wenn der Code Abhängigkeiten hat, die nicht im Skript stehen.
+&gt; **Warum wichtig?** Wer immer in derselben Session arbeitet, merkt nicht,
+&gt; wenn der Code Abhängigkeiten hat, die nicht im Skript stehen.
 
 ---
 ----
@@ -478,9 +504,10 @@ Error in filter(kanton == "TG") : object 'kanton' not found
 --
 
 **3. Kleineres Beispiel testen**
-```{r, echo=TRUE, eval=FALSE}
+
+``` r
 # Statt mit dem ganzen Datensatz:
-df %>% head(5) %>% filter(...)
+df %&gt;% head(5) %&gt;% filter(...)
 ```
 
 --
@@ -494,12 +521,13 @@ df %>% head(5) %>% filter(...)
 
 Kommentare werden mit `#` eingeleitet und von R **ignoriert**.
 
-```{r, echo=TRUE, eval=FALSE}
+
+``` r
 # Datensatz einlesen
-df <- read_csv("daten/bevölkerung.csv")
+df &lt;- read_csv("daten/bevölkerung.csv")
 
 # Nur Kanton Thurgau
-df_tg <- df %>%
+df_tg &lt;- df %&gt;%
   filter(kanton == "TG")   # TG = Thurgau
 ```
 
@@ -513,8 +541,8 @@ df_tg <- df %>%
 
 --
 
-> **Faustregel:** Kommentiert so, dass ihr selbst nach einem Monat
-> noch wisst, was der Code tut.
+&gt; **Faustregel:** Kommentiert so, dass ihr selbst nach einem Monat
+&gt; noch wisst, was der Code tut.
 
 ---
 ----
@@ -531,7 +559,122 @@ df_tg <- df %>%
 | **Debugging** | Schrittweise, Kleineres testen, Meldung lesen |
 | **Kommentare** | `#` – erklärt das Warum |
 
-<br>
+&lt;br&gt;
 
-> **Ziel:** Fehlermeldungen sind keine Katastrophe – sie sind
-> **Hinweise**. Wer sie lesen kann, kommt schneller voran.
+&gt; **Ziel:** Fehlermeldungen sind keine Katastrophe – sie sind
+&gt; **Hinweise**. Wer sie lesen kann, kommt schneller voran.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create();
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

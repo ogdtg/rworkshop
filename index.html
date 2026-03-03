@@ -738,6 +738,865 @@ Das tidyverse umfasst Pakete für die Datenmanipulation, Visualisierung und Mode
 
 
 
+---
+----
+## Recap: Was haben wir bisher gelernt?
+
+.pull-left[
+**Session 1 – Themen:**
+
+1. Daten einlesen (`readr`, `readxl`, `haven`)
+2. Tidy Data – Prinzipien sauberer Datenstruktur
+3. `tidyr` – Daten umformen
+4. `dplyr::select()` &amp; `dplyr::filter()` – Daten auswählen
+]
+
+.pull-right[
+&lt;img src="https://tidyverse.tidyverse.org/logo.png" width="80%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+----
+## Recap: Daten einlesen
+
+&lt;figure class="logo-fig logo-fig-small"&gt;
+  &lt;a href='https://readr.tidyverse.org' target="_blank"&gt;
+    &lt;img src='https://readr.tidyverse.org/logo.png' class='logo'/&gt;
+  &lt;/a&gt;
+&lt;/figure&gt;
+&lt;figure class="logo-fig logo-fig-small2"&gt;
+  &lt;a href='https://readxl.tidyverse.org' target="_blank"&gt;
+    &lt;img src='https://readxl.tidyverse.org/logo.png' class='logo'/&gt;
+  &lt;/a&gt;
+&lt;/figure&gt;
+&lt;figure class="logo-fig logo-fig-small3"&gt;
+  &lt;a href='https://haven.tidyverse.org' target="_blank"&gt;
+    &lt;img src='https://haven.tidyverse.org/logo.png' class='logo'/&gt;
+  &lt;/a&gt;
+&lt;/figure&gt;
+
+R kann nahezu jedes Datenformat einlesen. Die wichtigsten Packages:
+
+| Format | Package | Funktion |
+|--------|---------|----------|
+| CSV (Komma) | `readr` | `read_csv()` |
+| CSV (Semikolon) | `readr` | `read_csv2()` |
+| Excel (.xlsx) | `readxl` | `read_excel()` |
+| SAS / SPSS / Stata | `haven` | `read_sas()`, `read_spss()`, `read_dta()` |
+| R-intern | base R | `readRDS()` / `saveRDS()` |
+
+
+``` r
+library(readr);  library(readxl);  library(haven)
+
+df_csv   &lt;- read_csv("daten/datei.csv")
+df_excel &lt;- read_excel("daten/datei.xlsx")
+df_sas   &lt;- read_sas("daten/datei.sas7bdat")
+```
+
+---
+----
+## Recap: Tidy Data
+
+Drei einfache Regeln machen einen Datensatz *tidy*:
+
+.pull-left[
+1. Jede **Spalte** ist eine Variable
+2. Jede **Zeile** ist eine Beobachtung
+3. Jede **Zelle** enthält genau einen Wert
+
+**Vorteile:**
+- Konsistente Struktur für alle Tools
+- R-Funktionen arbeiten nativ mit Tidy Data
+]
+
+.pull-right[
+
+```
+## # A tibble: 4 × 3
+##   kanton datum       wert
+##   &lt;chr&gt;  &lt;date&gt;     &lt;dbl&gt;
+## 1 TG     2024-01-01   100
+## 2 TG     2024-01-02   102
+## 3 BS     2024-01-01    88
+## 4 BS     2024-01-02    90
+```
+&lt;p class="check-yes"&gt;&amp;#10003&lt;/p&gt;
+]
+
+---
+----
+## Recap: Tidy Data – Gegenbeispiele
+
+.panelset[
+.panel[.panel-name[Mehrere Werte in einer Zelle]
+
+```
+## # A tibble: 2 × 2
+##   kanton werte    
+##   &lt;chr&gt;  &lt;chr&gt;    
+## 1 TG     100 / 102
+## 2 BS     88 / 90
+```
+&lt;p class="check-no"&gt;&amp;#10060;&lt;/p&gt;
+]
+.panel[.panel-name[Variablen als Spaltenköpfe]
+
+```
+## # A tibble: 2 × 3
+##   kanton `2024-01-01` `2024-01-02`
+##   &lt;chr&gt;         &lt;dbl&gt;        &lt;dbl&gt;
+## 1 TG              100          102
+## 2 BS               88           90
+```
+&lt;p class="check-no"&gt;&amp;#10060;&lt;/p&gt;
+]
+.panel[.panel-name[Tidy – korrekt]
+
+```
+## # A tibble: 4 × 3
+##   kanton datum       wert
+##   &lt;chr&gt;  &lt;date&gt;     &lt;dbl&gt;
+## 1 TG     2024-01-01   100
+## 2 TG     2024-01-02   102
+## 3 BS     2024-01-01    88
+## 4 BS     2024-01-02    90
+```
+&lt;p class="check-yes"&gt;&amp;#10003;&lt;/p&gt;
+]
+]
+
+---
+----
+## Recap: tidyr
+
+&lt;figure class="logo-fig logo-fig-small"&gt;
+  &lt;a href='https://tidyr.tidyverse.org' target="_blank"&gt;
+    &lt;img src='https://tidyr.tidyverse.org/logo.png' class='logo'/&gt;
+  &lt;/a&gt;
+&lt;/figure&gt;
+
+Das `tidyr` Package bringt Daten ins Tidy-Format.
+
+.panelset[
+.panel[.panel-name[pivot_longer]
+Mehrere Spalten → eine Spalte (*Long Format*)
+
+``` r
+df %&gt;%
+  pivot_longer(cols = c("wert_a", "wert_b"),
+               names_to  = "indikator",
+               values_to = "wert")
+```
+]
+.panel[.panel-name[pivot_wider]
+Eine Spalte → mehrere Spalten (*Wide Format*)
+
+``` r
+df %&gt;%
+  pivot_wider(names_from  = "kanton",
+              values_from = "wert")
+```
+]
+.panel[.panel-name[separate_wider_delim]
+Eine Spalte aufteilen (neu: `separate_wider_delim()`)
+
+``` r
+df %&gt;%
+  separate_wider_delim(col   = datum,
+                       delim = "-",
+                       names = c("jahr", "monat", "tag"))
+```
+&gt; `separate()` ist veraltet – bitte `separate_wider_delim()` verwenden.
+]
+.panel[.panel-name[unite]
+Mehrere Spalten zusammenführen
+
+``` r
+df %&gt;%
+  unite(col = "datum", jahr, monat, tag, sep = "-")
+```
+]
+]
+
+---
+----
+## Recap: dplyr::select()
+
+&lt;figure class="logo-fig logo-fig-small"&gt;
+  &lt;a href='https://dplyr.tidyverse.org' target="_blank"&gt;
+    &lt;img src='https://dplyr.tidyverse.org/logo.png' class='logo'/&gt;
+  &lt;/a&gt;
+&lt;/figure&gt;
+
+`select()` wählt **Spalten** aus einem Datensatz aus oder entfernt sie.
+
+.panelset[
+.panel[.panel-name[Nach Name]
+
+``` r
+df %&gt;% select(kanton, datum, wert)
+```
+]
+.panel[.panel-name[Bereich]
+
+``` r
+df %&gt;% select(kanton:wert)   # alle Spalten von kanton bis wert
+```
+]
+.panel[.panel-name[Entfernen mit -]
+
+``` r
+df %&gt;% select(-datum)        # datum entfernen
+```
+]
+.panel[.panel-name[Hilfsfunktionen]
+
+``` r
+df %&gt;% select(starts_with("wert"))
+df %&gt;% select(contains("datum"))
+df %&gt;% select(where(is.numeric))
+```
+]
+]
+
+---
+----
+## Recap: dplyr::filter()
+
+&lt;figure class="logo-fig logo-fig-small"&gt;
+  &lt;a href='https://dplyr.tidyverse.org' target="_blank"&gt;
+    &lt;img src='https://dplyr.tidyverse.org/logo.png' class='logo'/&gt;
+  &lt;/a&gt;
+&lt;/figure&gt;
+
+`filter()` wählt **Zeilen** aus, die eine Bedingung erfüllen.
+
+.panelset[
+.panel[.panel-name[Einfach]
+
+``` r
+df %&gt;% filter(kanton == "TG")
+df %&gt;% filter(wert &gt; 100)
+```
+]
+.panel[.panel-name[Mehrere Bedingungen]
+
+``` r
+# UND:  beide Bedingungen müssen zutreffen
+df %&gt;% filter(kanton == "TG" &amp; wert &gt; 100)
+
+# ODER: mindestens eine muss zutreffen
+df %&gt;% filter(kanton == "TG" | kanton == "BS")
+```
+]
+.panel[.panel-name[%in% Operator]
+
+``` r
+# Abgleich mit einem Vektor
+df %&gt;% filter(kanton %in% c("TG", "BS", "ZH"))
+```
+]
+.panel[.panel-name[Kombiniert mit select]
+
+``` r
+df %&gt;%
+  filter(kanton == "TG") %&gt;%
+  select(datum, wert)
+```
+]
+]
+
+---
+----
+## Recap: Zusammenfassung
+
+| Funktion | Package | Was macht sie? |
+|----------|---------|---------------|
+| `read_csv()` / `read_excel()` | readr / readxl | Daten einlesen |
+| `pivot_longer()` | tidyr | Wide → Long |
+| `pivot_wider()` | tidyr | Long → Wide |
+| `separate_wider_delim()` | tidyr | Spalte aufteilen |
+| `select()` | dplyr | Spalten auswählen |
+| `filter()` | dplyr | Zeilen filtern |
+
+&gt; **Merke:** Alle diese Funktionen folgen der gleichen Logik:
+&gt; *Datensatz rein* `%&gt;%` / `|&gt;` *Funktion* → *Datensatz raus*
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---
+----
+## Bevor wir loslegen: Was sagt R uns eigentlich?
+
+R kommuniziert auf drei Arten mit uns:
+
+--
+
+.pull-left[
+&lt;br&gt;
+🔵 **Message** – *„Zur Information"*
+
+🟡 **Warning** – *„Ich hab's gemacht, aber schau mal…"*
+
+🔴 **Error** – *„Das geht so nicht."*
+]
+
+--
+
+.pull-right[
+&lt;br&gt;
+
+&gt; Die Farbe im Konsolenoutput hilft nicht immer –
+&gt; entscheidend ist das **Schlüsselwort** am Anfang der Meldung.
+]
+
+---
+----
+## 🔵 Messages – Informationsmeldungen
+
+Messages sind **rein informativ**. Der Code wird **vollständig ausgeführt**.
+
+
+``` r
+library(dplyr)
+```
+
+```
+## Attaching package: 'dplyr'
+## The following objects are masked from 'package:stats':
+##     filter, lag
+```
+
+--
+
+**Was tun?**
+
+- In der Regel: **nichts** – einfach weitermachen
+- Beim Laden von Packages: normal und erwartet
+- Messages können mit `suppressMessages()` unterdrückt werden
+
+&gt; **Merksatz:** Blauer Text in der Konsole = meistens kein Problem.
+
+---
+----
+## 🟡 Warnings – Warnungen
+
+Warnungen bedeuten: Der Code wurde **ausgeführt**, aber etwas war **nicht ganz richtig**.
+
+
+``` r
+as.numeric(c("1", "2", "drei"))
+```
+
+```
+## Warning: NAs introduced by coercion
+## [1]  1  2 NA
+```
+
+--
+
+**Was tun?**
+
+- Warnung **lesen und verstehen**
+- Ergebnis auf **Plausibilität prüfen** – ist das Resultat noch korrekt?
+- Manchmal ist eine Warnung harmlos, manchmal ein Hinweis auf einen Fehler im Code
+
+&gt; **Vorsicht:** Warnungen nicht einfach ignorieren! Sie können auf
+&gt; falsche Daten oder unerwartetes Verhalten hinweisen.
+
+---
+----
+## 🔴 Errors – Fehlermeldungen
+
+Ein Error bedeutet: Der Code wurde **nicht ausgeführt**. R konnte den Befehl nicht durchführen.
+
+
+``` r
+sqrt("zehn")
+```
+
+```
+## Error in sqrt("zehn") : non-numeric argument to mathematical function
+```
+
+--
+
+**Was tun?**
+
+1. Fehlermeldung **genau lesen** – sie enthält oft den Hinweis auf das Problem
+2. Den **Kontext prüfen**: Welche Zeile? Welche Funktion?
+3. Fehlermeldung **googeln** oder einer **KI** zeigen
+4. Schrittweise debuggen: Code in kleinere Teile aufteilen
+
+&gt; **Merksatz:** Kein Error = kein Ergebnis. Erst wenn der Fehler behoben ist,
+&gt; läuft der Code durch.
+
+---
+----
+## Übersicht: Die drei Meldungstypen
+
+| Typ | Symbol | Bedeutung | Code ausgeführt? |
+|-----|--------|-----------|-----------------|
+| **Message** | 🔵 | Reine Information | ✅ Ja |
+| **Warning** | 🟡 | Ausgeführt, aber mit Vorbehalt | ✅ Ja |
+| **Error** | 🔴 | Abbruch, etwas stimmt nicht | ❌ Nein |
+
+&lt;br&gt;
+
+.panelset[
+.panel[.panel-name[Erkennungsmerkmal]
+```
+Message:  Text ohne Schlüsselwort / "Attaching..."
+Warning:  Warning message: ...
+Error:    Error in ... : ...
+```
+]
+.panel[.panel-name[Reaktion]
+```
+Message  → Weitermachen
+Warning  → Prüfen, ob Ergebnis korrekt
+Error    → Fehler finden und beheben, bevor weitergegangen wird
+```
+]
+]
+
+---
+----
+## Häufige Fehler (1): `could not find function`
+
+
+``` r
+read_excel("daten/datei.xlsx")
+```
+
+```
+## Error in read_excel("daten/datei.xlsx") :
+##   could not find function "read_excel"
+```
+
+--
+
+**Ursache:** Die Funktion ist nicht verfügbar – meistens weil das Package **nicht geladen** wurde.
+
+**Lösung:**
+
+
+``` r
+library(readxl)           # Package zuerst laden!
+read_excel("daten/datei.xlsx")
+```
+
+--
+
+&gt; **Häufige Fallen:**
+&gt; - Package installiert, aber vergessen zu laden
+&gt; - Tippfehler im Funktionsnamen (z. B. `Read_csv` statt `read_csv`)
+
+---
+----
+## Häufige Fehler (2): `object not found`
+
+
+``` r
+summary(mein_datensatz)
+```
+
+```
+## Error in summary(mein_datensatz) :
+##   object 'mein_datensatz' not found
+```
+
+--
+
+**Ursache:** Das Objekt existiert (noch) nicht in der R-Umgebung.
+
+**Häufige Gründe:**
+- Der Einlesebefehl wurde **noch nicht ausgeführt**
+- Tippfehler im **Objektnamen** (R unterscheidet Gross-/Kleinschreibung!)
+- R-Session neu gestartet, aber Code nicht nochmals ausgeführt
+
+**Lösung:**
+
+
+``` r
+mein_datensatz &lt;- read_csv("daten/datei.csv")   # erst einlesen
+summary(mein_datensatz)                          # dann verwenden
+```
+
+---
+----
+## Häufige Fehler (3): Syntaxfehler
+
+
+``` r
+df %&gt;% filter(kanton == "TG"
+```
+
+```
+## Error: unexpected end of input
+```
+
+--
+
+**Ursache:** R erwartet noch mehr – eine **Klammer** oder ein **Anführungszeichen** wurde nicht geschlossen.
+
+.panelset[
+.panel[.panel-name[Weitere Beispiele]
+```
+Error: unexpected ')' in ")"          → zu viele Klammern
+Error: unexpected ',' in "select(,"  → Komma am falschen Ort
+Error: unexpected symbol in "df df"  → fehlendes Komma oder Operator
+```
+]
+.panel[.panel-name[Tipp]
+RStudio hilft:
+- Öffnende Klammern werden **automatisch geschlossen**
+- Ungepaarte Klammern werden **farblich markiert**
+- Die Zeile mit dem Problem wird oft **rot unterstrichen**
+]
+]
+
+&gt; **Strategie:** Klammern und Anführungszeichen immer von innen nach
+&gt; aussen prüfen.
+
+---
+----
+## Häufige Fehler (4): Package nicht installiert
+
+
+``` r
+library(janitor)
+```
+
+```
+## Error in library(janitor) :
+##   there is no package called 'janitor'
+```
+
+--
+
+**Lösung:** Package zuerst installieren, dann laden.
+
+
+``` r
+install.packages("janitor")   # einmalig installieren
+library(janitor)               # bei jedem Session-Start laden
+```
+
+--
+
+&gt; **Wichtig:**
+&gt; - `install.packages()` → **einmalig** (installiert auf dem Computer)
+&gt; - `library()` → **jedes Mal** beim Start einer neuen R-Session
+
+---
+----
+## Häufige Warnungen kennen
+
+.panelset[
+.panel[.panel-name[NAs durch Umwandlung]
+
+``` r
+as.numeric(c("1", "zwei", "3"))
+# Warning: NAs introduced by coercion
+```
+Nicht-numerische Werte werden zu `NA`. **Ergebnis prüfen!**
+]
+.panel[.panel-name[Fehlende Werte in Berechnungen]
+
+``` r
+mean(c(1, 2, NA))
+# [1] NA  ← weil NA nicht ignoriert wird
+mean(c(1, 2, NA), na.rm = TRUE)
+# [1] 1.5  ← mit na.rm = TRUE
+```
+Fehlende Werte müssen explizit behandelt werden.
+]
+.panel[.panel-name[Veraltete Funktion]
+```
+Warning: `separate()` was deprecated in tidyr 1.3.0.
+Please use `separate_wider_delim()` instead.
+```
+Code funktioniert noch, aber Funktion wird in Zukunft entfernt.
+→ Empfehlung: neuere Funktion verwenden.
+]
+]
+
+---
+----
+## Hilfe finden: Die R-Dokumentation
+
+R hat eine eingebaute Hilfe für **jede Funktion**.
+
+
+``` r
+?read_csv          # Hilfeseite öffnen
+help(read_csv)     # identisch
+```
+
+--
+
+**Aufbau einer Hilfeseite:**
+
+| Abschnitt | Inhalt |
+|-----------|--------|
+| **Description** | Kurze Beschreibung |
+| **Usage** | Funktionssignatur mit allen Parametern |
+| **Arguments** | Erklärung jedes Parameters |
+| **Value** | Was die Funktion zurückgibt |
+| **Examples** | Ausführbare Beispiele (unten) |
+
+--
+
+&gt; **Tipp:** Die **Examples** am Ende der Hilfeseite sind oft der
+&gt; schnellste Einstieg.
+
+---
+----
+## Hilfe finden: Weitere Quellen
+
+
+**Selbsthilfe in R**
+
+``` r
+?read_csv            # Funktionshilfe
+??csv                # Suche in allen Hilfeseiten
+vignette("readr")    # ausführliches Tutorial
+```
+
+
+
+&gt; **Strategie bei Fehlern:**
+&gt; 1. Fehlermeldung lesen
+&gt; 2. Fehlermeldung googeln (auf Englisch)
+&gt; 3. KI fragen und Erklärung verstehen
+&gt; 4. Lösung selbst nachvollziehen und testen
+
+---
+----
+## Das Arbeitsverzeichnis (Working Directory)
+
+R sucht Dateien immer **relativ zum aktuellen Arbeitsverzeichnis**.
+
+
+``` r
+getwd()   # aktuelles Verzeichnis anzeigen
+```
+
+```
+## [1] "/home/user/rworkshop"
+```
+
+--
+
+**Typischer Anfängerfehler:**
+
+
+``` r
+read_csv("bevölkerung.csv")
+# Error: 'bevölkerung.csv' does not exist
+```
+
+→ Die Datei liegt in einem Unterordner, R sucht aber im falschen Ort.
+
+---
+----
+## Das Arbeitsverzeichnis (Working Directory)
+
+
+**Lösung mit RStudio-Projekten:**
+
+.pull-left[
+- `.Rproj`-Datei öffnen statt `RStudio` direkt starten
+- Arbeitsverzeichnis wird **automatisch** korrekt gesetzt
+- Relative Pfade funktionieren zuverlässig
+]
+.pull-right[
+
+``` r
+# Mit Projektstruktur:
+read_csv("daten/bevölkerung.csv")
+# ✅ Funktioniert immer
+```
+]
+
+---
+----
+## Die R-Umgebung (Environment)
+
+Im **Environment-Panel** (oben rechts in RStudio) sieht man alle aktuell geladenen Objekte.
+
+.pull-left[
+**Was dort erscheint:**
+- Eingelesene Datensätze (`df`, `bev`, …)
+- Erstellte Variablen und Vektoren
+- Selbst definierte Funktionen
+
+**Nützliche Befehle:**
+
+``` r
+ls()              # alle Objekte auflisten
+rm(mein_objekt)   # ein Objekt löschen
+rm(list = ls())   # alles löschen
+```
+]
+
+.pull-right[
+**Wichtig:**
+&gt; Eine neue R-Session startet mit einer **leeren Umgebung**.
+&gt; Objekte aus der letzten Session sind weg – Code muss neu ausgeführt werden.
+
+&gt; **Empfehlung:** Nie auf gespeicherte Workspaces verlassen –
+&gt; immer den **Code** speichern und neu ausführen.
+]
+
+---
+----
+## Reproduzierbarkeit: Sauber starten
+
+**Goldene Regel:** Ein R-Skript muss von oben nach unten, in einer frischen Session, vollständig durchlaufen können.
+
+--
+
+.pull-left[
+**Gute Praxis:**
+- Session regelmässig neu starten: `Ctrl+Shift+F10`
+- Dann gesamten Code neu ausführen: `Ctrl+Shift+Enter` (Run All)
+- Nur so erkennt man, ob etwas vergessen wurde
+]
+
+.pull-right[
+**In RStudio einstellen:**
+
+`Tools → Global Options → General`
+
+- ❌ „Restore .RData into workspace at startup" deaktivieren
+- ❌ „Save workspace to .RData on exit" → **Never**
+
+→ Jede Session startet sauber
+]
+
+--
+
+&gt; **Warum wichtig?** Wer immer in derselben Session arbeitet, merkt nicht,
+&gt; wenn der Code Abhängigkeiten hat, die nicht im Skript stehen.
+
+---
+----
+## Debugging: Strategisch vorgehen
+
+Wenn etwas nicht funktioniert:
+
+--
+
+**1. Fehlermeldung vollständig lesen**
+```
+Error in filter(kanton == "TG") : object 'kanton' not found
+```
+→ `kanton` ist nicht bekannt → Spaltenname prüfen
+
+--
+
+**2. Code schrittweise ausführen**
+- Nicht die gesamte Pipe auf einmal – Zeile für Zeile
+- Zwischenergebnisse mit `print()` oder einfach den Objektnamen eingeben
+
+--
+
+**3. Kleineres Beispiel testen**
+
+``` r
+# Statt mit dem ganzen Datensatz:
+df %&gt;% head(5) %&gt;% filter(...)
+```
+
+--
+
+**4. Hilfe holen** – KI, Google, Stack Overflow
+→ Immer: Fehlermeldung **und** Code zeigen, nicht nur „es geht nicht"
+
+---
+----
+## Gut zu wissen: Kommentare im Code
+
+Kommentare werden mit `#` eingeleitet und von R **ignoriert**.
+
+
+``` r
+# Datensatz einlesen
+df &lt;- read_csv("daten/bevölkerung.csv")
+
+# Nur Kanton Thurgau
+df_tg &lt;- df %&gt;%
+  filter(kanton == "TG")   # TG = Thurgau
+```
+
+--
+
+**Warum Kommentare wichtig sind:**
+
+- Code ist oft **Wochen später** schwer zu verstehen – auch für einen selbst
+- Kommentare erklären das **Warum**, nicht das **Was**
+- In Teams: andere können den Code lesen und nachvollziehen
+
+--
+
+&gt; **Faustregel:** Kommentiert so, dass ihr selbst nach einem Monat
+&gt; noch wisst, was der Code tut.
+
+---
+----
+## Zusammenfassung
+
+| Thema | Merksatz |
+|-------|----------|
+| **Message** | Nur zur Info – weitermachen |
+| **Warning** | Ausgeführt, aber Ergebnis prüfen |
+| **Error** | Nicht ausgeführt – Fehler beheben |
+| **Hilfe** | `?funktion`, Google, KI |
+| **Arbeitsverzeichnis** | RStudio-Projekt öffnen → immer korrekt |
+| **Umgebung** | Session neu starten, Code von oben ausführen |
+| **Debugging** | Schrittweise, Kleineres testen, Meldung lesen |
+| **Kommentare** | `#` – erklärt das Warum |
+
+&lt;br&gt;
+
+&gt; **Ziel:** Fehlermeldungen sind keine Katastrophe – sie sind
+&gt; **Hinweise**. Wer sie lesen kann, kommt schneller voran.
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -968,7 +1827,7 @@ dataset &lt;- readRDS("data.rds")
 
 Benutze jeweils die `head()` Funktion um **die ersten 3 Zeilen** des Datensatzes anzeigen zu lassen. 
 
-<countdown-timer class="countdown" id="timer_6cb6ab37" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_b0961d3d" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 
 ---
 ----
@@ -1296,7 +2155,7 @@ Das Ergebnis soll auf eine Nachkommastelle gerundet werden.
   &lt;/li&gt;
 &lt;/ol&gt;
 
-<countdown-timer class="countdown" id="timer_c1ee739c" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_ced473de" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 
 ---
 ----
@@ -1502,6 +2361,8 @@ Für detailliertere Informationen findet sich [hier](https://github.com/rstudio/
 - `pivot_wider`: fasst Zeilen zusammen und "verbreitert" den Datensatz
 - `separate`: teilt eine Spalte in mehrere Spalten auf (Gegenstück ist `unite`)
 
+&gt; **Hinweis (tidyr ≥ 1.3.0):** `separate()` ist veraltet (*deprecated*). Die modernen Nachfolger sind `separate_wider_delim()` (für Trennzeichen) und `separate_wider_position()` (für feste Breiten).
+
 ---
 ----
 ## tidyr
@@ -1564,11 +2425,15 @@ df_tidy_m %&gt;%
 ```
 ]
 .panel[.panel-name[separate]
-Spalten können mit `separate` in mehrere Spalten aufgeteilt werden.
+Spalten können mit `separate_wider_delim()` in mehrere Spalten aufgeteilt werden.
+
+&gt; `separate()` ist veraltet – bitte `separate_wider_delim()` verwenden.
+
 
 ``` r
-df_tidy_m %&gt;% 
-  tidyr::separate(col="date",sep = "-", into = c("year","month","day"))
+df_tidy_m %&gt;%
+  tidyr::separate_wider_delim(col = date, delim = "-",
+                              names = c("year","month","day"))
 ```
 
 ```
@@ -1607,7 +2472,7 @@ abstimmungen &lt;- readRDS("Daten/Abstimmungen.rds")
 2. Bringe die Daten wieder in die Ursprungsform (long format)&lt;br&gt;
   Speichere das Ergebnis unter "abstimmungen_not_tidy" 
   
-<countdown-timer class="countdown" id="timer_19301a7a" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_ee982a88" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 
 
@@ -1876,7 +2741,7 @@ df_tidy %&gt;%
 4. Speichere das Resultat in der Variable **geburten_ch_2010**
 
 
-<countdown-timer class="countdown" id="timer_d638db52" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_66191743" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 
 ---
 ----
@@ -2021,14 +2886,16 @@ df_tidy %&gt;%
   &lt;/a&gt;
 &lt;/figure&gt;
 
-Mit `mutate_all` oder `mutate_at` können alle Variablen bzw. alle Variablen mit einem bestimmten Kriterium gleichzeitig bearbeitet werden.
+Mit `across()` (seit dplyr 1.0.0) können die gleiche Operation auf mehrere Spalten gleichzeitig angewendet werden.
 
-Das ist nützlich, wenn man die gleiche Operation auf mehrere Spalten anwenden will.
+&gt; **Hinweis:** Die älteren Funktionen `mutate_all()` und `mutate_at()` sind veraltet (*deprecated*) und sollten durch `across()` ersetzt werden.
 
+.panelset[
+.panel[.panel-name[across – alle Spalten]
 
 ``` r
-df_tidy %&gt;% 
-  mutate_all(as.character) %&gt;% 
+df_tidy %&gt;%
+  mutate(across(everything(), as.character)) %&gt;%
   head(3)
 ```
 
@@ -2040,6 +2907,42 @@ df_tidy %&gt;%
 ## 2 2022-12-11 TG     140484 723    0.005146493550867  
 ## 3 2022-12-10 BS     102405 372    0.00363263512523803
 ```
+]
+.panel[.panel-name[across – bestimmte Spalten]
+
+``` r
+df_tidy %&gt;%
+  mutate(across(c(cases, deaths), ~ .x / 1000)) %&gt;%
+  head(3)
+```
+
+```
+## # A tibble: 3 × 5
+##   date       kanton cases deaths death_rate
+##   &lt;date&gt;     &lt;chr&gt;  &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;
+## 1 2022-12-10 TG      140.  0.723    0.00515
+## 2 2022-12-11 TG      140.  0.723    0.00515
+## 3 2022-12-10 BS      102.  0.372    0.00363
+```
+]
+.panel[.panel-name[across – nach Typ]
+
+``` r
+df_tidy %&gt;%
+  mutate(across(where(is.numeric), round)) %&gt;%
+  head(3)
+```
+
+```
+## # A tibble: 3 × 5
+##   date       kanton  cases deaths death_rate
+##   &lt;date&gt;     &lt;chr&gt;   &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;
+## 1 2022-12-10 TG     140474    723          0
+## 2 2022-12-11 TG     140484    723          0
+## 3 2022-12-10 BS     102405    372          0
+```
+]
+]
 
 ---
 ----
@@ -2221,7 +3124,7 @@ Speichere das Resultat unter dem Namen **geburten_ch_2010_date**
 3. Zähle die Geburten pro (Geburts-)Jahr im Datensatz&lt;br&gt;
 **Tipp:** Nutze `group_by()` sowie `count()` bzw. `summarise()` und `n()`
 
-<countdown-timer class="countdown" id="timer_4eb3c6bc" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_53030aa2" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 ----
 
@@ -2588,7 +3491,7 @@ Speichere den neuen Datensatz unter dem Namen `geburten_join`
 
 2. Wie lautet der häufigste männliche Vorname für Kinder mit der Nationalität Nordmazedonien im Datensatz?
 
-<countdown-timer class="countdown" id="timer_4caeab0a" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_d9a074ba" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 ----
 ## Good to know: Joins
@@ -2673,15 +3576,18 @@ geburten_ch_2010 %&gt;%
 ```
 
 ]
-.panel[.panel-name[top_n]
-Mit `top_n()` können die Zeilen mit den höchsten (oder niedrigsten) Werten für eine bestimmte Variable gefiltert werden
+.panel[.panel-name[slice_max]
+Mit `slice_max()` / `slice_min()` können die Zeilen mit den höchsten (oder niedrigsten) Werten gefiltert werden.
+
+&gt; **Hinweis:** `top_n()` ist veraltet (*deprecated*) – bitte `slice_max()` / `slice_min()` verwenden.
+
 
 ``` r
-geburten_ch_2010 %&gt;% 
-  group_by(geb_year,name) %&gt;% 
-  count() %&gt;% 
-  group_by(geb_year) %&gt;% 
-  top_n(1,n) %&gt;% 
+geburten_ch_2010 %&gt;%
+  group_by(geb_year,name) %&gt;%
+  count() %&gt;%
+  group_by(geb_year) %&gt;%
+  slice_max(n, n = 1) %&gt;%
   head(2)
 ```
 
@@ -2962,7 +3868,7 @@ Nutze dafür den Regex `\\d\\d\\d\\d-\\d\\d-\\d\\d`
 
 4. Entferne die Leerzeichen anführenden Leerzeichen aus der Spalte `Datum und Vorlage` (" Test " -&gt; "Test")
 
-<countdown-timer class="countdown" id="timer_feb0bd0d" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_6c56fff9" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 ----
 ## Good to know: stringi
@@ -3094,7 +4000,7 @@ Erstelle einen neuen Datensatz `geburten_time` und füge die neue Spalte hinzu.
 
 3. Wie könnte man dieses Problem theoretisch lösen?
 
-<countdown-timer class="countdown" id="timer_e9059d70" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_98e26320" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 
 
@@ -5224,7 +6130,7 @@ ggplot(data = geburten_sample, aes(x=age_v, y=age_m))+
 .panel[.panel-name[Grafik]
 Alter des Vaters auf der x-Achse und Alter der Mutter auf der y-Achses
 
-&lt;img src="index_files/figure-html/unnamed-chunk-479-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-567-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 ]
 
@@ -5256,7 +6162,7 @@ ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = sex))+
 ```
 ]
 .panel[.panel-name[Fig 1]
-&lt;img src="index_files/figure-html/unnamed-chunk-481-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-569-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 .panel[.panel-name[Bsp 2]
 `sex` wird als numerische Variable erkannt weshalb eine Umwandlung nötig ist
@@ -5267,7 +6173,7 @@ ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = as.factor(sex)))+
 ```
 ]
 .panel[.panel-name[Fig 2]
-&lt;img src="index_files/figure-html/unnamed-chunk-483-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-571-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 .panel[.panel-name[Bsp 3]
 Ausserhalb des `aes()` Befehls können auch statische Variablen als aesthetics definiert werden (siehe [hier](https://ggplot2-book.org/layers.html#setting-mapping))
@@ -5278,7 +6184,7 @@ ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = as.factor(sex)))+
 ```
 ]
 .panel[.panel-name[Fig 3]
-&lt;img src="index_files/figure-html/unnamed-chunk-485-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-573-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 ]
 
@@ -5312,7 +6218,7 @@ ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = as.factor(sex)))+
 ```
 ]
 .panel[.panel-name[Fig]
-&lt;img src="index_files/figure-html/unnamed-chunk-487-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-575-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 ]
 
@@ -5343,7 +6249,7 @@ geburten %&gt;%
 
 ]
 .panel[.panel-name[Fig 1]
-&lt;img src="index_files/figure-html/unnamed-chunk-489-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-577-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 .panel[.panel-name[Bsp 2]
 - Hinzufügen einer Linie als zusätzlicher Layer
@@ -5359,7 +6265,7 @@ geburten %&gt;%
 ```
 ]
 .panel[.panel-name[Fig 2]
-&lt;img src="index_files/figure-html/unnamed-chunk-491-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-579-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 .panel[.panel-name[Bsp 3]
 - Durchschnittliches Alter der Mutter und des Vaters bei Geburt
@@ -5376,7 +6282,7 @@ geburten %&gt;%
 ```
 ]
 .panel[.panel-name[Fig 3]
-&lt;img src="index_files/figure-html/unnamed-chunk-493-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-581-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 .panel[.panel-name[Bsp 4]
 - Ermittlung von Missing Values
@@ -5392,7 +6298,7 @@ geburten %&gt;%
 ```
 ]
 .panel[.panel-name[Fig 3]
-&lt;img src="index_files/figure-html/unnamed-chunk-495-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-583-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 ]
 
@@ -5422,7 +6328,7 @@ Stelle das erreichte Alter von Männern und Frauen im Zeitverlauf gegenüber.
 - Füge einen Titel sowie eine Beschriftung für X- und Y-Achse hinzu.
 - Verwende dafür die labs() Funktion (`?ggplot2::labs()` für Hilfe)
 
-<countdown-timer class="countdown" id="timer_9b678b82" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_694d9757" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 
 ---
 ----
@@ -5992,7 +6898,7 @@ csv_sas_win |&gt; slice(42) |&gt; select(GdenameTG,Quote_Kategorie)
 &lt;/figure&gt;
 ## Daten Zwischenspeichern
 
-![](index_files/figure-html/unnamed-chunk-538-1.png)&lt;!-- --&gt;
+![](index_files/figure-html/unnamed-chunk-626-1.png)&lt;!-- --&gt;
 ---
 
 
@@ -6177,7 +7083,7 @@ Repliziere die Tabelle in `Slides/Daten/openxlsx_table.xlsx`.
 Speichere die Datei unter `Slides/Daten/openxlsx_table_DEIN_KÜRZEL.xlsx`.
 
 ![openxlsx Aufgabe](img/openxlsx_exercise.png)
-<countdown-timer class="countdown" id="timer_613cd0e4" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_a24387a1" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 ----
 &lt;figure class="logo-fig logo-fig-small"&gt;
@@ -6508,7 +7414,7 @@ Gegeben ist ausserdem die Datei `Slides/Daten/2023_Gde_Geb_ab2000.xlsx`
                                                                                                          
 Füge die Geburtenzahlen für das Jahr 2024 in die Excel `2023_Gde_Geb_ab2000.xlsx` ein und speichere sie als **`Slides/Daten/2024_Gde_Geb_ab2000_DEIN_KÜRZEL.xlsx`** neu ab         
 
-<countdown-timer class="countdown" id="timer_cd287575" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_1766edde" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 
 
@@ -6944,7 +7850,7 @@ response
 ## GET https://dataspot.apps.ktgcpp01.tg.ch/rest/dataspot/schemes/Referenzdaten/enumerations
 ## Status: 200 OK
 ## Content-Type: application/hal+json
-## Body: In memory (549741 bytes)
+## Body: In memory (550117 bytes)
 ```
 
 ``` r
@@ -7628,7 +8534,7 @@ Beachte, dass der finale Datensatz lokal als normaler R data.frame nutzbar sein 
 ## 4          2015   4471             4.10
 ```
 
-<countdown-timer class="countdown" id="timer_58f4a792" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_f60c3d91" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 
 

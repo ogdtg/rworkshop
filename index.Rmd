@@ -57,6 +57,12 @@ xaringanExtra::use_tachyons()
 ```{r child='rmd/tidyverse.Rmd'}
 ```
 ---
+```{r child='rmd/recap.Rmd'}
+```
+---
+```{r child='rmd/fehler_meldungen.Rmd'}
+```
+---
 ```{r child='rmd/daten_einlesen.Rmd'}
 ```
 ---
@@ -70,12 +76,6 @@ xaringanExtra::use_tachyons()
 ```
 ---
 ```{r child='rmd/dplyr.Rmd'}
-```
----
-```{r child='rmd/recap.Rmd'}
-```
----
-```{r child='rmd/fehler_meldungen.Rmd'}
 ```
 ---
 ```{r child='rmd/stringr.Rmd'}

@@ -99,7 +99,7 @@ tibble::tibble(
   wert    = c(100, 102, 88, 90)
 )
 ```
-<p class="check-yes">&#10003; Tidy</p>
+<p class="check-yes">&#10003</p>
 ]
 
 ---
@@ -114,7 +114,7 @@ tibble::tibble(
   werte  = c("100 / 102", "88 / 90")
 )
 ```
-<p class="check-no">&#10060; Mehrere Werte pro Zelle</p>
+<p class="check-no">&#10060;</p>
 ]
 .panel[.panel-name[Variablen als Spaltenköpfe]
 ```{r echo=FALSE}
@@ -124,7 +124,7 @@ tibble::tibble(
   `2024-01-02` = c(102, 90)
 )
 ```
-<p class="check-no">&#10060; Datumswerte als Spaltennamen</p>
+<p class="check-no">&#10060;</p>
 ]
 .panel[.panel-name[Tidy – korrekt]
 ```{r echo=FALSE}
@@ -134,7 +134,7 @@ tibble::tibble(
   wert   = c(100, 102, 88, 90)
 )
 ```
-<p class="check-yes">&#10003; Eine Variable pro Spalte, ein Wert pro Zelle</p>
+<p class="check-yes">&#10003;</p>
 ]
 ]
 

@@ -14,6 +14,10 @@
 # =============================================================================
 
 
+# Beispiel generell
+message("Hello")
+warning("Hello")
+stop("Hello")
 # =============================================================================
 # 1. MESSAGES – Reine Informationsmeldungen
 # =============================================================================
@@ -42,6 +46,10 @@ suppressMessages(library(tidyr))
 x <- as.numeric(c("1", "zwei", "3"))
 x                       # [1]  1 NA  3
 is.na(x)                # zeigt, an welcher Position NA entstanden ist
+
+
+# Ob Warnings problematische Ergebnisse erzeugen hängt vom use case ab
+as.numeric(c("1", "NA", "3"))
 
 # 2b) Fehlende Werte in Berechnungen
 mean(c(1, 2, NA))                    # Ergebnis: NA  – NA "steckt" im Ergebnis
@@ -344,6 +352,7 @@ positiv <- messung[!is.na(messung) & messung > 0]
 mean(positiv)   # 8
 
 # 11c) Abschnittstrennlinie (erscheint im Document Outline: Ctrl+Shift+O)
+# erzeugt über Shortcut Ctrl+Shift+R
 # ---------- Daten einlesen ------------------------------------------------
 
 # ---------- Daten bereinigen ----------------------------------------------
