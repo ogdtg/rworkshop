@@ -75,6 +75,9 @@ xaringanExtra::use_tachyons()
 ```{r child='rmd/recap.Rmd'}
 ```
 ---
+```{r child='rmd/fehler_meldungen.Rmd'}
+```
+---
 ```{r child='rmd/stringr.Rmd'}
 ```
 ---

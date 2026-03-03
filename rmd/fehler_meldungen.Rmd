@@ -1,0 +1,543 @@
+---
+title: "R Grundlagen: Meldungen, Warnungen & Fehler"
+author: "Felix Lorenz"
+date: "Workshop 2026"
+amt: "Amt für Daten und Statistik"
+stelle: ""
+output:
+  xaringan::moon_reader:
+    highlightStyle: github
+    highlightlines: true
+    highlightSpans: true
+    css: ["default","styles_x.css"]
+---
+
+```{r setup-fehler, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, dpi = 300, message = FALSE, warning = FALSE)
+```
+
+---
+----
+## Bevor wir loslegen: Was sagt R uns eigentlich?
+
+R kommuniziert auf drei Arten mit uns:
+
+--
+
+.pull-left[
+<br>
+🔵 **Message** – *„Zur Information"*
+
+🟡 **Warning** – *„Ich hab's gemacht, aber schau mal…"*
+
+🔴 **Error** – *„Das geht so nicht."*
+]
+
+--
+
+.pull-right[
+<br>
+
+> Die Farbe im Konsolenoutput hilft nicht immer –
+> entscheidend ist das **Schlüsselwort** am Anfang der Meldung.
+]
+
+---
+----
+## 🔵 Messages – Informationsmeldungen
+
+Messages sind **rein informativ**. Der Code wird **vollständig ausgeführt**.
+
+```{r, echo=TRUE, eval=FALSE}
+library(dplyr)
+```
+
+```
+## Attaching package: 'dplyr'
+## The following objects are masked from 'package:stats':
+##     filter, lag
+```
+
+--
+
+**Was tun?**
+
+- In der Regel: **nichts** – einfach weitermachen
+- Beim Laden von Packages: normal und erwartet
+- Messages können mit `suppressMessages()` unterdrückt werden
+
+> **Merksatz:** Blauer Text in der Konsole = meistens kein Problem.
+
+---
+----
+## 🟡 Warnings – Warnungen
+
+Warnungen bedeuten: Der Code wurde **ausgeführt**, aber etwas war **nicht ganz richtig**.
+
+```{r, echo=TRUE, eval=FALSE}
+as.numeric(c("1", "2", "drei"))
+```
+
+```
+## Warning: NAs introduced by coercion
+## [1]  1  2 NA
+```
+
+--
+
+**Was tun?**
+
+- Warnung **lesen und verstehen**
+- Ergebnis auf **Plausibilität prüfen** – ist das Resultat noch korrekt?
+- Manchmal ist eine Warnung harmlos, manchmal ein Hinweis auf einen Fehler im Code
+
+> **Vorsicht:** Warnungen nicht einfach ignorieren! Sie können auf
+> falsche Daten oder unerwartetes Verhalten hinweisen.
+
+---
+----
+## 🔴 Errors – Fehlermeldungen
+
+Ein Error bedeutet: Der Code wurde **nicht ausgeführt**. R konnte den Befehl nicht durchführen.
+
+```{r, echo=TRUE, eval=FALSE}
+sqrt("zehn")
+```
+
+```
+## Error in sqrt("zehn") : non-numeric argument to mathematical function
+```
+
+--
+
+**Was tun?**
+
+1. Fehlermeldung **genau lesen** – sie enthält oft den Hinweis auf das Problem
+2. Den **Kontext prüfen**: Welche Zeile? Welche Funktion?
+3. Fehlermeldung **googeln** oder einer **KI** zeigen
+4. Schrittweise debuggen: Code in kleinere Teile aufteilen
+
+> **Merksatz:** Kein Error = kein Ergebnis. Erst wenn der Fehler behoben ist,
+> läuft der Code durch.
+
+---
+----
+## Übersicht: Die drei Meldungstypen
+
+| Typ | Symbol | Bedeutung | Code ausgeführt? |
+|-----|--------|-----------|-----------------|
+| **Message** | 🔵 | Reine Information | ✅ Ja |
+| **Warning** | 🟡 | Ausgeführt, aber mit Vorbehalt | ✅ Ja |
+| **Error** | 🔴 | Abbruch, etwas stimmt nicht | ❌ Nein |
+
+<br>
+
+.panelset[
+.panel[.panel-name[Erkennungsmerkmal]
+```
+Message:  Text ohne Schlüsselwort / "Attaching..."
+Warning:  Warning message: ...
+Error:    Error in ... : ...
+```
+]
+.panel[.panel-name[Reaktion]
+```
+Message  → Weitermachen
+Warning  → Prüfen, ob Ergebnis korrekt
+Error    → Fehler finden und beheben, bevor weitergegangen wird
+```
+]
+]
+
+---
+----
+## Häufige Fehler (1): `could not find function`
+
+```{r, echo=TRUE, eval=FALSE}
+read_excel("daten/datei.xlsx")
+```
+
+```
+## Error in read_excel("daten/datei.xlsx") :
+##   could not find function "read_excel"
+```
+
+--
+
+**Ursache:** Die Funktion ist nicht verfügbar – meistens weil das Package **nicht geladen** wurde.
+
+**Lösung:**
+
+```{r, echo=TRUE, eval=FALSE}
+library(readxl)           # Package zuerst laden!
+read_excel("daten/datei.xlsx")
+```
+
+--
+
+> **Häufige Fallen:**
+> - Package installiert, aber vergessen zu laden
+> - Tippfehler im Funktionsnamen (z. B. `Read_csv` statt `read_csv`)
+
+---
+----
+## Häufige Fehler (2): `object not found`
+
+```{r, echo=TRUE, eval=FALSE}
+summary(mein_datensatz)
+```
+
+```
+## Error in summary(mein_datensatz) :
+##   object 'mein_datensatz' not found
+```
+
+--
+
+**Ursache:** Das Objekt existiert (noch) nicht in der R-Umgebung.
+
+**Häufige Gründe:**
+- Der Einlesebefehl wurde **noch nicht ausgeführt**
+- Tippfehler im **Objektnamen** (R unterscheidet Gross-/Kleinschreibung!)
+- R-Session neu gestartet, aber Code nicht nochmals ausgeführt
+
+**Lösung:**
+
+```{r, echo=TRUE, eval=FALSE}
+mein_datensatz <- read_csv("daten/datei.csv")   # erst einlesen
+summary(mein_datensatz)                          # dann verwenden
+```
+
+---
+----
+## Häufige Fehler (3): Syntaxfehler
+
+```{r, echo=TRUE, eval=FALSE}
+df %>% filter(kanton == "TG"
+```
+
+```
+## Error: unexpected end of input
+```
+
+--
+
+**Ursache:** R erwartet noch mehr – eine **Klammer** oder ein **Anführungszeichen** wurde nicht geschlossen.
+
+.panelset[
+.panel[.panel-name[Weitere Beispiele]
+```
+Error: unexpected ')' in ")"          → zu viele Klammern
+Error: unexpected ',' in "select(,"  → Komma am falschen Ort
+Error: unexpected symbol in "df df"  → fehlendes Komma oder Operator
+```
+]
+.panel[.panel-name[Tipp]
+RStudio hilft:
+- Öffnende Klammern werden **automatisch geschlossen**
+- Ungepaarte Klammern werden **farblich markiert**
+- Die Zeile mit dem Problem wird oft **rot unterstrichen**
+]
+]
+
+> **Strategie:** Klammern und Anführungszeichen immer von innen nach
+> aussen prüfen.
+
+---
+----
+## Häufige Fehler (4): Package nicht installiert
+
+```{r, echo=TRUE, eval=FALSE}
+library(janitor)
+```
+
+```
+## Error in library(janitor) :
+##   there is no package called 'janitor'
+```
+
+--
+
+**Lösung:** Package zuerst installieren, dann laden.
+
+```{r, echo=TRUE, eval=FALSE}
+install.packages("janitor")   # einmalig installieren
+library(janitor)               # bei jedem Session-Start laden
+```
+
+--
+
+> **Wichtig:**
+> - `install.packages()` → **einmalig** (installiert auf dem Computer)
+> - `library()` → **jedes Mal** beim Start einer neuen R-Session
+
+---
+----
+## Häufige Warnungen kennen
+
+.panelset[
+.panel[.panel-name[NAs durch Umwandlung]
+```{r, echo=TRUE, eval=FALSE}
+as.numeric(c("1", "zwei", "3"))
+# Warning: NAs introduced by coercion
+```
+Nicht-numerische Werte werden zu `NA`. **Ergebnis prüfen!**
+]
+.panel[.panel-name[Fehlende Werte in Berechnungen]
+```{r, echo=TRUE, eval=FALSE}
+mean(c(1, 2, NA))
+# [1] NA  ← weil NA nicht ignoriert wird
+mean(c(1, 2, NA), na.rm = TRUE)
+# [1] 1.5  ← mit na.rm = TRUE
+```
+Fehlende Werte müssen explizit behandelt werden.
+]
+.panel[.panel-name[Veraltete Funktion]
+```
+Warning: `separate()` was deprecated in tidyr 1.3.0.
+Please use `separate_wider_delim()` instead.
+```
+Code funktioniert noch, aber Funktion wird in Zukunft entfernt.
+→ Empfehlung: neuere Funktion verwenden.
+]
+]
+
+---
+----
+## Hilfe finden: Die R-Dokumentation
+
+R hat eine eingebaute Hilfe für **jede Funktion**.
+
+```{r, echo=TRUE, eval=FALSE}
+?read_csv          # Hilfeseite öffnen
+help(read_csv)     # identisch
+```
+
+--
+
+**Aufbau einer Hilfeseite:**
+
+| Abschnitt | Inhalt |
+|-----------|--------|
+| **Description** | Kurze Beschreibung |
+| **Usage** | Funktionssignatur mit allen Parametern |
+| **Arguments** | Erklärung jedes Parameters |
+| **Value** | Was die Funktion zurückgibt |
+| **Examples** | Ausführbare Beispiele (unten) |
+
+--
+
+> **Tipp:** Die **Examples** am Ende der Hilfeseite sind oft der
+> schnellste Einstieg.
+
+---
+----
+## Hilfe finden: Weitere Quellen
+
+.pull-left[
+**Selbsthilfe in R**
+```{r, echo=TRUE, eval=FALSE}
+?read_csv            # Funktionshilfe
+??csv                # Suche in allen Hilfeseiten
+vignette("readr")    # ausführliches Tutorial
+```
+]
+
+.pull-right[
+**Externe Quellen**
+- [Stack Overflow](https://stackoverflow.com/questions/tagged/r) – Fehlermeldung googeln
+- [R for Data Science](https://r4ds.hadley.nz/) – kostenlos online
+- Package-Webseiten (z. B. `tidyr.tidyverse.org`)
+- KI (ChatGPT, Claude) – Fehlermeldung einfügen und erklären lassen
+]
+
+<br>
+
+> **Strategie bei Fehlern:**
+> 1. Fehlermeldung lesen
+> 2. Fehlermeldung googeln (auf Englisch)
+> 3. KI fragen und Erklärung verstehen
+> 4. Lösung selbst nachvollziehen und testen
+
+---
+----
+## Das Arbeitsverzeichnis (Working Directory)
+
+R sucht Dateien immer **relativ zum aktuellen Arbeitsverzeichnis**.
+
+```{r, echo=TRUE, eval=FALSE}
+getwd()   # aktuelles Verzeichnis anzeigen
+```
+
+```
+## [1] "/home/user/rworkshop"
+```
+
+--
+
+**Typischer Anfängerfehler:**
+
+```{r, echo=TRUE, eval=FALSE}
+read_csv("bevölkerung.csv")
+# Error: 'bevölkerung.csv' does not exist
+```
+
+→ Die Datei liegt in einem Unterordner, R sucht aber im falschen Ort.
+
+--
+
+**Lösung mit RStudio-Projekten:**
+
+.pull-left[
+- `.Rproj`-Datei öffnen statt `RStudio` direkt starten
+- Arbeitsverzeichnis wird **automatisch** korrekt gesetzt
+- Relative Pfade funktionieren zuverlässig
+]
+.pull-right[
+```{r, echo=TRUE, eval=FALSE}
+# Mit Projektstruktur:
+read_csv("daten/bevölkerung.csv")
+# ✅ Funktioniert immer
+```
+]
+
+---
+----
+## Die R-Umgebung (Environment)
+
+Im **Environment-Panel** (oben rechts in RStudio) sieht man alle aktuell geladenen Objekte.
+
+.pull-left[
+**Was dort erscheint:**
+- Eingelesene Datensätze (`df`, `bev`, …)
+- Erstellte Variablen und Vektoren
+- Selbst definierte Funktionen
+
+**Nützliche Befehle:**
+```{r, echo=TRUE, eval=FALSE}
+ls()              # alle Objekte auflisten
+rm(mein_objekt)   # ein Objekt löschen
+rm(list = ls())   # alles löschen
+```
+]
+
+.pull-right[
+**Wichtig:**
+> Eine neue R-Session startet mit einer **leeren Umgebung**.
+> Objekte aus der letzten Session sind weg – Code muss neu ausgeführt werden.
+
+> **Empfehlung:** Nie auf gespeicherte Workspaces verlassen –
+> immer den **Code** speichern und neu ausführen.
+]
+
+---
+----
+## Reproduzierbarkeit: Sauber starten
+
+**Goldene Regel:** Ein R-Skript muss von oben nach unten, in einer frischen Session, vollständig durchlaufen können.
+
+--
+
+.pull-left[
+**Gute Praxis:**
+- Session regelmässig neu starten: `Ctrl+Shift+F10`
+- Dann gesamten Code neu ausführen: `Ctrl+Shift+Enter` (Run All)
+- Nur so erkennt man, ob etwas vergessen wurde
+]
+
+.pull-right[
+**In RStudio einstellen:**
+
+`Tools → Global Options → General`
+
+- ❌ „Restore .RData into workspace at startup" deaktivieren
+- ❌ „Save workspace to .RData on exit" → **Never**
+
+→ Jede Session startet sauber
+]
+
+--
+
+> **Warum wichtig?** Wer immer in derselben Session arbeitet, merkt nicht,
+> wenn der Code Abhängigkeiten hat, die nicht im Skript stehen.
+
+---
+----
+## Debugging: Strategisch vorgehen
+
+Wenn etwas nicht funktioniert:
+
+--
+
+**1. Fehlermeldung vollständig lesen**
+```
+Error in filter(kanton == "TG") : object 'kanton' not found
+```
+→ `kanton` ist nicht bekannt → Spaltenname prüfen
+
+--
+
+**2. Code schrittweise ausführen**
+- Nicht die gesamte Pipe auf einmal – Zeile für Zeile
+- Zwischenergebnisse mit `print()` oder einfach den Objektnamen eingeben
+
+--
+
+**3. Kleineres Beispiel testen**
+```{r, echo=TRUE, eval=FALSE}
+# Statt mit dem ganzen Datensatz:
+df %>% head(5) %>% filter(...)
+```
+
+--
+
+**4. Hilfe holen** – KI, Google, Stack Overflow
+→ Immer: Fehlermeldung **und** Code zeigen, nicht nur „es geht nicht"
+
+---
+----
+## Gut zu wissen: Kommentare im Code
+
+Kommentare werden mit `#` eingeleitet und von R **ignoriert**.
+
+```{r, echo=TRUE, eval=FALSE}
+# Datensatz einlesen
+df <- read_csv("daten/bevölkerung.csv")
+
+# Nur Kanton Thurgau
+df_tg <- df %>%
+  filter(kanton == "TG")   # TG = Thurgau
+```
+
+--
+
+**Warum Kommentare wichtig sind:**
+
+- Code ist oft **Wochen später** schwer zu verstehen – auch für einen selbst
+- Kommentare erklären das **Warum**, nicht das **Was**
+- In Teams: andere können den Code lesen und nachvollziehen
+
+--
+
+> **Faustregel:** Kommentiert so, dass ihr selbst nach einem Monat
+> noch wisst, was der Code tut.
+
+---
+----
+## Zusammenfassung
+
+| Thema | Merksatz |
+|-------|----------|
+| **Message** | Nur zur Info – weitermachen |
+| **Warning** | Ausgeführt, aber Ergebnis prüfen |
+| **Error** | Nicht ausgeführt – Fehler beheben |
+| **Hilfe** | `?funktion`, Google, KI |
+| **Arbeitsverzeichnis** | RStudio-Projekt öffnen → immer korrekt |
+| **Umgebung** | Session neu starten, Code von oben ausführen |
+| **Debugging** | Schrittweise, Kleineres testen, Meldung lesen |
+| **Kommentare** | `#` – erklärt das Warum |
+
+<br>
+
+> **Ziel:** Fehlermeldungen sind keine Katastrophe – sie sind
+> **Hinweise**. Wer sie lesen kann, kommt schneller voran.
