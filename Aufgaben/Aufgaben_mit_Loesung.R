@@ -149,8 +149,8 @@ geburten <- readRDS("rmd/Daten/geburten_mod.rds")
 #    Speichere das Resultat in der Variable `geburten_ch_2010`                         #
 ########################################################################################
 
-geburten_ch_2010 <- geburten %>% 
-  dplyr::select(geb_day,geb_mon,geb_year,sex,nat,name) %>% 
+geburten_ch_2010 <- geburten |> 
+  dplyr::select(geb_day,geb_mon,geb_year,sex,nat,name) |> 
   filter(geb_year > 2010 & nat == 8100)
 
 ###################################
@@ -183,11 +183,15 @@ geburten_ch_2010 <- geburten_ch_2010 %>%
 geburten_ch_2010_date <- geburten_ch_2010 %>% 
   mutate(geb_date = paste0(geb_day,".",geb_mon,".",geb_year))
 
+
 # Führe den untenstehenden Code aus, um aus dem dem string value in geb_date ein von R lesbares Datum zu erstellen
 # Hinweis: von R lesbare Datumsangaben sind im Format jjjj-mm-dd
 geburten_ch_2010_date <- geburten_ch_2010_date %>% 
   mutate(geb_date = as.Date(geb_date, format = "%d.%m.%Y"))
 
+
+geburten_ch_2010_date <- geburten_ch_2010_date |> 
+  mutate(age = Sys.Date()-geb_date)
 
 #########################################################################################
 # b) Erstelle eine Variable `age`, welche das Alter des Kindes zum heutigen Tag enthält.#
@@ -208,6 +212,12 @@ geburten_ch_2010_date <- geburten_ch_2010_date %>%
     age = as.numeric(age)
   )
 
+
+geburten_ch_2010_date <- geburten_ch_2010_date %>%
+  mutate(
+    age = as.numeric(floor((Sys.Date() - geb_date)/365))
+  )
+
 head(geburten_ch_2010_date,3)
 
 
@@ -216,10 +226,14 @@ head(geburten_ch_2010_date,3)
 #    Tipp: Nutze group_by() sowie count() bzw. summarise() und n()#
 ###################################################################
 
+geburten_ch_2010_date |>
+  group_by(geb_year) |> 
+  count() |> 
+  ungroup() 
 
 geburten_ch_2010_date %>% 
   group_by(geb_year) %>% 
-  summarise(n = n())
+  summarise(anzahl = n())
 
 geburten_ch_2010_date %>% 
   group_by(geb_year) %>% 
@@ -263,9 +277,12 @@ geburten_nat <- geburten %>%
 #############################################################################################################
 
 geburten_join <- geburten_nat %>% 
-  left_join(codes , by = c("nat"="code"))
+  left_join(codes , by = c("nat"="code")) |> 
+  ungroup()
 
-
+geburten_join2 <- geburten_nat %>% 
+  left_join(codes , join_by(nat==code)) |> 
+  ungroup()
 ##############################################################################################################
 # b) Wie lautet der häufigste männliche Vorname für Kinder mit der Nationalität Nordmazedonien im Datensatz? #
 ##############################################################################################################
