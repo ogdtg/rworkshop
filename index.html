@@ -1827,7 +1827,7 @@ dataset &lt;- readRDS("data.rds")
 
 Benutze jeweils die `head()` Funktion um **die ersten 3 Zeilen** des Datensatzes anzeigen zu lassen. 
 
-<countdown-timer class="countdown" id="timer_b0961d3d" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_fd11313a" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 
 ---
 ----
@@ -2155,7 +2155,7 @@ Das Ergebnis soll auf eine Nachkommastelle gerundet werden.
   &lt;/li&gt;
 &lt;/ol&gt;
 
-<countdown-timer class="countdown" id="timer_ced473de" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_08d7b131" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 
 ---
 ----
@@ -2472,7 +2472,7 @@ abstimmungen &lt;- readRDS("Daten/Abstimmungen.rds")
 2. Bringe die Daten wieder in die Ursprungsform (long format)&lt;br&gt;
   Speichere das Ergebnis unter "abstimmungen_not_tidy" 
   
-<countdown-timer class="countdown" id="timer_ee982a88" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_fe9124e8" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 
 
@@ -2741,7 +2741,7 @@ df_tidy %&gt;%
 4. Speichere das Resultat in der Variable **geburten_ch_2010**
 
 
-<countdown-timer class="countdown" id="timer_66191743" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_5644d3b6" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 
 ---
 ----
@@ -3124,7 +3124,7 @@ Speichere das Resultat unter dem Namen **geburten_ch_2010_date**
 3. Zähle die Geburten pro (Geburts-)Jahr im Datensatz&lt;br&gt;
 **Tipp:** Nutze `group_by()` sowie `count()` bzw. `summarise()` und `n()`
 
-<countdown-timer class="countdown" id="timer_53030aa2" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_2d3285f4" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 ----
 
@@ -3491,7 +3491,7 @@ Speichere den neuen Datensatz unter dem Namen `geburten_join`
 
 2. Wie lautet der häufigste männliche Vorname für Kinder mit der Nationalität Nordmazedonien im Datensatz?
 
-<countdown-timer class="countdown" id="timer_d9a074ba" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_e2892e4a" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 ----
 ## Good to know: Joins
@@ -3640,543 +3640,430 @@ popular_names %&gt;%
 
 
 
-
-
-
-
-
-
-
-
-
-
+---
 ----
-## stringr
+## Recap: Was haben wir in Session 2 gelernt?
 
-&lt;figure class="logo-fig logo-fig-small"&gt;
-  &lt;a href='https://stringr.tidyverse.org' target="_blank"&gt;
-    &lt;img src='https://stringr.tidyverse.org/logo.png' class='logo'/&gt;
-  &lt;/a&gt;
-&lt;/figure&gt;
+.pull-left[
+**Session 2 – Themen:**
 
-Oft muss in der Datenaufbereitung mit Text (=strings) gearbeitet werden. Dafür kann das `stringr` Package verwendet werden.
+1. R Meldungen – Messages, Warnings &amp; Errors
+2. Häufige Fehler und Warnungen
+3. `dplyr::select()` &amp; `dplyr::filter()` – Spalten &amp; Zeilen
+4. `dplyr::mutate()` – Neue Spalten erstellen
+5. `dplyr::group_by()` &amp; `summarise()` – Gruppieren &amp; Zusammenfassen
+6. `dplyr::join()` – Datensätze verbinden
+7. Weitere nützliche dplyr Funktionen
+]
 
-Für detailliertere Informationen findet sich [hier](https://github.com/rstudio/cheatsheets/blob/main/strings.pdf) ein empfehlenswertes Cheatsheet
-
-Alle Funktionen in stringr beginnen mit str_ und nehmen einen Vektor von Strings (oder einen einzelnen String) als erstes Argument.
-
-Die verwendung von sogenannten *regular expressions* ist möglich.
+.pull-right[
+&lt;img src="https://dplyr.tidyverse.org/logo.png" width="80%" style="display: block; margin: auto;" /&gt;
+]
 
 ---
 ----
-## stringr
+## Recap: Die drei R-Meldungstypen
+
+R kommuniziert auf drei Arten mit uns:
+
+| Typ | Symbol | Bedeutung | Code ausgeführt? |
+|-----|--------|-----------|-----------------|
+| **Message** | 🔵 | Reine Information | ✅ Ja |
+| **Warning** | 🟡 | Ausgeführt, aber mit Vorbehalt | ✅ Ja |
+| **Error** | 🔴 | Abbruch, etwas stimmt nicht | ❌ Nein |
+
+&lt;br&gt;
+
+.panelset[
+.panel[.panel-name[Erkennungsmerkmal]
+```
+Message:  Text ohne Schlüsselwort / "Attaching..."
+Warning:  Warning message: ...
+Error:    Error in ... : ...
+```
+]
+.panel[.panel-name[Reaktion]
+```
+Message  → Weitermachen
+Warning  → Prüfen, ob Ergebnis korrekt
+Error    → Fehler finden und beheben, bevor weitergegangen wird
+```
+]
+]
+
+---
+----
+## Recap: Messages, Warnings &amp; Errors
+
+.panelset[
+.panel[.panel-name[🔵 Message]
+Messages sind **rein informativ**. Der Code wird **vollständig ausgeführt**.
+
+
+``` r
+library(dplyr)
+## Attaching package: 'dplyr'
+## The following objects are masked from 'package:stats':
+##     filter, lag
+```
+
+**Was tun?** In der Regel: **nichts** – einfach weitermachen.
+]
+.panel[.panel-name[🟡 Warning]
+Der Code wurde **ausgeführt**, aber etwas war **nicht ganz richtig**.
+
+
+``` r
+as.numeric(c("1", "2", "drei"))
+## Warning: NAs introduced by coercion
+## [1]  1  2 NA
+```
+
+**Was tun?** Warnung **lesen** und Ergebnis auf **Plausibilität prüfen**.
+]
+.panel[.panel-name[🔴 Error]
+Der Code wurde **nicht ausgeführt**. R konnte den Befehl nicht durchführen.
+
+
+``` r
+sqrt("zehn")
+## Error in sqrt("zehn") : non-numeric argument to mathematical function
+```
+
+**Was tun?** Fehlermeldung lesen, debuggen, googeln oder KI fragen.
+]
+]
+
+---
+----
+## Recap: Häufige Fehler
+
+.panelset[
+.panel[.panel-name[could not find function]
+
+``` r
+read_excel("daten/datei.xlsx")
+## Error: could not find function "read_excel"
+```
+**Ursache:** Package nicht geladen.
+
+``` r
+library(readxl)           # Package zuerst laden!
+read_excel("daten/datei.xlsx")
+```
+]
+.panel[.panel-name[object not found]
+
+``` r
+summary(mein_datensatz)
+## Error: object 'mein_datensatz' not found
+```
+**Ursache:** Objekt existiert (noch) nicht – Einlesebefehl noch nicht ausgeführt oder Tippfehler.
+
+``` r
+mein_datensatz &lt;- read_csv("daten/datei.csv")
+summary(mein_datensatz)
+```
+]
+.panel[.panel-name[Syntaxfehler]
+
+``` r
+df %&gt;% filter(kanton == "TG"
+## Error: unexpected end of input
+```
+**Ursache:** Klammer oder Anführungszeichen nicht geschlossen.
+
+RStudio hilft: Ungepaarte Klammern werden farblich markiert.
+]
+.panel[.panel-name[Package nicht installiert]
+
+``` r
+library(janitor)
+## Error: there is no package called 'janitor'
+```
+
+``` r
+install.packages("janitor")   # einmalig installieren
+library(janitor)               # bei jedem Session-Start laden
+```
+]
+]
+
+---
+----
+## Recap: dplyr::select()
 
 &lt;figure class="logo-fig logo-fig-small"&gt;
-  &lt;a href='https://stringr.tidyverse.org' target="_blank"&gt;
-    &lt;img src='https://stringr.tidyverse.org/logo.png' class='logo'/&gt;
+  &lt;a href='https://dplyr.tidyverse.org' target="_blank"&gt;
+    &lt;img src='https://dplyr.tidyverse.org/logo.png' class='logo'/&gt;
+  &lt;/a&gt;
+&lt;/figure&gt;
+
+`select()` wählt **Spalten** aus einem Datensatz aus oder entfernt sie.
+
+.panelset[
+.panel[.panel-name[Nach Name]
+
+``` r
+df %&gt;% select(kanton, datum, wert)
+```
+]
+.panel[.panel-name[Bereich]
+
+``` r
+df %&gt;% select(date:cases)   # alle Spalten von date bis cases
+```
+]
+.panel[.panel-name[Entfernen mit -]
+
+``` r
+df %&gt;% select(-datum)        # datum entfernen
+df %&gt;% select(-c(date:cases))
+```
+]
+.panel[.panel-name[Hilfsfunktionen]
+
+``` r
+df %&gt;% select(starts_with("wert"))
+df %&gt;% select(contains("death"))
+df %&gt;% select(where(is.numeric))
+```
+]
+]
+
+---
+----
+## Recap: dplyr::filter()
+
+&lt;figure class="logo-fig logo-fig-small"&gt;
+  &lt;a href='https://dplyr.tidyverse.org' target="_blank"&gt;
+    &lt;img src='https://dplyr.tidyverse.org/logo.png' class='logo'/&gt;
+  &lt;/a&gt;
+&lt;/figure&gt;
+
+`filter()` wählt **Zeilen** aus, die eine Bedingung erfüllen.
+
+.panelset[
+.panel[.panel-name[Einfach]
+
+``` r
+df %&gt;% filter(kanton == "TG")
+df %&gt;% filter(wert &gt; 100)
+```
+]
+.panel[.panel-name[Mehrere Bedingungen]
+
+``` r
+# UND: beide Bedingungen müssen zutreffen
+df %&gt;% filter(kanton == "TG" &amp; date == "2022-12-10")
+
+# ODER: mindestens eine muss zutreffen
+df %&gt;% filter(kanton == "TG" | kanton == "BS")
+```
+]
+.panel[.panel-name[%in% Operator]
+
+``` r
+# Abgleich mit einem Vektor
+df %&gt;% filter(kanton %in% c("TG", "BS", "ZH"))
+```
+]
+.panel[.panel-name[Kombiniert]
+
+``` r
+df %&gt;%
+  filter(kanton == "TG") %&gt;%
+  select(datum, wert)
+```
+]
+]
+
+---
+----
+## Recap: dplyr::mutate()
+
+&lt;figure class="logo-fig logo-fig-small"&gt;
+  &lt;a href='https://dplyr.tidyverse.org' target="_blank"&gt;
+    &lt;img src='https://dplyr.tidyverse.org/logo.png' class='logo'/&gt;
+  &lt;/a&gt;
+&lt;/figure&gt;
+
+`mutate()` erstellt **neue Spalten** oder verändert bestehende – immer reihenweise.
+
+.panelset[
+.panel[.panel-name[Neue Spalte berechnen]
+
+``` r
+df %&gt;%
+  mutate(death_percent = deaths / cases * 100) %&gt;%
+  mutate(death_percent = round(death_percent, 2))
+```
+]
+.panel[.panel-name[case_when]
+
+``` r
+df %&gt;%
+  mutate(kanton_long = case_when(
+    kanton == "TG" ~ "Thurgau",
+    kanton == "BS" ~ "Basel-Stadt"
+  ))
+```
+]
+.panel[.panel-name[across()]
+Mit `across()` die gleiche Operation auf mehrere Spalten anwenden:
+
+``` r
+df %&gt;% mutate(across(c(cases, deaths), ~ .x / 1000))
+df %&gt;% mutate(across(where(is.numeric), round))
+```
+&gt; `mutate_all()` / `mutate_at()` sind veraltet – bitte `across()` verwenden.
+]
+]
+
+---
+----
+## Recap: dplyr::group_by() &amp; summarise()
+
+&lt;figure class="logo-fig logo-fig-small"&gt;
+  &lt;a href='https://dplyr.tidyverse.org' target="_blank"&gt;
+    &lt;img src='https://dplyr.tidyverse.org/logo.png' class='logo'/&gt;
+  &lt;/a&gt;
+&lt;/figure&gt;
+
+`group_by()` gruppiert den Datensatz – mächtig in Kombination mit `mutate()` oder `summarise()`.
+
+.panelset[
+.panel[.panel-name[group_by + summarise]
+Daten zusammenfassen pro Gruppe:
+
+``` r
+geburten %&gt;%
+  group_by(geb_year) %&gt;%
+  summarise(anzahl = n())
+```
+]
+.panel[.panel-name[group_by + mutate]
+Neue Variable innerhalb jeder Gruppe:
+
+``` r
+geburten %&gt;%
+  group_by(geb_year, name) %&gt;%
+  mutate(sum_name_year = n())
+```
+]
+.panel[.panel-name[ungroup()]
+**Wichtig:** Nach `group_by` + `mutate` die Gruppierung aufheben!
+
+``` r
+geburten %&gt;%
+  group_by(geb_year, name) %&gt;%
+  mutate(sum_name_year = n()) %&gt;%
+  ungroup()   # ← Gruppierung auflösen
+```
+&gt; Nach `summarise()` ist `ungroup()` nicht nötig.
+]
+]
+
+---
+----
+## Recap: dplyr::join()
+
+&lt;figure class="logo-fig logo-fig-small"&gt;
+  &lt;a href='https://dplyr.tidyverse.org' target="_blank"&gt;
+    &lt;img src='https://dplyr.tidyverse.org/logo.png' class='logo'/&gt;
+  &lt;/a&gt;
+&lt;/figure&gt;
+
+Mit der `join`-Familie können mehrere Datensätze verbunden werden.
+
+.panelset[
+.panel[.panel-name[Mutating joins]
+Fügen Spalten von `y` zu `x` hinzu:
+
+| Funktion | Ergebnis |
+|----------|----------|
+| `left_join(x, y)` | Alle Zeilen von `x` |
+| `right_join(x, y)` | Alle Zeilen von `y` |
+| `inner_join(x, y)` | Nur Zeilen mit Match in beiden |
+| `full_join(x, y)` | Alle Zeilen aus `x` und `y` |
+]
+.panel[.panel-name[Filtering joins]
+Filtern Zeilen aus `x`:
+
+- `semi_join(x, y)`: Zeilen **mit** Match in `y`
+- `anti_join(x, y)`: Zeilen **ohne** Match in `y`
+]
+.panel[.panel-name[Beispiel]
+
+``` r
+df1 %&gt;%
+  left_join(df2, by = c("nat" = "code"))
+```
+&gt; Den gemeinsamen Schlüssel (Spalte) vorher prüfen!
+]
+]
+
+---
+----
+## Recap: Weitere nützliche dplyr Funktionen
+
+&lt;figure class="logo-fig logo-fig-small"&gt;
+  &lt;a href='https://dplyr.tidyverse.org' target="_blank"&gt;
+    &lt;img src='https://dplyr.tidyverse.org/logo.png' class='logo'/&gt;
   &lt;/a&gt;
 &lt;/figure&gt;
 
 .panelset[
-.panel[.panel-name[str_detect]
-Ermitteln, ob eine bestimmte Zeichenfolge im String enthalten ist.
-
-
+.panel[.panel-name[arrange]
+Zeilen nach einer Variable sortieren:
 
 ``` r
-str_detect(c("Das ist ein Test", "Hello World"),
-           pattern = "Test")
+df %&gt;% arrange(geb_year)          # aufsteigend
+df %&gt;% arrange(desc(geb_year))    # absteigend
 ```
-
-```
-## [1]  TRUE FALSE
-```
-
 ]
-.panel[.panel-name[str_extract]
-Text extrahieren
-
+.panel[.panel-name[slice]
+Zeilen per Index oder Rang auswählen:
 
 ``` r
-str_extract(c("dasisteinTestmitstrings",
-              "das_ist_ein_Test_mit_strings"), 
-            pattern = "Test")
+df %&gt;% slice(10:12)               # Zeilen 10–12
+df %&gt;% slice_max(n, n = 1)        # Zeile mit grösstem Wert
+df %&gt;% slice_min(n, n = 1)        # Zeile mit kleinstem Wert
 ```
-
-```
-## [1] "Test" "Test"
-```
-
+&gt; `top_n()` ist veraltet – bitte `slice_max()` / `slice_min()` verwenden.
 ]
-.panel[.panel-name[str_replace]
-Text ersetzen
+.panel[.panel-name[distinct]
+Duplikate entfernen:
 
 ``` r
-str_replace(c("dasisteinTestmitstrings",
-              "das_ist_ein_Test_mit_strings_Test"), 
-            pattern = "Test",
-            replacement = "Versuch")
+df %&gt;% distinct(geb_year, .keep_all = TRUE)
 ```
-
-```
-## [1] "dasisteinVersuchmitstrings"          
-## [2] "das_ist_ein_Versuch_mit_strings_Test"
-```
-**ACHTUNG:** `str_replace` ersetzt das Pattern lediglich beim ersten Auftreten. Soll jedes Auftreten innerhalb des Strings ersetzt werden, muss die `str_replace_all` Funktion verwendet werden.
-]
-.panel[.panel-name[str_remove]
-Text entfernen
-
-``` r
-str_remove(c("dasisteinTestmitstrings",
-              "das_ist_ein_Test_mit_strings"), 
-            pattern = "Test")
-```
-
-```
-## [1] "dasisteinmitstrings"      "das_ist_ein__mit_strings"
-```
-**ACHTUNG:** `str_remove` entfernt das Pattern lediglich beim ersten Auftreten. Soll jedes Auftreten innerhalb des Strings entfernt werden, muss die `str_remove_all` Funktion verwendet werden.
-]
-
-.panel[.panel-name[str_split]
-Text zerteilen
-
-``` r
-str_split(c("dasisteinTestmitstrings",
-              "das_ist_ein_Test_mit_strings"), 
-            pattern = "_")
-```
-
-```
-## [[1]]
-## [1] "dasisteinTestmitstrings"
-## 
-## [[2]]
-## [1] "das"     "ist"     "ein"     "Test"    "mit"     "strings"
-```
-`str_split_fixed` und `str_split_n` sind verwandte Funktionen, die ebenfalls Text zerteilen können un zusätzliche Spezifikationen erlauben.
-]
-.panel[.panel-name[str_trim]
-Leerzeichen an Anfang und Ende eines Strings entfernen
-
-``` r
-str_trim(c("    Hello World      ", "    Test"))
-```
-
-```
-## [1] "Hello World" "Test"
-```
-
+Der erste vorkommende Wert wird behalten.
 ]
 ]
 
 ---
 ----
-## Regular Expressions
-&lt;figure class="logo-fig logo-fig-small"&gt;
-  &lt;a href='https://stringr.tidyverse.org' target="_blank"&gt;
-    &lt;img src='https://stringr.tidyverse.org/logo.png' class='logo'/&gt;
-  &lt;/a&gt;
-&lt;/figure&gt;
+## Recap: Zusammenfassung
 
-Regular Expressions (kurz "Regex" genannt) sind eine Art von Zeichenfolgen, die zur Suche nach Mustern in Texten verwendet werden. 
+| Funktion | Was macht sie? |
+|----------|---------------|
+| `select()` | Spalten auswählen oder entfernen |
+| `filter()` | Zeilen filtern nach Bedingung |
+| `mutate()` | Neue Spalten erstellen / bestehende verändern |
+| `group_by()` + `summarise()` | Gruppieren und zusammenfassen |
+| `group_by()` + `mutate()` | Gruppenweise neue Spalten erstellen |
+| `ungroup()` | Gruppierung aufheben |
+| `left_join()` / `inner_join()` | Datensätze verbinden |
+| `arrange()` | Zeilen sortieren |
+| `slice_max()` / `slice_min()` | Extremwerte auswählen |
+| `distinct()` | Duplikate entfernen |
 
-Mit Regex kann man komplexe Suchmuster definieren, die aus bestimmten Zeichenfolgen, Buchstaben, Zahlen, Sonderzeichen und Platzhaltern bestehen.
+&lt;br&gt;
 
-Beispiele für den Einsatz von Regex sind das Extrahieren von Telefonnummern aus Texten, das Überprüfen der Gültigkeit von E-Mail-Adressen oder das Ersetzen von bestimmten Zeichenfolgen in einer Datei.
-
+&gt; **Merke:** Alle dplyr-Funktionen folgen der gleichen Logik:
+&gt; *Datensatz rein* `%&gt;%` *Funktion* → *Datensatz raus*
 ---
-----
-## Regular Expressions: Beispiele
-&lt;figure class="logo-fig logo-fig-small"&gt;
-  &lt;a href='https://stringr.tidyverse.org' target="_blank"&gt;
-    &lt;img src='https://stringr.tidyverse.org/logo.png' class='logo'/&gt;
-  &lt;/a&gt;
-&lt;/figure&gt;
-
-.panelset[
-.panel[.panel-name[Telefonnummern extrahieren]
-- Jede Zahl (digit) kann mit dem regex `\d` extrahiert werden.
-
-``` r
-str_extract_all(c("Meine Nummer ist die 058345-5367",
-                  "Meine Adresse ist Grabenstrasse 8, 8510 Frauenfeld"), 
-                pattern = "\\d{6}-\\d{4}")
-```
-
-```
-## [[1]]
-## [1] "058345-5367"
-## 
-## [[2]]
-## character(0)
-```
-
-
-]
-.panel[.panel-name[Email extrahieren]
--  `.` (Punkt): matcht alles ausser Zeilenumbrüche
-- `+`: einer oder mehr des voangengangenen Wertes
-- `*`: null oder mehr des voangengangenen Wertes
-- `[^\\s]`: matcht alles ausser Whitespaces
-- `?\\.ch` und `?@`: Match muss mit `\\.ch` bzw. `@` enden
-
-``` r
-str_extract_all(c("Meine Mailadresse ist felix.lorenz@tg.ch",
-                  "felix.lorenz@tg wird nicht gematcht"), 
-                pattern = "[^\\s]*?@.+?\\.ch")
-```
-
-```
-## [[1]]
-## [1] "felix.lorenz@tg.ch"
-## 
-## [[2]]
-## character(0)
-```
-]
-.panel[.panel-name[Weitere nützliche Regex]
-Im Netz finden sich jede Menge nützliche Sammlungen
-
-- [Top 15 Commonly Used Regex](https://digitalfortress.tech/tips/top-15-commonly-used-regex/)
-- [Regex Tutorial](https://www3.ntu.edu.sg/home/ehchua/programming/howto/Regexe.html)
-- [Regex schreiben und testen](https://regexr.com/)
-- etc.
-
-]
-]
----
-----
-## Hands-On: Arbeiten mit stringr und Regular Expressions
-&lt;figure class="logo-fig logo-fig-small"&gt;
-  &lt;a href='https://stringr.tidyverse.org' target="_blank"&gt;
-    &lt;img src='https://stringr.tidyverse.org/logo.png' class='logo'/&gt;
-  &lt;/a&gt;
-&lt;/figure&gt;
-
-1. Bringe `abstimmungen` in ein Tidy Format, sodass jeder Wert in `Ergebnis` einer eigenen Spalte entspricht&lt;br&gt;
-Die dazugehörigen Werte sollen aus der Spalte `Volksabstimmungen (Ergebnisse Ebene Kanton seit 1866)` kommen.&lt;br&gt;
-Nutze das tidyr package und eine der vohin besprochenen Funktionen um die Tabelle zu verbreitern (wide Format)&lt;br&gt;
-Speichere das Ergebnis in `abstimmungen_tidy` 
-
-2. Erstelle eine neue Variable `date`.&lt;br&gt;
-Extrahiere dazu das Datum aus der Spalte `Datum und Vorlage`&lt;br&gt;
-Nutze dafür den Regex `\\d\\d\\d\\d-\\d\\d-\\d\\d`
-
-3. Entferne das Datum aus der Spalte `Datum und Vorlage` und wandle die `date` Spalte in ein von R lesbares Datum um.
-
-4. Entferne die Leerzeichen anführenden Leerzeichen aus der Spalte `Datum und Vorlage` (" Test " -&gt; "Test")
-
-<countdown-timer class="countdown" id="timer_6c56fff9" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
----
-----
-## Good to know: stringi
-
-`stringr` enthält zwar viele nützliche Funktionen im Umgang mit Strings, ist aber auf das Nötigste beschränkt. Eine weitreichende Erweiterung stellt das `stringi` package dar. In diesem Package sind wahrscheinlich alle Funktionen enthalten, die im Umgang mit Text notwendig sein könnten. Im Unterschied zu `stringr` beginnen `stringi` Funktionen nicht mit *str_*, sondern mit *stri_*
----
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-----
-## lubridate
-&lt;figure class="logo-fig logo-fig-small"&gt;
-  &lt;a href='https://lubridate.tidyverse.org' target="_blank"&gt;
-    &lt;img src='https://lubridate.tidyverse.org/logo.png' class='logo'/&gt;
-  &lt;/a&gt;
-&lt;/figure&gt;
-- Da das arbeiten mit Datumsangaben in R oft unintuitiv ist, wurde das `lubridate` Package entwickelt
-- Mit `lubridate` Können Datums- und Zeitangaben deutlich einfacher verarbeitet werden, als mit base R.
-
-- `lubridate` kann sowohl Daten vom Typ `date` (Datum auf Tagesbasis) als auch vom Typ `datetime` (Genaues Datum mit Uhrzeit) verarbeiten.
-
- 
----
-----
-## lubridate: Nützliche Funktionen
-&lt;figure class="logo-fig logo-fig-small"&gt;
-  &lt;a href='https://lubridate.tidyverse.org' target="_blank"&gt;
-    &lt;img src='https://lubridate.tidyverse.org/logo.png' class='logo'/&gt;
-  &lt;/a&gt;
-&lt;/figure&gt;
-.panelset[
-.panel[.panel-name[date]
-- `lubridate` bietet Funktionen an, die quasi jedes Datumsformat erkennen und umwandeln kann. 
-- Wichtig ist einzig die Reihenfolge (Tag-Monat-Jahr -&gt; `dmy()`; Jahr-Monat-Tag -&gt; `ymd()`)
-
-
-
-``` r
-ymd("20221212")
-```
-
-```
-## [1] "2022-12-12"
-```
-
-``` r
-dmy("02.03.2023")
-```
-
-```
-## [1] "2023-03-02"
-```
-
-
-]
-.panel[.panel-name[datetime]
--  gleiches gilt für Daten vom Typ `datetime` (gleiches Prinzip)
-
-``` r
-dmy_hms("02.03.2023 11:41:12 Uhr")
-```
-
-```
-## [1] "2023-03-02 11:41:12 UTC"
-```
-]
-.panel[.panel-name[Daten runden und extrahieren]
-- will man Daten auf z.B. auf Jahresbasis zusammenfassen müssen tgesaktuelle Daten gerundet werden
-
-
-``` r
-new_date &lt;- round_date(dmy_hms("02.03.2023 11:41:12 Uhr"),unit = "year")
-new_date
-```
-
-```
-## [1] "2023-01-01 UTC"
-```
-
-- wenn nun nur das Jahr angezeigt werden soll, bietet `lubridate` ebenfalls eine Lösung
-
-
-``` r
-year(new_date)
-```
-
-```
-## [1] 2023
-```
-]
-]
-
-
----
-----
-## Hands-On: lubridate und das Arbeiten mit Datumsangaben
-&lt;figure class="logo-fig logo-fig-small"&gt;
-  &lt;a href='https://lubridate.tidyverse.org' target="_blank"&gt;
-    &lt;img src='https://lubridate.tidyverse.org/logo.png' class='logo'/&gt;
-  &lt;/a&gt;
-&lt;/figure&gt;
-1. Betrachten wir den Datensatz `geburten`. Wir möchten das Geburtsdatum noch genauer wissen und beziehen deshalb   die Geburtsstunde des Kindes mit ein. Demnach bilden wir aus dem Geburtsjahr (geb_year), dem Geburtsmonat (geb_mon),   dem Geburtstag und der Geburtsstunde eine neue Variable `geb_fulldate`, die ein von R lesbares Datum vom Typ `datetime` enthält.&lt;br&gt;
-Selektiere den Datensatz vor der Berechnung so, dass nur die benötigten Variablen enthalten sind.
-Erstelle einen neuen Datensatz `geburten_time` und füge die neue Spalte hinzu.
-
-2. Was ist der Grund für die Warning Message wonach das parsing bei einigen Zeilen fehlgeschlagen ist?
-
-3. Wie könnte man dieses Problem theoretisch lösen?
-
-<countdown-timer class="countdown" id="timer_98e26320" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
----
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-----
-
-## Listen
-.panelset[
-.panel[.panel-name[Basics]
-- im Unterschied zu Vektoren können Listen unterschiedlichste Datentypen enthalten
-
-- jedes Listenelement kann man sich als eine Art  Container vorstellen, in dem der jeweilige Inhalt liegt
-
-- Listen werden mit `list()` initialisiert
-
-- jedem Listenelement kann ein Name zugewiesen werden
-]
-.panel[.panel-name[Zugriff (1)]
-- auf Listenelmente kann *direkt* über deren Index oder Namen (wenn vorhanden) zugegriffen werden
-- wichtig dabei sind die doppelten eckigen Klammern `[[]]` für direkten Zugriff
-
-``` r
-new_list &lt;- list(a="hallo",4)
-new_list[["a"]]
-```
-
-```
-## [1] "hallo"
-```
-
-``` r
-new_list[[2]]
-```
-
-```
-## [1] 4
-```
-]
-.panel[.panel-name[Zugriff (2)]
-- mit einfachen eckigen Klammern `[]` greift man über den Index auf den Container zu und erhält als Ergebnis eine Liste
-
-
-``` r
-new_list[2]
-```
-
-```
-## [[1]]
-## [1] 4
-```
-
-``` r
-class(new_list[2])
-```
-
-```
-## [1] "list"
-```
-]
-.panel[.panel-name[Nested Lists]
-- Listen können beliebig tief verschachtelt werden (*nested*)
-- hierfür wird `list()` innerhalb der Liste verwendet
-- Listen können so z.B. einfach in `JSON` umgewandelt werden (ähnliches Prinzip)
-
-``` r
-nested_list &lt;- list(char = list(a = "halo",b="hi"), nums = list(1,2))
-jsonlite::toJSON(nested_list,auto_unbox = T) %&gt;% jsonlite::prettify()
-```
-
-```
-## {
-##     "char": {
-##         "a": "halo",
-##         "b": "hi"
-##     },
-##     "nums": [
-##         1,
-##         2
-##     ]
-## }
-## 
-```
-]
-.panel[.panel-name[Nested Lists (2)]
-- für den Zugriff können Indizes und Namen verschachtelt werden
-- auch der `$`-Operator kann verwendet werden
-
-
-``` r
-nested_list &lt;- list(char = list(a = "halo",b="hi"), nums = list(1,2))
-nested_list$char$a
-```
-
-```
-## [1] "halo"
-```
-
-``` r
-nested_list[["nums"]][[2]]
-```
-
-```
-## [1] 2
-```
-]
-]
-
----
-----
-## Listen (2)
-
-.panelset[
-.panel[.panel-name[Listen Bearbeiten]
-- neue Listenelmente können einfach per Namen oder Index hinzugefügt werden
-
-``` r
-new_list[[3]] &lt;- "neues Element"
-new_list[["test"]] &lt;- "neu"
-new_list
-```
-
-```
-## $a
-## [1] "hallo"
-## 
-## [[2]]
-## [1] 4
-## 
-## [[3]]
-## [1] "neues Element"
-## 
-## $test
-## [1] "neu"
-```
-]
-.panel[.panel-name[Unlisten]
-- Listen können mit `unlist()` zu Vektoren (soweit möglich) umgewandelt werden
-- eine Liste von `data.frames` kann mit `dplyr::bind_rows` zu einem zusammenhängenden Datensatz umgewandelt werden
-
-``` r
-unlist(new_list)
-```
-
-```
-##               a                                            test 
-##         "hallo"             "4" "neues Element"           "neu"
-```
-]
-.panel[.panel-name[Listen mergen]
-- mehrere Listen können mit dem `c()` Operator zusammengefügt werden
-
-
-``` r
-full_list &lt;- c(new_list,nested_list)
-```
-]
-]
 ---
 
 
@@ -4507,6 +4394,561 @@ if (bewertung == "Sehr gut"){
 }
 ```
 
+]
+]
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----
+## stringr
+
+&lt;figure class="logo-fig logo-fig-small"&gt;
+  &lt;a href='https://stringr.tidyverse.org' target="_blank"&gt;
+    &lt;img src='https://stringr.tidyverse.org/logo.png' class='logo'/&gt;
+  &lt;/a&gt;
+&lt;/figure&gt;
+
+Oft muss in der Datenaufbereitung mit Text (=strings) gearbeitet werden. Dafür kann das `stringr` Package verwendet werden.
+
+Für detailliertere Informationen findet sich [hier](https://github.com/rstudio/cheatsheets/blob/main/strings.pdf) ein empfehlenswertes Cheatsheet
+
+Alle Funktionen in stringr beginnen mit str_ und nehmen einen Vektor von Strings (oder einen einzelnen String) als erstes Argument.
+
+Die verwendung von sogenannten *regular expressions* ist möglich.
+
+---
+----
+## stringr
+
+&lt;figure class="logo-fig logo-fig-small"&gt;
+  &lt;a href='https://stringr.tidyverse.org' target="_blank"&gt;
+    &lt;img src='https://stringr.tidyverse.org/logo.png' class='logo'/&gt;
+  &lt;/a&gt;
+&lt;/figure&gt;
+
+.panelset[
+.panel[.panel-name[str_detect]
+Ermitteln, ob eine bestimmte Zeichenfolge im String enthalten ist.
+
+
+
+``` r
+str_detect(c("Das ist ein Test", "Hello World"),
+           pattern = "Test")
+```
+
+```
+## [1]  TRUE FALSE
+```
+
+]
+.panel[.panel-name[str_extract]
+Text extrahieren
+
+
+``` r
+str_extract(c("dasisteinTestmitstrings",
+              "das_ist_ein_Test_mit_strings"), 
+            pattern = "Test")
+```
+
+```
+## [1] "Test" "Test"
+```
+
+]
+.panel[.panel-name[str_replace]
+Text ersetzen
+
+``` r
+str_replace(c("dasisteinTestmitstrings",
+              "das_ist_ein_Test_mit_strings_Test"), 
+            pattern = "Test",
+            replacement = "Versuch")
+```
+
+```
+## [1] "dasisteinVersuchmitstrings"          
+## [2] "das_ist_ein_Versuch_mit_strings_Test"
+```
+**ACHTUNG:** `str_replace` ersetzt das Pattern lediglich beim ersten Auftreten. Soll jedes Auftreten innerhalb des Strings ersetzt werden, muss die `str_replace_all` Funktion verwendet werden.
+]
+.panel[.panel-name[str_remove]
+Text entfernen
+
+``` r
+str_remove(c("dasisteinTestmitstrings",
+              "das_ist_ein_Test_mit_strings"), 
+            pattern = "Test")
+```
+
+```
+## [1] "dasisteinmitstrings"      "das_ist_ein__mit_strings"
+```
+**ACHTUNG:** `str_remove` entfernt das Pattern lediglich beim ersten Auftreten. Soll jedes Auftreten innerhalb des Strings entfernt werden, muss die `str_remove_all` Funktion verwendet werden.
+]
+
+.panel[.panel-name[str_split]
+Text zerteilen
+
+``` r
+str_split(c("dasisteinTestmitstrings",
+              "das_ist_ein_Test_mit_strings"), 
+            pattern = "_")
+```
+
+```
+## [[1]]
+## [1] "dasisteinTestmitstrings"
+## 
+## [[2]]
+## [1] "das"     "ist"     "ein"     "Test"    "mit"     "strings"
+```
+`str_split_fixed` und `str_split_n` sind verwandte Funktionen, die ebenfalls Text zerteilen können un zusätzliche Spezifikationen erlauben.
+]
+.panel[.panel-name[str_trim]
+Leerzeichen an Anfang und Ende eines Strings entfernen
+
+``` r
+str_trim(c("    Hello World      ", "    Test"))
+```
+
+```
+## [1] "Hello World" "Test"
+```
+
+]
+]
+
+---
+----
+## Regular Expressions
+&lt;figure class="logo-fig logo-fig-small"&gt;
+  &lt;a href='https://stringr.tidyverse.org' target="_blank"&gt;
+    &lt;img src='https://stringr.tidyverse.org/logo.png' class='logo'/&gt;
+  &lt;/a&gt;
+&lt;/figure&gt;
+
+Regular Expressions (kurz "Regex" genannt) sind eine Art von Zeichenfolgen, die zur Suche nach Mustern in Texten verwendet werden. 
+
+Mit Regex kann man komplexe Suchmuster definieren, die aus bestimmten Zeichenfolgen, Buchstaben, Zahlen, Sonderzeichen und Platzhaltern bestehen.
+
+Beispiele für den Einsatz von Regex sind das Extrahieren von Telefonnummern aus Texten, das Überprüfen der Gültigkeit von E-Mail-Adressen oder das Ersetzen von bestimmten Zeichenfolgen in einer Datei.
+
+---
+----
+## Regular Expressions: Beispiele
+&lt;figure class="logo-fig logo-fig-small"&gt;
+  &lt;a href='https://stringr.tidyverse.org' target="_blank"&gt;
+    &lt;img src='https://stringr.tidyverse.org/logo.png' class='logo'/&gt;
+  &lt;/a&gt;
+&lt;/figure&gt;
+
+.panelset[
+.panel[.panel-name[Telefonnummern extrahieren]
+- Jede Zahl (digit) kann mit dem regex `\d` extrahiert werden.
+
+``` r
+str_extract_all(c("Meine Nummer ist die 058345-5367",
+                  "Meine Adresse ist Grabenstrasse 8, 8510 Frauenfeld"), 
+                pattern = "\\d{6}-\\d{4}")
+```
+
+```
+## [[1]]
+## [1] "058345-5367"
+## 
+## [[2]]
+## character(0)
+```
+
+
+]
+.panel[.panel-name[Email extrahieren]
+-  `.` (Punkt): matcht alles ausser Zeilenumbrüche
+- `+`: einer oder mehr des voangengangenen Wertes
+- `*`: null oder mehr des voangengangenen Wertes
+- `[^\\s]`: matcht alles ausser Whitespaces
+- `?\\.ch` und `?@`: Match muss mit `\\.ch` bzw. `@` enden
+
+``` r
+str_extract_all(c("Meine Mailadresse ist felix.lorenz@tg.ch",
+                  "felix.lorenz@tg wird nicht gematcht"), 
+                pattern = "[^\\s]*?@.+?\\.ch")
+```
+
+```
+## [[1]]
+## [1] "felix.lorenz@tg.ch"
+## 
+## [[2]]
+## character(0)
+```
+]
+.panel[.panel-name[Weitere nützliche Regex]
+Im Netz finden sich jede Menge nützliche Sammlungen
+
+- [Top 15 Commonly Used Regex](https://digitalfortress.tech/tips/top-15-commonly-used-regex/)
+- [Regex Tutorial](https://www3.ntu.edu.sg/home/ehchua/programming/howto/Regexe.html)
+- [Regex schreiben und testen](https://regexr.com/)
+- etc.
+
+]
+]
+---
+----
+## Hands-On: Arbeiten mit stringr und Regular Expressions
+&lt;figure class="logo-fig logo-fig-small"&gt;
+  &lt;a href='https://stringr.tidyverse.org' target="_blank"&gt;
+    &lt;img src='https://stringr.tidyverse.org/logo.png' class='logo'/&gt;
+  &lt;/a&gt;
+&lt;/figure&gt;
+
+1. Bringe `abstimmungen` in ein Tidy Format, sodass jeder Wert in `Ergebnis` einer eigenen Spalte entspricht&lt;br&gt;
+Die dazugehörigen Werte sollen aus der Spalte `Volksabstimmungen (Ergebnisse Ebene Kanton seit 1866)` kommen.&lt;br&gt;
+Nutze das tidyr package und eine der vohin besprochenen Funktionen um die Tabelle zu verbreitern (wide Format)&lt;br&gt;
+Speichere das Ergebnis in `abstimmungen_tidy` 
+
+2. Erstelle eine neue Variable `date`.&lt;br&gt;
+Extrahiere dazu das Datum aus der Spalte `Datum und Vorlage`&lt;br&gt;
+Nutze dafür den Regex `\\d\\d\\d\\d-\\d\\d-\\d\\d`
+
+3. Entferne das Datum aus der Spalte `Datum und Vorlage` und wandle die `date` Spalte in ein von R lesbares Datum um.
+
+4. Entferne die Leerzeichen anführenden Leerzeichen aus der Spalte `Datum und Vorlage` (" Test " -&gt; "Test")
+
+<countdown-timer class="countdown" id="timer_98c913b0" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+---
+----
+## Good to know: stringi
+
+`stringr` enthält zwar viele nützliche Funktionen im Umgang mit Strings, ist aber auf das Nötigste beschränkt. Eine weitreichende Erweiterung stellt das `stringi` package dar. In diesem Package sind wahrscheinlich alle Funktionen enthalten, die im Umgang mit Text notwendig sein könnten. Im Unterschied zu `stringr` beginnen `stringi` Funktionen nicht mit *str_*, sondern mit *stri_*
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----
+## lubridate
+&lt;figure class="logo-fig logo-fig-small"&gt;
+  &lt;a href='https://lubridate.tidyverse.org' target="_blank"&gt;
+    &lt;img src='https://lubridate.tidyverse.org/logo.png' class='logo'/&gt;
+  &lt;/a&gt;
+&lt;/figure&gt;
+- Da das arbeiten mit Datumsangaben in R oft unintuitiv ist, wurde das `lubridate` Package entwickelt
+- Mit `lubridate` Können Datums- und Zeitangaben deutlich einfacher verarbeitet werden, als mit base R.
+
+- `lubridate` kann sowohl Daten vom Typ `date` (Datum auf Tagesbasis) als auch vom Typ `datetime` (Genaues Datum mit Uhrzeit) verarbeiten.
+
+ 
+---
+----
+## lubridate: Nützliche Funktionen
+&lt;figure class="logo-fig logo-fig-small"&gt;
+  &lt;a href='https://lubridate.tidyverse.org' target="_blank"&gt;
+    &lt;img src='https://lubridate.tidyverse.org/logo.png' class='logo'/&gt;
+  &lt;/a&gt;
+&lt;/figure&gt;
+.panelset[
+.panel[.panel-name[date]
+- `lubridate` bietet Funktionen an, die quasi jedes Datumsformat erkennen und umwandeln kann. 
+- Wichtig ist einzig die Reihenfolge (Tag-Monat-Jahr -&gt; `dmy()`; Jahr-Monat-Tag -&gt; `ymd()`)
+
+
+
+``` r
+ymd("20221212")
+```
+
+```
+## [1] "2022-12-12"
+```
+
+``` r
+dmy("02.03.2023")
+```
+
+```
+## [1] "2023-03-02"
+```
+
+
+]
+.panel[.panel-name[datetime]
+-  gleiches gilt für Daten vom Typ `datetime` (gleiches Prinzip)
+
+``` r
+dmy_hms("02.03.2023 11:41:12 Uhr")
+```
+
+```
+## [1] "2023-03-02 11:41:12 UTC"
+```
+]
+.panel[.panel-name[Daten runden und extrahieren]
+- will man Daten auf z.B. auf Jahresbasis zusammenfassen müssen tgesaktuelle Daten gerundet werden
+
+
+``` r
+new_date &lt;- round_date(dmy_hms("02.03.2023 11:41:12 Uhr"),unit = "year")
+new_date
+```
+
+```
+## [1] "2023-01-01 UTC"
+```
+
+- wenn nun nur das Jahr angezeigt werden soll, bietet `lubridate` ebenfalls eine Lösung
+
+
+``` r
+year(new_date)
+```
+
+```
+## [1] 2023
+```
+]
+]
+
+
+---
+----
+## Hands-On: lubridate und das Arbeiten mit Datumsangaben
+&lt;figure class="logo-fig logo-fig-small"&gt;
+  &lt;a href='https://lubridate.tidyverse.org' target="_blank"&gt;
+    &lt;img src='https://lubridate.tidyverse.org/logo.png' class='logo'/&gt;
+  &lt;/a&gt;
+&lt;/figure&gt;
+1. Betrachten wir den Datensatz `geburten`. Wir möchten das Geburtsdatum noch genauer wissen und beziehen deshalb   die Geburtsstunde des Kindes mit ein. Demnach bilden wir aus dem Geburtsjahr (geb_year), dem Geburtsmonat (geb_mon),   dem Geburtstag und der Geburtsstunde eine neue Variable `geb_fulldate`, die ein von R lesbares Datum vom Typ `datetime` enthält.&lt;br&gt;
+Selektiere den Datensatz vor der Berechnung so, dass nur die benötigten Variablen enthalten sind.
+Erstelle einen neuen Datensatz `geburten_time` und füge die neue Spalte hinzu.
+
+2. Was ist der Grund für die Warning Message wonach das parsing bei einigen Zeilen fehlgeschlagen ist?
+
+3. Wie könnte man dieses Problem theoretisch lösen?
+
+<countdown-timer class="countdown" id="timer_65e227f1" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----
+
+## Listen
+.panelset[
+.panel[.panel-name[Basics]
+- im Unterschied zu Vektoren können Listen unterschiedlichste Datentypen enthalten
+
+- jedes Listenelement kann man sich als eine Art  Container vorstellen, in dem der jeweilige Inhalt liegt
+
+- Listen werden mit `list()` initialisiert
+
+- jedem Listenelement kann ein Name zugewiesen werden
+]
+.panel[.panel-name[Zugriff (1)]
+- auf Listenelmente kann *direkt* über deren Index oder Namen (wenn vorhanden) zugegriffen werden
+- wichtig dabei sind die doppelten eckigen Klammern `[[]]` für direkten Zugriff
+
+``` r
+new_list &lt;- list(a="hallo",4)
+new_list[["a"]]
+```
+
+```
+## [1] "hallo"
+```
+
+``` r
+new_list[[2]]
+```
+
+```
+## [1] 4
+```
+]
+.panel[.panel-name[Zugriff (2)]
+- mit einfachen eckigen Klammern `[]` greift man über den Index auf den Container zu und erhält als Ergebnis eine Liste
+
+
+``` r
+new_list[2]
+```
+
+```
+## [[1]]
+## [1] 4
+```
+
+``` r
+class(new_list[2])
+```
+
+```
+## [1] "list"
+```
+]
+.panel[.panel-name[Nested Lists]
+- Listen können beliebig tief verschachtelt werden (*nested*)
+- hierfür wird `list()` innerhalb der Liste verwendet
+- Listen können so z.B. einfach in `JSON` umgewandelt werden (ähnliches Prinzip)
+
+``` r
+nested_list &lt;- list(char = list(a = "halo",b="hi"), nums = list(1,2))
+jsonlite::toJSON(nested_list,auto_unbox = T) %&gt;% jsonlite::prettify()
+```
+
+```
+## {
+##     "char": {
+##         "a": "halo",
+##         "b": "hi"
+##     },
+##     "nums": [
+##         1,
+##         2
+##     ]
+## }
+## 
+```
+]
+.panel[.panel-name[Nested Lists (2)]
+- für den Zugriff können Indizes und Namen verschachtelt werden
+- auch der `$`-Operator kann verwendet werden
+
+
+``` r
+nested_list &lt;- list(char = list(a = "halo",b="hi"), nums = list(1,2))
+nested_list$char$a
+```
+
+```
+## [1] "halo"
+```
+
+``` r
+nested_list[["nums"]][[2]]
+```
+
+```
+## [1] 2
+```
+]
+]
+
+---
+----
+## Listen (2)
+
+.panelset[
+.panel[.panel-name[Listen Bearbeiten]
+- neue Listenelmente können einfach per Namen oder Index hinzugefügt werden
+
+``` r
+new_list[[3]] &lt;- "neues Element"
+new_list[["test"]] &lt;- "neu"
+new_list
+```
+
+```
+## $a
+## [1] "hallo"
+## 
+## [[2]]
+## [1] 4
+## 
+## [[3]]
+## [1] "neues Element"
+## 
+## $test
+## [1] "neu"
+```
+]
+.panel[.panel-name[Unlisten]
+- Listen können mit `unlist()` zu Vektoren (soweit möglich) umgewandelt werden
+- eine Liste von `data.frames` kann mit `dplyr::bind_rows` zu einem zusammenhängenden Datensatz umgewandelt werden
+
+``` r
+unlist(new_list)
+```
+
+```
+##               a                                            test 
+##         "hallo"             "4" "neues Element"           "neu"
+```
+]
+.panel[.panel-name[Listen mergen]
+- mehrere Listen können mit dem `c()` Operator zusammengefügt werden
+
+
+``` r
+full_list &lt;- c(new_list,nested_list)
+```
 ]
 ]
 ---
@@ -6130,7 +6572,7 @@ ggplot(data = geburten_sample, aes(x=age_v, y=age_m))+
 .panel[.panel-name[Grafik]
 Alter des Vaters auf der x-Achse und Alter der Mutter auf der y-Achses
 
-&lt;img src="index_files/figure-html/unnamed-chunk-567-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-628-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 ]
 
@@ -6162,7 +6604,7 @@ ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = sex))+
 ```
 ]
 .panel[.panel-name[Fig 1]
-&lt;img src="index_files/figure-html/unnamed-chunk-569-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-630-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 .panel[.panel-name[Bsp 2]
 `sex` wird als numerische Variable erkannt weshalb eine Umwandlung nötig ist
@@ -6173,7 +6615,7 @@ ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = as.factor(sex)))+
 ```
 ]
 .panel[.panel-name[Fig 2]
-&lt;img src="index_files/figure-html/unnamed-chunk-571-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-632-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 .panel[.panel-name[Bsp 3]
 Ausserhalb des `aes()` Befehls können auch statische Variablen als aesthetics definiert werden (siehe [hier](https://ggplot2-book.org/layers.html#setting-mapping))
@@ -6184,7 +6626,7 @@ ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = as.factor(sex)))+
 ```
 ]
 .panel[.panel-name[Fig 3]
-&lt;img src="index_files/figure-html/unnamed-chunk-573-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-634-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 ]
 
@@ -6218,7 +6660,7 @@ ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = as.factor(sex)))+
 ```
 ]
 .panel[.panel-name[Fig]
-&lt;img src="index_files/figure-html/unnamed-chunk-575-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-636-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 ]
 
@@ -6249,7 +6691,7 @@ geburten %&gt;%
 
 ]
 .panel[.panel-name[Fig 1]
-&lt;img src="index_files/figure-html/unnamed-chunk-577-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-638-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 .panel[.panel-name[Bsp 2]
 - Hinzufügen einer Linie als zusätzlicher Layer
@@ -6265,7 +6707,7 @@ geburten %&gt;%
 ```
 ]
 .panel[.panel-name[Fig 2]
-&lt;img src="index_files/figure-html/unnamed-chunk-579-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-640-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 .panel[.panel-name[Bsp 3]
 - Durchschnittliches Alter der Mutter und des Vaters bei Geburt
@@ -6282,7 +6724,7 @@ geburten %&gt;%
 ```
 ]
 .panel[.panel-name[Fig 3]
-&lt;img src="index_files/figure-html/unnamed-chunk-581-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-642-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 .panel[.panel-name[Bsp 4]
 - Ermittlung von Missing Values
@@ -6298,7 +6740,7 @@ geburten %&gt;%
 ```
 ]
 .panel[.panel-name[Fig 3]
-&lt;img src="index_files/figure-html/unnamed-chunk-583-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-644-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 ]
 
@@ -6328,7 +6770,7 @@ Stelle das erreichte Alter von Männern und Frauen im Zeitverlauf gegenüber.
 - Füge einen Titel sowie eine Beschriftung für X- und Y-Achse hinzu.
 - Verwende dafür die labs() Funktion (`?ggplot2::labs()` für Hilfe)
 
-<countdown-timer class="countdown" id="timer_694d9757" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_98da3139" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 
 ---
 ----
@@ -6898,7 +7340,7 @@ csv_sas_win |&gt; slice(42) |&gt; select(GdenameTG,Quote_Kategorie)
 &lt;/figure&gt;
 ## Daten Zwischenspeichern
 
-![](index_files/figure-html/unnamed-chunk-626-1.png)&lt;!-- --&gt;
+![](index_files/figure-html/unnamed-chunk-687-1.png)&lt;!-- --&gt;
 ---
 
 
@@ -7083,7 +7525,7 @@ Repliziere die Tabelle in `Slides/Daten/openxlsx_table.xlsx`.
 Speichere die Datei unter `Slides/Daten/openxlsx_table_DEIN_KÜRZEL.xlsx`.
 
 ![openxlsx Aufgabe](img/openxlsx_exercise.png)
-<countdown-timer class="countdown" id="timer_a24387a1" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_145c130e" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 ----
 &lt;figure class="logo-fig logo-fig-small"&gt;
@@ -7414,7 +7856,7 @@ Gegeben ist ausserdem die Datei `Slides/Daten/2023_Gde_Geb_ab2000.xlsx`
                                                                                                          
 Füge die Geburtenzahlen für das Jahr 2024 in die Excel `2023_Gde_Geb_ab2000.xlsx` ein und speichere sie als **`Slides/Daten/2024_Gde_Geb_ab2000_DEIN_KÜRZEL.xlsx`** neu ab         
 
-<countdown-timer class="countdown" id="timer_1766edde" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_a017c392" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 
 
@@ -7588,7 +8030,7 @@ response
 ## GET https://data.tg.ch/api/explore/v2.1/catalog/datasets/sk-stat-56/exports/json
 ## Status: 200 OK
 ## Content-Type: application/json
-## Body: In memory (229996 bytes)
+## Body: In memory (242775 bytes)
 ```
 
 ``` r
@@ -7607,10 +8049,10 @@ data[[1]]
 
 ```
 ## $bfs_nr_gemeinde
-## [1] "4461"
+## [1] "4406"
 ## 
 ## $gemeinde_name
-## [1] "Amriswil"
+## [1] "Dozwil"
 ## 
 ## $bezirk_nr
 ## [1] "2011"
@@ -7619,10 +8061,10 @@ data[[1]]
 ## [1] "Bezirk Arbon"
 ## 
 ## $jahr
-## [1] "2024"
+## [1] "2025"
 ## 
 ## $anzahl_personen
-## [1] "14825"
+## [1] "717"
 ```
 ]
 .panel[.panel-name[Data (aufbereitet)]
@@ -7632,20 +8074,20 @@ data |&gt; bind_rows()
 ```
 
 ```
-## # A tibble: 1,440 × 6
-##    bfs_nr_gemeinde gemeinde_name     bezirk_nr bezirk_name jahr  anzahl_personen
-##    &lt;chr&gt;           &lt;chr&gt;             &lt;chr&gt;     &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt;          
-##  1 4461            Amriswil          2011      Bezirk Arb… 2024  14825          
-##  2 4406            Dozwil            2011      Bezirk Arb… 2024  725            
-##  3 4416            Hefenhofen        2011      Bezirk Arb… 2024  1304           
-##  4 4421            Horn              2011      Bezirk Arb… 2024  3148           
-##  5 4451            Uttwil            2011      Bezirk Arb… 2024  1909           
-##  6 4536            Basadingen-Schla… 2012      Bezirk Fra… 2024  1883           
-##  7 4801            Berlingen         2012      Bezirk Fra… 2024  955            
-##  8 4561            Felben-Wellhausen 2012      Bezirk Fra… 2024  3213           
-##  9 4816            Homburg           2012      Bezirk Fra… 2024  1571           
-## 10 4590            Hüttlingen        2012      Bezirk Fra… 2024  903            
-## # ℹ 1,430 more rows
+## # A tibble: 1,520 × 6
+##    bfs_nr_gemeinde gemeinde_name bezirk_nr bezirk_name     jahr  anzahl_personen
+##    &lt;chr&gt;           &lt;chr&gt;         &lt;chr&gt;     &lt;chr&gt;           &lt;chr&gt; &lt;chr&gt;          
+##  1 4406            Dozwil        2011      Bezirk Arbon    2025  717            
+##  2 4421            Horn          2011      Bezirk Arbon    2025  3208           
+##  3 4426            Kesswil       2011      Bezirk Arbon    2025  997            
+##  4 4431            Roggwil       2011      Bezirk Arbon    2025  3438           
+##  5 4446            Sommeri       2011      Bezirk Arbon    2025  688            
+##  6 4545            Diessenhofen  2012      Bezirk Frauenf… 2025  4122           
+##  7 4566            Frauenfeld    2012      Bezirk Frauenf… 2025  26919          
+##  8 4821            Hüttwilen     2012      Bezirk Frauenf… 2025  1755           
+##  9 4591            Matzingen     2012      Bezirk Frauenf… 2025  3325           
+## 10 4841            Pfyn          2012      Bezirk Frauenf… 2025  2239           
+## # ℹ 1,510 more rows
 ```
 ]
 ]
@@ -8534,7 +8976,7 @@ Beachte, dass der finale Datensatz lokal als normaler R data.frame nutzbar sein 
 ## 4          2015   4471             4.10
 ```
 
-<countdown-timer class="countdown" id="timer_f60c3d91" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_bed6b24a" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 
 

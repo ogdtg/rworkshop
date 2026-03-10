@@ -5,7 +5,7 @@
 #
 # KONTEXT
 # -------
-# Die Fachstelle für Statistik des Kantons Thurgau analysiert regelmässig
+# Das Amt für Daten und Statistik  analysiert regelmässig
 # Bevölkerungsdaten auf Gemeindeebene. Dieses Skript zeigt, wie solche Analysen
 # mit R umgesetzt werden – von der Datenaufbereitung bis zur Beantwortung
 # konkreter Fragestellungen.
@@ -55,8 +55,14 @@ bev_roh <- read_csv(
   locale = locale(encoding = "UTF-8")  # Falls Umlaute falsch erscheinen: "latin1"
 )
 
+bev_roh <- read_csv(
+  "rmd/Daten/bevölkerung.csv",
+  locale = locale(encoding = "latin1")  
+)
+
+
 # Erste Inspektion
-glimpse(bev_roh)
+View(bev_roh)
 # → 87 Zeilen, 10 Spalten
 # → Die Datei enthält KANTON, BEZIRKE und GEMEINDEN gemischt
 # → Spalten: "BFS-Nr.", "Gemeinde", "2015", "2016", ..., "2022"
@@ -72,7 +78,7 @@ head(bev_roh, 5)
 sozial_roh <- read_delim(
   "rmd/Daten/1_Sozialhilfequote_Bezüger_Dossiers_Gde_2023.csv",
   delim   = ";",
-  locale  = locale(encoding = "UTF-8")  # Sicherstellen: Umlaute in Gemeindenamen
+  locale  = locale(encoding = "latin1")  # Sicherstellen: Umlaute in Gemeindenamen
 )
 
 glimpse(sozial_roh)
@@ -85,31 +91,7 @@ glimpse(sozial_roh)
 # Referenztabelle (könnte auch aus einer Datenbank stammen).
 # Kanton Thurgau hat seit der Bezirksreform 2011 genau 5 Bezirke.
 
-gemeinde_bezirk <- tibble(
-  bfs_nr = c(
-    # ── Bezirk Arbon (12 Gemeinden) ──────────────────────────────────────────
-    4461, 4401, 4406, 4411, 4416, 4421, 4426, 4431, 4436, 4441, 4446, 4451,
-    # ── Bezirk Frauenfeld (23 Gemeinden) ─────────────────────────────────────
-    4536, 4801, 4545, 4806, 4561, 4566, 4571, 4811, 4816, 4590, 4821, 4826,
-    4591, 4831, 4601, 4841, 4546, 4864, 4606, 4611, 4616, 4871, 4621,
-    # ── Bezirk Kreuzlingen (14 Gemeinden) ────────────────────────────────────
-    4641, 4643, 4646, 4651, 4656, 4666, 4671, 4681, 4683, 4691, 4846, 4851,
-    4696, 4701,
-    # ── Bezirk Münchwilen (13 Gemeinden) ─────────────────────────────────────
-    4551, 4716, 4721, 4723, 4724, 4726, 4741, 4746, 4751, 4761, 4776, 4781,
-    4786,
-    # ── Bezirk Weinfelden (18 Gemeinden) ─────────────────────────────────────
-    4711, 4881, 4891, 4901, 4471, 4911, 4921, 4476, 4486, 4495, 4501, 4941,
-    4756, 4506, 4946, 4951, 4791, 4511
-  ),
-  bezirk = c(
-    rep("Arbon",       12),
-    rep("Frauenfeld",  23),
-    rep("Kreuzlingen", 14),
-    rep("Münchwilen",  13),
-    rep("Weinfelden",  18)
-  )
-)
+gemeinde_bezirk <- readRDS("rmd/Daten/gemeinde_bezirk.rds")
 
 # Kontrolle: Stimmt die Anzahl pro Bezirk?
 count(gemeinde_bezirk, bezirk)
@@ -124,7 +106,7 @@ count(gemeinde_bezirk, bezirk)
 #       umwandeln – die Grundlage für Zeitreihenanalysen.
 
 
-# ── 2a) Spaltennamen vereinfachen ────────────────────────────────────────────
+# ── 2a) Spaltennamen vereinfachen (optional) ────────────────────────────────────────────
 # "BFS-Nr." enthält einen Punkt und einen Bindestrich → umständlich
 # Mit rename() geben wir handlichere Namen
 
@@ -166,7 +148,7 @@ gemeinden_long <- gemeinden_wide |>
     names_to  = "jahr",          # Bisherige Spaltennamen → neue Spalte "jahr"
     values_to = "bevoelkerung"   # Bisherige Werte → neue Spalte "bevoelkerung"
   ) |>
-  mutate(jahr = as.integer(jahr))  # Jahr als Zahl speichern (nicht als Text)
+  mutate(jahr = as.numeric(jahr))  # Jahr als Zahl speichern (nicht als Text)
 
 # Ergebnis vergleichen
 glimpse(gemeinden_wide)   # Wide: 80 Zeilen, 10 Spalten
@@ -183,9 +165,7 @@ sozial <- sozial_roh |>
     sh_personen = anzahl_pers,
     sh_quote    = quote,
     sh_kategorie = Quote_Kategorie
-  ) |>
-  # Kommas in sh_quote durch Punkte ersetzen (CH-Format → R-Format)
-  mutate(sh_quote = as.numeric(str_replace(as.character(sh_quote), ",", ".")))
+  ) 
 
 glimpse(sozial)
 
@@ -202,6 +182,13 @@ glimpse(sozial)
 # b) pivot_wider(): Aus "lang" wieder "breit" – zwei Spalten bev_2015, bev_2022
 # c) Wachstum absolut und prozentual berechnen
 # d) Gemeinden in Grössenklassen einteilen
+
+
+wachstum <- gemeinden_wide |> 
+  select( bfs_nr,
+          gemeinde,
+          bev_2015 = `2015`,
+          bev_2022 = `2022`)
 
 wachstum <- gemeinden_long |>
   # a) Endpunkte herausfiltern
@@ -229,6 +216,29 @@ wachstum <- gemeinden_long |>
       TRUE             ~ "Zentrum (≥ 15'000 Einw.)"
     )
   )
+
+
+
+wachstum <- gemeinden_wide |> 
+  select( bfs_nr,
+          gemeinde,
+          bev_2015 = `2015`,
+          bev_2022 = `2022`) |> 
+  mutate(
+    zuwachs_abs = bev_2022 - bev_2015,
+    zuwachs_pct = round((bev_2022 - bev_2015) / bev_2015 * 100, 1)
+  ) |>
+  
+  # d) Gemeinden nach Einwohnerzahl 2015 kategorisieren
+  mutate(
+    groessenklasse = case_when(
+      bev_2015 < 1000  ~ "Klein (< 1'000 Einw.)",
+      bev_2015 < 5000  ~ "Mittel (1'000–4'999 Einw.)",
+      bev_2015 < 15000 ~ "Gross (5'000–14'999 Einw.)",
+      TRUE             ~ "Zentrum (≥ 15'000 Einw.)"
+    )
+  )
+
 
 # Ergebnis: Top 10 Gemeinden mit stärkstem prozentualen Wachstum
 cat("\n── Top 10: Stärkstes Bevölkerungswachstum 2015–2022 (%)\n")
@@ -282,6 +292,18 @@ bezirk_entwicklung |>
     zuwachs_abs = bev_2022 - bev_2015,
     zuwachs_pct = round((bev_2022 - bev_2015) / bev_2015 * 100, 1)
   ) |>
+  arrange(desc(zuwachs_pct)) 
+
+
+# Alternative
+bezirke_wide |>
+  select(bezirk = gemeinde,
+         bev_2015 = `2015`,
+         bev_2022 = `2022`) |> 
+  mutate(
+    zuwachs_abs = bev_2022 - bev_2015,
+    zuwachs_pct = round((bev_2022 - bev_2015) / bev_2015 * 100, 1)
+  ) |>
   arrange(desc(zuwachs_pct)) |>
   print()
 
@@ -310,6 +332,8 @@ analyse <- wachstum |>
   filter(!is.na(sh_quote))
 
 cat("\nDatenbasis:", nrow(analyse), "Gemeinden mit vollständigen Daten\n")
+# Warum nicht 80?
+# -> einige Gemeinden sind zu klein, als dass die Daten veröffentlicht werden dürfte
 
 # b) Durchschnittliche SH-Quote nach Grössenklasse
 cat("\n── Sozialhilfequote 2023 nach Gemeindegrösse\n")
@@ -346,9 +370,7 @@ analyse |>
     `SH-Quote %` = sh_quote,
     `SH-Kategorie` = sh_kategorie
   ) |>
-  arrange(desc(sh_quote)) |>
-  print()
-
+  arrange(desc( `SH-Quote %`)) 
 
 # ── FRAGESTELLUNG 4: Zeitliche Entwicklung der grössten Gemeinden ────────────
 

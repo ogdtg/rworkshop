@@ -78,6 +78,13 @@ xaringanExtra::use_tachyons()
 ```{r child='rmd/dplyr.Rmd'}
 ```
 ---
+```{r child='rmd/recap2.Rmd'}
+```
+---
+---
+```{r child='rmd/conditional_statements.Rmd'}
+```
+---
 ```{r child='rmd/stringr.Rmd'}
 ```
 ---
@@ -85,9 +92,6 @@ xaringanExtra::use_tachyons()
 ```
 ---
 ```{r child='rmd/listen.Rmd'}
-```
----
-```{r child='rmd/conditional_statements.Rmd'}
 ```
 ---
 ```{r child='rmd/loops_apply.Rmd'}
