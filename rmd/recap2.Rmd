@@ -1,0 +1,416 @@
+---
+title: "Recap 2"
+author: "Felix Lorenz"
+date: "Workshop 2026"
+amt: "Amt für Daten und Statistik"
+stelle: ""
+output:
+  xaringan::moon_reader:
+    highlightStyle: github
+    highlightlines: true
+    highlightSpans: true
+    css: ["default","styles_x.css"]
+---
+
+```{r setup-recap2, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, dpi = 300, message = FALSE, warning = FALSE)
+library(dplyr)
+```
+
+---
+----
+## Recap: Was haben wir in Session 2 gelernt?
+
+.pull-left[
+**Session 2 – Themen:**
+
+1. R Meldungen – Messages, Warnings & Errors
+2. Häufige Fehler und Warnungen
+3. `dplyr::select()` & `dplyr::filter()` – Spalten & Zeilen
+4. `dplyr::mutate()` – Neue Spalten erstellen
+5. `dplyr::group_by()` & `summarise()` – Gruppieren & Zusammenfassen
+6. `dplyr::join()` – Datensätze verbinden
+7. Weitere nützliche dplyr Funktionen
+]
+
+.pull-right[
+```{r echo=FALSE, out.width="80%", fig.align='center'}
+knitr::include_graphics("https://dplyr.tidyverse.org/logo.png")
+```
+]
+
+---
+----
+## Recap: Die drei R-Meldungstypen
+
+R kommuniziert auf drei Arten mit uns:
+
+| Typ | Symbol | Bedeutung | Code ausgeführt? |
+|-----|--------|-----------|-----------------|
+| **Message** | 🔵 | Reine Information | ✅ Ja |
+| **Warning** | 🟡 | Ausgeführt, aber mit Vorbehalt | ✅ Ja |
+| **Error** | 🔴 | Abbruch, etwas stimmt nicht | ❌ Nein |
+
+<br>
+
+.panelset[
+.panel[.panel-name[Erkennungsmerkmal]
+```
+Message:  Text ohne Schlüsselwort / "Attaching..."
+Warning:  Warning message: ...
+Error:    Error in ... : ...
+```
+]
+.panel[.panel-name[Reaktion]
+```
+Message  → Weitermachen
+Warning  → Prüfen, ob Ergebnis korrekt
+Error    → Fehler finden und beheben, bevor weitergegangen wird
+```
+]
+]
+
+---
+----
+## Recap: Messages, Warnings & Errors
+
+.panelset[
+.panel[.panel-name[🔵 Message]
+Messages sind **rein informativ**. Der Code wird **vollständig ausgeführt**.
+
+```{r, echo=TRUE, eval=FALSE}
+library(dplyr)
+## Attaching package: 'dplyr'
+## The following objects are masked from 'package:stats':
+##     filter, lag
+```
+
+**Was tun?** In der Regel: **nichts** – einfach weitermachen.
+]
+.panel[.panel-name[🟡 Warning]
+Der Code wurde **ausgeführt**, aber etwas war **nicht ganz richtig**.
+
+```{r, echo=TRUE, eval=FALSE}
+as.numeric(c("1", "2", "drei"))
+## Warning: NAs introduced by coercion
+## [1]  1  2 NA
+```
+
+**Was tun?** Warnung **lesen** und Ergebnis auf **Plausibilität prüfen**.
+]
+.panel[.panel-name[🔴 Error]
+Der Code wurde **nicht ausgeführt**. R konnte den Befehl nicht durchführen.
+
+```{r, echo=TRUE, eval=FALSE}
+sqrt("zehn")
+## Error in sqrt("zehn") : non-numeric argument to mathematical function
+```
+
+**Was tun?** Fehlermeldung lesen, debuggen, googeln oder KI fragen.
+]
+]
+
+---
+----
+## Recap: Häufige Fehler
+
+.panelset[
+.panel[.panel-name[could not find function]
+```{r, echo=TRUE, eval=FALSE}
+read_excel("daten/datei.xlsx")
+## Error: could not find function "read_excel"
+```
+**Ursache:** Package nicht geladen.
+```{r, echo=TRUE, eval=FALSE}
+library(readxl)           # Package zuerst laden!
+read_excel("daten/datei.xlsx")
+```
+]
+.panel[.panel-name[object not found]
+```{r, echo=TRUE, eval=FALSE}
+summary(mein_datensatz)
+## Error: object 'mein_datensatz' not found
+```
+**Ursache:** Objekt existiert (noch) nicht – Einlesebefehl noch nicht ausgeführt oder Tippfehler.
+```{r, echo=TRUE, eval=FALSE}
+mein_datensatz <- read_csv("daten/datei.csv")
+summary(mein_datensatz)
+```
+]
+.panel[.panel-name[Syntaxfehler]
+```{r, echo=TRUE, eval=FALSE}
+df %>% filter(kanton == "TG"
+## Error: unexpected end of input
+```
+**Ursache:** Klammer oder Anführungszeichen nicht geschlossen.
+
+RStudio hilft: Ungepaarte Klammern werden farblich markiert.
+]
+.panel[.panel-name[Package nicht installiert]
+```{r, echo=TRUE, eval=FALSE}
+library(janitor)
+## Error: there is no package called 'janitor'
+```
+```{r, echo=TRUE, eval=FALSE}
+install.packages("janitor")   # einmalig installieren
+library(janitor)               # bei jedem Session-Start laden
+```
+]
+]
+
+---
+----
+## Recap: dplyr::select()
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+`select()` wählt **Spalten** aus einem Datensatz aus oder entfernt sie.
+
+.panelset[
+.panel[.panel-name[Nach Name]
+```{r echo=TRUE, eval=FALSE}
+df %>% select(kanton, datum, wert)
+```
+]
+.panel[.panel-name[Bereich]
+```{r echo=TRUE, eval=FALSE}
+df %>% select(date:cases)   # alle Spalten von date bis cases
+```
+]
+.panel[.panel-name[Entfernen mit -]
+```{r echo=TRUE, eval=FALSE}
+df %>% select(-datum)        # datum entfernen
+df %>% select(-c(date:cases))
+```
+]
+.panel[.panel-name[Hilfsfunktionen]
+```{r echo=TRUE, eval=FALSE}
+df %>% select(starts_with("wert"))
+df %>% select(contains("death"))
+df %>% select(where(is.numeric))
+```
+]
+]
+
+---
+----
+## Recap: dplyr::filter()
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+`filter()` wählt **Zeilen** aus, die eine Bedingung erfüllen.
+
+.panelset[
+.panel[.panel-name[Einfach]
+```{r echo=TRUE, eval=FALSE}
+df %>% filter(kanton == "TG")
+df %>% filter(wert > 100)
+```
+]
+.panel[.panel-name[Mehrere Bedingungen]
+```{r echo=TRUE, eval=FALSE}
+# UND: beide Bedingungen müssen zutreffen
+df %>% filter(kanton == "TG" & date == "2022-12-10")
+
+# ODER: mindestens eine muss zutreffen
+df %>% filter(kanton == "TG" | kanton == "BS")
+```
+]
+.panel[.panel-name[%in% Operator]
+```{r echo=TRUE, eval=FALSE}
+# Abgleich mit einem Vektor
+df %>% filter(kanton %in% c("TG", "BS", "ZH"))
+```
+]
+.panel[.panel-name[Kombiniert]
+```{r echo=TRUE, eval=FALSE}
+df %>%
+  filter(kanton == "TG") %>%
+  select(datum, wert)
+```
+]
+]
+
+---
+----
+## Recap: dplyr::mutate()
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+`mutate()` erstellt **neue Spalten** oder verändert bestehende – immer reihenweise.
+
+.panelset[
+.panel[.panel-name[Neue Spalte berechnen]
+```{r echo=TRUE, eval=FALSE}
+df %>%
+  mutate(death_percent = deaths / cases * 100) %>%
+  mutate(death_percent = round(death_percent, 2))
+```
+]
+.panel[.panel-name[case_when]
+```{r echo=TRUE, eval=FALSE}
+df %>%
+  mutate(kanton_long = case_when(
+    kanton == "TG" ~ "Thurgau",
+    kanton == "BS" ~ "Basel-Stadt"
+  ))
+```
+]
+.panel[.panel-name[across()]
+Mit `across()` die gleiche Operation auf mehrere Spalten anwenden:
+```{r echo=TRUE, eval=FALSE}
+df %>% mutate(across(c(cases, deaths), ~ .x / 1000))
+df %>% mutate(across(where(is.numeric), round))
+```
+> `mutate_all()` / `mutate_at()` sind veraltet – bitte `across()` verwenden.
+]
+]
+
+---
+----
+## Recap: dplyr::group_by() & summarise()
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+`group_by()` gruppiert den Datensatz – mächtig in Kombination mit `mutate()` oder `summarise()`.
+
+.panelset[
+.panel[.panel-name[group_by + summarise]
+Daten zusammenfassen pro Gruppe:
+```{r echo=TRUE, eval=FALSE}
+geburten %>%
+  group_by(geb_year) %>%
+  summarise(anzahl = n())
+```
+]
+.panel[.panel-name[group_by + mutate]
+Neue Variable innerhalb jeder Gruppe:
+```{r echo=TRUE, eval=FALSE}
+geburten %>%
+  group_by(geb_year, name) %>%
+  mutate(sum_name_year = n())
+```
+]
+.panel[.panel-name[ungroup()]
+**Wichtig:** Nach `group_by` + `mutate` die Gruppierung aufheben!
+```{r echo=TRUE, eval=FALSE}
+geburten %>%
+  group_by(geb_year, name) %>%
+  mutate(sum_name_year = n()) %>%
+  ungroup()   # ← Gruppierung auflösen
+```
+> Nach `summarise()` ist `ungroup()` nicht nötig.
+]
+]
+
+---
+----
+## Recap: dplyr::join()
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+Mit der `join`-Familie können mehrere Datensätze verbunden werden.
+
+.panelset[
+.panel[.panel-name[Mutating joins]
+Fügen Spalten von `y` zu `x` hinzu:
+
+| Funktion | Ergebnis |
+|----------|----------|
+| `left_join(x, y)` | Alle Zeilen von `x` |
+| `right_join(x, y)` | Alle Zeilen von `y` |
+| `inner_join(x, y)` | Nur Zeilen mit Match in beiden |
+| `full_join(x, y)` | Alle Zeilen aus `x` und `y` |
+]
+.panel[.panel-name[Filtering joins]
+Filtern Zeilen aus `x`:
+
+- `semi_join(x, y)`: Zeilen **mit** Match in `y`
+- `anti_join(x, y)`: Zeilen **ohne** Match in `y`
+]
+.panel[.panel-name[Beispiel]
+```{r echo=TRUE, eval=FALSE}
+df1 %>%
+  left_join(df2, by = c("nat" = "code"))
+```
+> Den gemeinsamen Schlüssel (Spalte) vorher prüfen!
+]
+]
+
+---
+----
+## Recap: Weitere nützliche dplyr Funktionen
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://dplyr.tidyverse.org' target="_blank">
+    <img src='https://dplyr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+.panelset[
+.panel[.panel-name[arrange]
+Zeilen nach einer Variable sortieren:
+```{r echo=TRUE, eval=FALSE}
+df %>% arrange(geb_year)          # aufsteigend
+df %>% arrange(desc(geb_year))    # absteigend
+```
+]
+.panel[.panel-name[slice]
+Zeilen per Index oder Rang auswählen:
+```{r echo=TRUE, eval=FALSE}
+df %>% slice(10:12)               # Zeilen 10–12
+df %>% slice_max(n, n = 1)        # Zeile mit grösstem Wert
+df %>% slice_min(n, n = 1)        # Zeile mit kleinstem Wert
+```
+> `top_n()` ist veraltet – bitte `slice_max()` / `slice_min()` verwenden.
+]
+.panel[.panel-name[distinct]
+Duplikate entfernen:
+```{r echo=TRUE, eval=FALSE}
+df %>% distinct(geb_year, .keep_all = TRUE)
+```
+Der erste vorkommende Wert wird behalten.
+]
+]
+
+---
+----
+## Recap: Zusammenfassung
+
+| Funktion | Was macht sie? |
+|----------|---------------|
+| `select()` | Spalten auswählen oder entfernen |
+| `filter()` | Zeilen filtern nach Bedingung |
+| `mutate()` | Neue Spalten erstellen / bestehende verändern |
+| `group_by()` + `summarise()` | Gruppieren und zusammenfassen |
+| `group_by()` + `mutate()` | Gruppenweise neue Spalten erstellen |
+| `ungroup()` | Gruppierung aufheben |
+| `left_join()` / `inner_join()` | Datensätze verbinden |
+| `arrange()` | Zeilen sortieren |
+| `slice_max()` / `slice_min()` | Extremwerte auswählen |
+| `distinct()` | Duplikate entfernen |
+
+<br>
+
+> **Merke:** Alle dplyr-Funktionen folgen der gleichen Logik:
+> *Datensatz rein* `%>%` *Funktion* → *Datensatz raus*
