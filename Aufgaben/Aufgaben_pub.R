@@ -245,102 +245,102 @@ geburten_nat <- geburten %>%
 
 
 
-##########################################################################
-## AUFGABE: Meldungen, Warnungen & Fehler (10 Minuten)                  ##
-##########################################################################
-
-####################################################################################
-# a) Error, Warning oder Message?                                                  #
-#    Welchen Ausgabetyp gibt R bei den folgenden Codezeilen aus?                   #
-#    Schreibe den Typ (Error / Warning / Message) als Kommentar hinter jede Zeile. #
-#    Führe den Code erst aus, wenn du eine Vermutung notiert hast.                 #
-####################################################################################
-
-library(dplyr)                                    # Typ: ?
-
-as.integer(c("1", "zwei", "3"))                   # Typ: ?
-
-mean(c(1, 2, 3))                                  # Typ: ?
-
-log(-1)                                           # Typ: ?
-
-filter(kanton == "TG")                            # Typ: ?
-
-
-####################################################################################
-# b) Finde und behebe den Fehler                                                   #
-#    In jedem Abschnitt ist ein Fehler eingebaut.                                  #
-#    Erkläre den Fehler kurz als Kommentar und korrigiere den Code.                #
-####################################################################################
-
-# --- Fehler 1 ---
-meine_zahlen <- c(10, 20, 30, 40, 50)
-mittelwert   <- Mean(meine_zahlen)
-# Fehler:
-
-
-# --- Fehler 2 ---
-library(readr)
-df <- read_csv("rmd/Daten/bevölkerung.csv"
-head(df, 3)
-# Fehler:
-
-
-# --- Fehler 3 ---
-zahlen <- c(1, 4, 9, 16, 25)
-zahlen |>
-  sqrt() |>
-  rund(digits = 2)
-# Fehler:
-
-
-# --- Fehler 4 ---
-df_fehler <- data.frame(
-  kanton = c("TG", "ZH", "BE"),
-  wert   = c(100, 200, 150)
-)
-df_fehler |> filter(kanton = "TG")
-# Fehler:
-
-
-# --- Fehler 5 ---
-mein_text <- "Hallo, Welt
-nchar(mein_text)
-# Fehler:
-
-
-####################################################################################
-# c) Hilfe benutzen                                                                #
-#    Öffne die Hilfedokumentation zur Funktion `str_pad()` (Package stringr).     #
-#    Beantworte die Fragen als Kommentar.                                          #
-####################################################################################
-
-library(stringr)
-?str_pad
-
-# 1. Was macht str_pad()?
-#    Antwort:
-
-# 2. Was bewirkt der Parameter `side`? Welche Werte kann er annehmen?
-#    Antwort:
-
-# 3. Führe das erste Beispiel von der Hilfeseite aus:
-
-
-####################################################################################
-# d) Bonus: Warning verstehen und beheben                                          #
-#    Führe den Code aus. Welche Warnung gibt R aus, und warum?                    #
-#    Wie kannst du die Summe trotzdem korrekt berechnen?                           #
-####################################################################################
-
-messwerte <- c("12.5", "8.3", "keine Angabe", "15.1", "n/a")
-zahlen    <- as.numeric(messwerte)
-summe     <- sum(zahlen)
-summe
-
-# Warnung lautet:
-# Warum:
-# Lösung (korrigierter Code):
+# ##########################################################################
+# ## AUFGABE: Meldungen, Warnungen & Fehler (10 Minuten)                  ##
+# ##########################################################################
+# 
+# ####################################################################################
+# # a) Error, Warning oder Message?                                                  #
+# #    Welchen Ausgabetyp gibt R bei den folgenden Codezeilen aus?                   #
+# #    Schreibe den Typ (Error / Warning / Message) als Kommentar hinter jede Zeile. #
+# #    Führe den Code erst aus, wenn du eine Vermutung notiert hast.                 #
+# ####################################################################################
+# 
+# library(dplyr)                                    # Typ: ?
+# 
+# as.integer(c("1", "zwei", "3"))                   # Typ: ?
+# 
+# mean(c(1, 2, 3))                                  # Typ: ?
+# 
+# log(-1)                                           # Typ: ?
+# 
+# filter(kanton == "TG")                            # Typ: ?
+# 
+# 
+# ####################################################################################
+# # b) Finde und behebe den Fehler                                                   #
+# #    In jedem Abschnitt ist ein Fehler eingebaut.                                  #
+# #    Erkläre den Fehler kurz als Kommentar und korrigiere den Code.                #
+# ####################################################################################
+# 
+# # --- Fehler 1 ---
+# meine_zahlen <- c(10, 20, 30, 40, 50)
+# mittelwert   <- Mean(meine_zahlen)
+# # Fehler:
+# 
+# 
+# # --- Fehler 2 ---
+# library(readr)
+# df <- read_csv("rmd/Daten/bevölkerung.csv"
+# head(df, 3)
+# # Fehler:
+# 
+# 
+# # --- Fehler 3 ---
+# zahlen <- c(1, 4, 9, 16, 25)
+# zahlen |>
+#   sqrt() |>
+#   rund(digits = 2)
+# # Fehler:
+# 
+# 
+# # --- Fehler 4 ---
+# df_fehler <- data.frame(
+#   kanton = c("TG", "ZH", "BE"),
+#   wert   = c(100, 200, 150)
+# )
+# df_fehler |> filter(kanton = "TG")
+# # Fehler:
+# 
+# 
+# # --- Fehler 5 ---
+# mein_text <- "Hallo, Welt
+# nchar(mein_text)
+# # Fehler:
+# 
+# 
+# ####################################################################################
+# # c) Hilfe benutzen                                                                #
+# #    Öffne die Hilfedokumentation zur Funktion `str_pad()` (Package stringr).     #
+# #    Beantworte die Fragen als Kommentar.                                          #
+# ####################################################################################
+# 
+# library(stringr)
+# ?str_pad
+# 
+# # 1. Was macht str_pad()?
+# #    Antwort:
+# 
+# # 2. Was bewirkt der Parameter `side`? Welche Werte kann er annehmen?
+# #    Antwort:
+# 
+# # 3. Führe das erste Beispiel von der Hilfeseite aus:
+# 
+# 
+# ####################################################################################
+# # d) Bonus: Warning verstehen und beheben                                          #
+# #    Führe den Code aus. Welche Warnung gibt R aus, und warum?                    #
+# #    Wie kannst du die Summe trotzdem korrekt berechnen?                           #
+# ####################################################################################
+# 
+# messwerte <- c("12.5", "8.3", "keine Angabe", "15.1", "n/a")
+# zahlen    <- as.numeric(messwerte)
+# summe     <- sum(zahlen)
+# summe
+# 
+# # Warnung lautet:
+# # Warum:
+# # Lösung (korrigierter Code):
 
 
 ############################################################################################################

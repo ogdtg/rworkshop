@@ -110,9 +110,9 @@ abstimmungen <- readRDS("rmd/Daten/Abstimmungen.rds")
 #############################################################################################################################################
 
 
-abstimmungen_tidy <- abstimmungen %>% 
-  pivot_wider(names_from = "Ergebnis", values_from = "Volksabstimmungen (Ergebnisse Ebene Kanton seit 1866)")
-
+abstimmungen_tidy <- abstimmungen %>%
+  pivot_wider(names_from = "Ergebnis", 
+              values_from = "Volksabstimmungen (Ergebnisse Ebene Kanton seit 1866)")
 
 ##################################################################
 #  b) Bringe die Daten wieder in die Ursprungsform (long format) #
@@ -459,7 +459,6 @@ abstimmungen_tidy <- abstimmungen_tidy %>%
   mutate(`Datum und Vorlage` = str_trim(`Datum und Vorlage`))
 
 
-
 ############################################################################################################
 
 #############################################################
@@ -532,7 +531,13 @@ geburten_nat_eltern <- geburten_nat_eltern %>%
     nat_m != 8100 & nat_V == 8100 ~ "Mutter Ausländer",
     nat_m == 8100 & nat_V != 8100 ~ "Vater Ausländer",
     TRUE ~ "unbekannt"
-  ))
+  )) |> 
+  mutate(ausl_elternteil = case_when(
+    nat_m != 8100 & nat_V != 8100 ~ "beide Elternteile Ausländer",
+    nat_m != 8100 & nat_V == 8100 ~ "Mutter Ausländer",
+    nat_m == 8100 & nat_V != 8100 ~ "Vater Ausländer",
+    TRUE ~ as.character(nat_m)
+  )) 
 
 
 ##################################################################################

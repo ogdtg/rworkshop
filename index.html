@@ -1827,7 +1827,7 @@ dataset &lt;- readRDS("data.rds")
 
 Benutze jeweils die `head()` Funktion um **die ersten 3 Zeilen** des Datensatzes anzeigen zu lassen. 
 
-<countdown-timer class="countdown" id="timer_fd11313a" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_3a9852d4" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 
 ---
 ----
@@ -2155,7 +2155,7 @@ Das Ergebnis soll auf eine Nachkommastelle gerundet werden.
   &lt;/li&gt;
 &lt;/ol&gt;
 
-<countdown-timer class="countdown" id="timer_08d7b131" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_95889255" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 
 ---
 ----
@@ -2472,7 +2472,7 @@ abstimmungen &lt;- readRDS("Daten/Abstimmungen.rds")
 2. Bringe die Daten wieder in die Ursprungsform (long format)&lt;br&gt;
   Speichere das Ergebnis unter "abstimmungen_not_tidy" 
   
-<countdown-timer class="countdown" id="timer_fe9124e8" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_836b08f3" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 
 
@@ -2741,7 +2741,7 @@ df_tidy %&gt;%
 4. Speichere das Resultat in der Variable **geburten_ch_2010**
 
 
-<countdown-timer class="countdown" id="timer_5644d3b6" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_79b8c115" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 
 ---
 ----
@@ -3124,7 +3124,7 @@ Speichere das Resultat unter dem Namen **geburten_ch_2010_date**
 3. Zähle die Geburten pro (Geburts-)Jahr im Datensatz&lt;br&gt;
 **Tipp:** Nutze `group_by()` sowie `count()` bzw. `summarise()` und `n()`
 
-<countdown-timer class="countdown" id="timer_2d3285f4" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_f50c5228" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 ----
 
@@ -3491,7 +3491,7 @@ Speichere den neuen Datensatz unter dem Namen `geburten_join`
 
 2. Wie lautet der häufigste männliche Vorname für Kinder mit der Nationalität Nordmazedonien im Datensatz?
 
-<countdown-timer class="countdown" id="timer_e2892e4a" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_9b6f89bb" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 ----
 ## Good to know: Joins
@@ -4642,7 +4642,7 @@ Nutze dafür den Regex `\\d\\d\\d\\d-\\d\\d-\\d\\d`
 
 4. Entferne die Leerzeichen anführenden Leerzeichen aus der Spalte `Datum und Vorlage` (" Test " -&gt; "Test")
 
-<countdown-timer class="countdown" id="timer_98c913b0" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_075d2ecb" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 ----
 ## Good to know: stringi
@@ -4774,7 +4774,399 @@ Erstelle einen neuen Datensatz `geburten_time` und füge die neue Spalte hinzu.
 
 3. Wie könnte man dieses Problem theoretisch lösen?
 
-<countdown-timer class="countdown" id="timer_65e227f1" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_40363cd4" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---
+----
+## Recap Session 3: Was haben wir gelernt?
+
+.pull-left[
+**Session 3 – Themen:**
+
+1. Conditional Statements – `ifelse()`, `case_when()`, `if...else`
+2. `stringr` – Arbeiten mit Text
+3. Regular Expressions (Regex) – Muster in Strings finden
+4. `lubridate` – Datum und Zeit
+]
+
+.pull-right[
+&lt;figure style="text-align:center; margin-top:2em;"&gt;
+  &lt;a href='https://stringr.tidyverse.org' target="_blank"&gt;
+    &lt;img src='https://stringr.tidyverse.org/logo.png' style='height:90px; margin:5px;'/&gt;
+  &lt;/a&gt;
+  &lt;a href='https://lubridate.tidyverse.org' target="_blank"&gt;
+    &lt;img src='https://lubridate.tidyverse.org/logo.png' style='height:90px; margin:5px;'/&gt;
+  &lt;/a&gt;
+  &lt;a href='https://dplyr.tidyverse.org' target="_blank"&gt;
+    &lt;img src='https://dplyr.tidyverse.org/logo.png' style='height:90px; margin:5px;'/&gt;
+  &lt;/a&gt;
+&lt;/figure&gt;
+]
+
+---
+----
+## Recap: Conditional Statements
+
+&lt;figure class="logo-fig logo-fig-small"&gt;
+  &lt;a href='https://dplyr.tidyverse.org' target="_blank"&gt;
+    &lt;img src='https://dplyr.tidyverse.org/logo.png' class='logo'/&gt;
+  &lt;/a&gt;
+&lt;/figure&gt;
+
+Bedingte Ausdrücke verknüpfen Logik mit Datentransformation: **"Wenn x, dann y, sonst z"**
+
+.panelset[
+.panel[.panel-name[ifelse()]
+Geeignet für **einfache** Wenn-Dann-Logik:
+
+``` r
+df %&gt;%
+  mutate(gruppe = ifelse(alter &lt; 18, "unter 18", "18 oder älter"))
+```
+&gt; Mehrere Bedingungen → verschachtelte `ifelse()` werden schnell unübersichtlich.
+]
+.panel[.panel-name[case_when()]
+Bevorzugte Variante bei **mehreren Kategorien** – übersichtlicher als verschachteltes `ifelse()`:
+
+``` r
+df %&gt;%
+  mutate(altersklasse = case_when(
+    alter &lt; 20         ~ "unter 20",
+    alter &lt; 30         ~ "20 bis 29",
+    alter &lt; 40         ~ "30 bis 39",
+    .default           =  "40 und älter"   # .default ersetzt TRUE ~ in neueren Versionen
+  ))
+```
+]
+.panel[.panel-name[if...else]
+Für Steuerlogik **ausserhalb** von Pipelines (z.B. in Funktionen und Loops):
+
+``` r
+x &lt;- 7
+
+if (x %% 2 == 0) {
+  print("gerade")
+} else {
+  print("ungerade")
+}
+```
+]
+]
+
+---
+----
+## Recap: stringr
+
+&lt;figure class="logo-fig logo-fig-small"&gt;
+  &lt;a href='https://stringr.tidyverse.org' target="_blank"&gt;
+    &lt;img src='https://stringr.tidyverse.org/logo.png' class='logo'/&gt;
+  &lt;/a&gt;
+&lt;/figure&gt;
+
+Alle `stringr`-Funktionen beginnen mit `str_` und nehmen einen **String-Vektor** als erstes Argument.
+
+.panelset[
+.panel[.panel-name[str_detect]
+Enthält der String das Muster? → gibt `TRUE` / `FALSE` zurück (ideal für `filter()`)
+
+``` r
+str_detect(c("Kanton Thurgau", "Kanton Zürich", "Bund"), "Thurgau")
+```
+
+```
+## [1]  TRUE FALSE FALSE
+```
+]
+.panel[.panel-name[str_extract]
+Muster aus String **extrahieren**
+
+``` r
+str_extract(c("Bericht_2023_final.xlsx",
+              "Bericht_2024_entwurf.xlsx"),
+            pattern = "\\d{4}")
+```
+
+```
+## [1] "2023" "2024"
+```
+]
+.panel[.panel-name[str_replace]
+Muster **ersetzen** (erstes Auftreten; `str_replace_all()` für alle)
+
+``` r
+str_replace("Bericht 2022 final", "2022", "2026")
+```
+
+```
+## [1] "Bericht 2026 final"
+```
+]
+.panel[.panel-name[str_remove]
+Muster **entfernen** (erstes Auftreten; `str_remove_all()` für alle)
+
+``` r
+str_remove(c("  Thurgau  ", "  Zürich  "), "\\s+")
+```
+
+```
+## [1] "Thurgau  " "Zürich  "
+```
+]
+.panel[.panel-name[str_trim / str_to_*]
+**Leerzeichen** an Rand entfernen &amp; **Gross-/Kleinschreibung** anpassen
+
+``` r
+str_trim("   Felix Lorenz   ")
+```
+
+```
+## [1] "Felix Lorenz"
+```
+
+``` r
+str_to_lower("KANTON THURGAU")
+```
+
+```
+## [1] "kanton thurgau"
+```
+
+``` r
+str_to_upper("kanton thurgau")
+```
+
+```
+## [1] "KANTON THURGAU"
+```
+]
+]
+
+---
+----
+## Recap: Regular Expressions (Regex)
+
+&lt;figure class="logo-fig logo-fig-small"&gt;
+  &lt;a href='https://stringr.tidyverse.org' target="_blank"&gt;
+    &lt;img src='https://stringr.tidyverse.org/logo.png' class='logo'/&gt;
+  &lt;/a&gt;
+&lt;/figure&gt;
+
+Regex sind **Suchmuster** für Strings – werden in allen `str_*`-Funktionen als `pattern` übergeben.
+
+.panelset[
+.panel[.panel-name[Zeichenklassen]
+
+| Regex | Bedeutung |
+|-------|-----------|
+| `\\d` | eine Ziffer (0–9) |
+| `\\w` | ein Wortzeichen (Buchstabe, Ziffer, _) |
+| `\\s` | ein Leerzeichen / Whitespace |
+| `.`   | beliebiges Zeichen (ausser Zeilenumbruch) |
+| `[A-Z]` | ein Grossbuchstabe A–Z |
+
+]
+.panel[.panel-name[Quantoren]
+
+| Regex | Bedeutung |
+|-------|-----------|
+| `?` | 0 oder 1 Mal |
+| `*` | 0 oder mehr Mal |
+| `+` | 1 oder mehr Mal |
+| `{n}` | genau n Mal |
+| `{n,m}` | zwischen n und m Mal |
+
+]
+.panel[.panel-name[Beispiele]
+
+``` r
+# Datum im Format YYYY-MM-DD finden
+str_extract("Sitzung am 2024-03-15 geplant.", "\\d{4}-\\d{2}-\\d{2}")
+```
+
+```
+## [1] "2024-03-15"
+```
+
+``` r
+# PLZ (4 Ziffern) extrahieren
+str_extract("8510 Frauenfeld", "^\\d{4}")
+```
+
+```
+## [1] "8510"
+```
+]
+.panel[.panel-name[Tipp: Regex testen]
+Online-Tools helfen beim Entwickeln und Testen:
+
+- [regexr.com](https://regexr.com/) – interaktiver Editor mit Erklärungen
+- [regex101.com](https://regex101.com/) – mit R-flavour auswählbar
+
+&gt; In R müssen Backslashes verdoppelt werden: `\d` → `"\\d"`
+]
+]
+
+---
+----
+## Recap: lubridate
+
+&lt;figure class="logo-fig logo-fig-small"&gt;
+  &lt;a href='https://lubridate.tidyverse.org' target="_blank"&gt;
+    &lt;img src='https://lubridate.tidyverse.org/logo.png' class='logo'/&gt;
+  &lt;/a&gt;
+&lt;/figure&gt;
+
+`lubridate` macht das Arbeiten mit Datums- und Zeitangaben deutlich einfacher als base R.
+
+.panelset[
+.panel[.panel-name[Strings → Datum]
+Funktion richtet sich nach der **Reihenfolge** im String:
+
+``` r
+ymd("2024-03-15")        # Jahr-Monat-Tag
+```
+
+```
+## [1] "2024-03-15"
+```
+
+``` r
+dmy("15.03.2024")        # Tag-Monat-Jahr
+```
+
+```
+## [1] "2024-03-15"
+```
+
+``` r
+mdy("03/15/2024")        # Monat-Tag-Jahr
+```
+
+```
+## [1] "2024-03-15"
+```
+]
+.panel[.panel-name[Datum + Uhrzeit]
+Anhängen von `_hms`, `_hm` etc.:
+
+``` r
+dmy_hms("15.03.2024 09:30:00")
+```
+
+```
+## [1] "2024-03-15 09:30:00 UTC"
+```
+]
+.panel[.panel-name[Komponenten extrahieren]
+Einzelne Teile eines Datums auslesen:
+
+``` r
+d &lt;- ymd("2024-03-15")
+year(d);  month(d);  day(d);  wday(d, label = TRUE)
+```
+
+```
+## [1] 2024
+```
+
+```
+## [1] 3
+```
+
+```
+## [1] 15
+```
+
+```
+## [1] Fri
+## Levels: Sun &lt; Mon &lt; Tue &lt; Wed &lt; Thu &lt; Fri &lt; Sat
+```
+]
+.panel[.panel-name[Rechnen mit Daten]
+
+``` r
+today &lt;- ymd("2026-03-17")
+today + days(10)           # 10 Tage addieren
+```
+
+```
+## [1] "2026-03-27"
+```
+
+``` r
+today - years(1)           # 1 Jahr subtrahieren
+```
+
+```
+## [1] "2025-03-17"
+```
+
+``` r
+interval(ymd("2000-01-01"), today) / years(1)  # Alter berechnen
+```
+
+```
+## [1] 26.20548
+```
+]
+.panel[.panel-name[Runden]
+
+``` r
+round_date(ymd_hms("2024-03-15 14:22:00"), unit = "month")
+```
+
+```
+## [1] "2024-03-01 UTC"
+```
+
+``` r
+floor_date(ymd_hms("2024-03-15 14:22:00"), unit = "year")
+```
+
+```
+## [1] "2024-01-01 UTC"
+```
+]
+]
+
+---
+----
+## Recap Session 3: Zusammenfassung
+
+| Funktion / Konzept | Package | Was macht es? |
+|--------------------|---------|---------------|
+| `ifelse()` | base R | Einfache Wenn-Dann-Bedingung (vektorisiert) |
+| `case_when()` | dplyr | Mehrere Kategorien übersichtlich definieren |
+| `if...else` | base R | Steuerlogik in Funktionen und Loops |
+| `str_detect()` | stringr | Prüfen ob Muster im String enthalten ist |
+| `str_extract()` | stringr | Muster aus String extrahieren |
+| `str_replace()` | stringr | Muster im String ersetzen |
+| `str_remove()` | stringr | Muster aus String entfernen |
+| `str_trim()` | stringr | Leerzeichen am Rand entfernen |
+| Regex `\\d`, `\\w`, `+`, `{n}` | – | Flexible Suchmuster für Strings |
+| `ymd()` / `dmy()` | lubridate | String → Datum parsen |
+| `year()` / `month()` | lubridate | Datum-Komponenten extrahieren |
+| `days()` / `years()` | lubridate | Zeitabstände berechnen |
+
+&gt; **Merke:** `stringr` und `lubridate` sind eng verzahnt –
+&gt; Datumsspalten kommen oft als String und müssen erst mit `lubridate` geparst werden.
 ---
 
 
@@ -6572,7 +6964,7 @@ ggplot(data = geburten_sample, aes(x=age_v, y=age_m))+
 .panel[.panel-name[Grafik]
 Alter des Vaters auf der x-Achse und Alter der Mutter auf der y-Achses
 
-&lt;img src="index_files/figure-html/unnamed-chunk-628-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-660-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 ]
 
@@ -6604,7 +6996,7 @@ ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = sex))+
 ```
 ]
 .panel[.panel-name[Fig 1]
-&lt;img src="index_files/figure-html/unnamed-chunk-630-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-662-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 .panel[.panel-name[Bsp 2]
 `sex` wird als numerische Variable erkannt weshalb eine Umwandlung nötig ist
@@ -6615,7 +7007,7 @@ ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = as.factor(sex)))+
 ```
 ]
 .panel[.panel-name[Fig 2]
-&lt;img src="index_files/figure-html/unnamed-chunk-632-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-664-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 .panel[.panel-name[Bsp 3]
 Ausserhalb des `aes()` Befehls können auch statische Variablen als aesthetics definiert werden (siehe [hier](https://ggplot2-book.org/layers.html#setting-mapping))
@@ -6626,7 +7018,7 @@ ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = as.factor(sex)))+
 ```
 ]
 .panel[.panel-name[Fig 3]
-&lt;img src="index_files/figure-html/unnamed-chunk-634-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-666-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 ]
 
@@ -6660,7 +7052,7 @@ ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = as.factor(sex)))+
 ```
 ]
 .panel[.panel-name[Fig]
-&lt;img src="index_files/figure-html/unnamed-chunk-636-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-668-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 ]
 
@@ -6691,7 +7083,7 @@ geburten %&gt;%
 
 ]
 .panel[.panel-name[Fig 1]
-&lt;img src="index_files/figure-html/unnamed-chunk-638-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-670-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 .panel[.panel-name[Bsp 2]
 - Hinzufügen einer Linie als zusätzlicher Layer
@@ -6707,7 +7099,7 @@ geburten %&gt;%
 ```
 ]
 .panel[.panel-name[Fig 2]
-&lt;img src="index_files/figure-html/unnamed-chunk-640-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-672-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 .panel[.panel-name[Bsp 3]
 - Durchschnittliches Alter der Mutter und des Vaters bei Geburt
@@ -6724,7 +7116,7 @@ geburten %&gt;%
 ```
 ]
 .panel[.panel-name[Fig 3]
-&lt;img src="index_files/figure-html/unnamed-chunk-642-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-674-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 .panel[.panel-name[Bsp 4]
 - Ermittlung von Missing Values
@@ -6740,7 +7132,7 @@ geburten %&gt;%
 ```
 ]
 .panel[.panel-name[Fig 3]
-&lt;img src="index_files/figure-html/unnamed-chunk-644-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-676-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 ]
 
@@ -6770,7 +7162,7 @@ Stelle das erreichte Alter von Männern und Frauen im Zeitverlauf gegenüber.
 - Füge einen Titel sowie eine Beschriftung für X- und Y-Achse hinzu.
 - Verwende dafür die labs() Funktion (`?ggplot2::labs()` für Hilfe)
 
-<countdown-timer class="countdown" id="timer_98da3139" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_0c8c7156" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 
 ---
 ----
@@ -7340,7 +7732,7 @@ csv_sas_win |&gt; slice(42) |&gt; select(GdenameTG,Quote_Kategorie)
 &lt;/figure&gt;
 ## Daten Zwischenspeichern
 
-![](index_files/figure-html/unnamed-chunk-687-1.png)&lt;!-- --&gt;
+![](index_files/figure-html/unnamed-chunk-719-1.png)&lt;!-- --&gt;
 ---
 
 
@@ -7525,7 +7917,7 @@ Repliziere die Tabelle in `Slides/Daten/openxlsx_table.xlsx`.
 Speichere die Datei unter `Slides/Daten/openxlsx_table_DEIN_KÜRZEL.xlsx`.
 
 ![openxlsx Aufgabe](img/openxlsx_exercise.png)
-<countdown-timer class="countdown" id="timer_145c130e" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_a051f7c1" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 ----
 &lt;figure class="logo-fig logo-fig-small"&gt;
@@ -7856,7 +8248,7 @@ Gegeben ist ausserdem die Datei `Slides/Daten/2023_Gde_Geb_ab2000.xlsx`
                                                                                                          
 Füge die Geburtenzahlen für das Jahr 2024 in die Excel `2023_Gde_Geb_ab2000.xlsx` ein und speichere sie als **`Slides/Daten/2024_Gde_Geb_ab2000_DEIN_KÜRZEL.xlsx`** neu ab         
 
-<countdown-timer class="countdown" id="timer_a017c392" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_b54dda47" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 
 
@@ -8976,7 +9368,7 @@ Beachte, dass der finale Datensatz lokal als normaler R data.frame nutzbar sein 
 ## 4          2015   4471             4.10
 ```
 
-<countdown-timer class="countdown" id="timer_bed6b24a" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_01de8f5f" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 
 

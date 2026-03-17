@@ -14,9 +14,12 @@
 # ---------------
 #   1. Welche Gemeinden verzeichneten zwischen 2015 und 2022 das stärkste
 #      Bevölkerungswachstum (absolut und prozentual)?
+#
 #   2. Wie entwickelte sich die Bevölkerung in den fünf Bezirken?
+#
 #   3. Gibt es einen Zusammenhang zwischen Gemeindegrösse und
 #      Sozialhilfequote?
+#
 #   4. Welche Gemeinden haben gleichzeitig starkes Wachstum und eine
 #      überdurchschnittliche Sozialhilfequote?
 #
@@ -51,8 +54,7 @@ library(tidyverse)  # Lädt readr, tidyr, dplyr, ggplot2 und weitere auf einmal
 # Die Datei stammt direkt aus dem Statistiksystem – typisches Exportformat
 
 bev_roh <- read_csv(
-  "rmd/Daten/bevölkerung.csv",
-  locale = locale(encoding = "UTF-8")  # Falls Umlaute falsch erscheinen: "latin1"
+  "rmd/Daten/bevölkerung.csv"  # Falls Umlaute falsch erscheinen: "latin1"
 )
 
 bev_roh <- read_csv(
@@ -80,6 +82,12 @@ sozial_roh <- read_delim(
   delim   = ";",
   locale  = locale(encoding = "latin1")  # Sicherstellen: Umlaute in Gemeindenamen
 )
+
+sozial_roh <- read_csv(
+  "rmd/Daten/1_Sozialhilfequote_Bezüger_Dossiers_Gde_2023.csv"
+)
+
+
 
 glimpse(sozial_roh)
 # → 80 Zeilen, 7 Spalten
@@ -128,6 +136,7 @@ gemeinden_wide <- bev_roh |>
   filter(bfs_nr >= 4000)
 
 nrow(gemeinden_wide)  # → 80 (eine Zeile pro Gemeinde, 8 Jahresspalten)
+ncol(gemeinden_wide)
 
 # Bezirkszeilen separat behalten (für Vergleiche später)
 bezirke_wide <- bev_roh |>
@@ -204,7 +213,7 @@ wachstum <- gemeinden_long |>
   # c) Wachstumskennzahlen berechnen
   mutate(
     zuwachs_abs = bev_2022 - bev_2015,
-    zuwachs_pct = round((bev_2022 - bev_2015) / bev_2015 * 100, 1)
+    zuwachs_pct = round(zuwachs_abs / bev_2015 * 100, 1)
   ) |>
 
   # d) Gemeinden nach Einwohnerzahl 2015 kategorisieren
@@ -244,10 +253,14 @@ wachstum <- gemeinden_wide |>
 cat("\n── Top 10: Stärkstes Bevölkerungswachstum 2015–2022 (%)\n")
 wachstum |>
   arrange(desc(zuwachs_pct)) |>
-  select(Gemeinde = gemeinde, `Bev. 2015` = bev_2015, `Bev. 2022` = bev_2022,
-         `Zuwachs abs.` = zuwachs_abs, `Zuwachs %` = zuwachs_pct) |>
-  slice_head(n = 10) |>
-  print()
+  select(
+    Gemeinde = gemeinde,
+    `Bev. 2015` = bev_2015,
+    `Bev. 2022` = bev_2022,
+    `Zuwachs abs.` = zuwachs_abs,
+    `Zuwachs %` = zuwachs_pct
+  ) |>
+  slice_head(n = 10) 
 
 # Und welche Gemeinden haben Bevölkerung verloren?
 cat("\n── Gemeinden mit Bevölkerungsrückgang 2015–2022\n")
@@ -311,11 +324,9 @@ bezirke_wide |>
 cat("\n── Anzahl wachsende vs. schrumpfende Gemeinden pro Bezirk\n")
 wachstum |>
   left_join(gemeinde_bezirk, by = "bfs_nr") |>
-  mutate(trend = if_else(zuwachs_pct >= 0, "Wachstum", "Rückgang")) |>
+  mutate(trend = if_else(zuwachs_pct >= 5, "grosses Wachstum", "kleines Wachstum")) |>
   count(bezirk, trend) |>
-  pivot_wider(names_from = trend, values_from = n, values_fill = 0) |>
-  arrange(desc(Wachstum)) |>
-  print()
+  pivot_wider(names_from = trend, values_from = n, values_fill = 0) 
 
 
 # ── FRAGESTELLUNG 3: Grössenklasse und Sozialhilfequote ─────────────────────
@@ -330,6 +341,8 @@ analyse <- wachstum |>
   left_join(sozial, by = "gemeinde") |>
   # Gemeinden ohne SH-Daten ausschliessen (fehlende Werte)
   filter(!is.na(sh_quote))
+
+nrow(analyse)
 
 cat("\nDatenbasis:", nrow(analyse), "Gemeinden mit vollständigen Daten\n")
 # Warum nicht 80?
@@ -346,8 +359,7 @@ analyse |>
     sh_quote_max    = max(sh_quote, na.rm = TRUE),
     bev_mittel_2022 = round(mean(bev_2022))
   ) |>
-  arrange(desc(sh_quote_mittel)) |>
-  print()
+  arrange(desc(sh_quote_mittel)) 
 
 # c) Auffällige Gemeinden: Starkes Wachstum UND überdurchschnittliche SH-Quote
 sh_schwelle      <- mean(analyse$sh_quote, na.rm = TRUE)
