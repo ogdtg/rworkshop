@@ -81,6 +81,9 @@ xaringanExtra::use_tachyons()
 ```{r child='rmd/lubridate.Rmd'}
 ```
 ---
+```{r child='rmd/recap_session3.Rmd'}
+```
+---
 ```{r child='rmd/listen.Rmd'}
 ```
 ---
