@@ -1,0 +1,277 @@
+---
+title: "Recap Session 4"
+author: "Felix Lorenz"
+date: "Workshop 2026"
+amt: "Amt für Daten und Statistik"
+stelle: ""
+output:
+  xaringan::moon_reader:
+    highlightStyle: github
+    highlightlines: true
+    highlightSpans: true
+    css: ["default","styles_x.css"]
+---
+
+```{r setup-recap4, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, dpi = 300, message = FALSE, warning = FALSE)
+library(dplyr)
+library(purrr)
+```
+
+---
+----
+## Recap Session 4: Was haben wir gelernt?
+
+.pull-left[
+**Session 4 – Themen:**
+
+1. Listen – flexible Container für beliebige Datentypen
+2. Loops – `for`, `while`, `break`, `next`
+3. `apply`-Familie – `lapply`, `sapply`, `apply`, …
+4. `purrr` – Iterationen im Tidyverse-Stil
+]
+
+.pull-right[
+<figure style="text-align:center; margin-top:2em;">
+  <a href='https://purrr.tidyverse.org' target="_blank">
+    <img src='https://purrr.tidyverse.org/logo.png' style='height:110px; margin:5px;'/>
+  </a>
+</figure>
+]
+
+---
+----
+## Recap: Listen
+
+Listen sind die **flexibelsten Datencontainer** in R – jedes Element kann einen anderen Typ und eine andere Länge haben.
+
+.panelset[
+.panel[.panel-name[Erstellen & Zugriff]
+```{r echo=TRUE}
+my_list <- list(name = "Thurgau", einwohner = 285000, kantone = c("TG","SH"))
+
+my_list[["name"]]       # direkter Zugriff → gibt Wert zurück
+my_list["name"]         # Container-Zugriff → gibt Liste zurück
+my_list$einwohner       # $ -Operator
+```
+]
+.panel[.panel-name[Bearbeiten]
+```{r echo=TRUE}
+my_list[["hauptort"]] <- "Frauenfeld"  # Element hinzufügen
+my_list[["einwohner"]] <- NULL          # Element entfernen
+names(my_list)
+```
+]
+.panel[.panel-name[Nested Lists]
+```{r echo=TRUE}
+nested <- list(
+  geo  = list(kanton = "TG", flaeche = 991),
+  bev  = list(einwohner = 285000, dichte = 288)
+)
+nested$geo$kanton
+nested[["bev"]][["dichte"]]
+```
+]
+.panel[.panel-name[Liste → Vektor / Data Frame]
+```{r echo=TRUE, eval=FALSE}
+unlist(my_list)                 # Liste → Vektor (wenn möglich)
+dplyr::bind_rows(list_of_dfs)  # Liste von data.frames → ein data.frame
+```
+]
+]
+
+---
+----
+## Recap: for-Loop
+
+Ein `for`-Loop führt einen Codeblock **für jedes Element** einer Sequenz aus.
+
+.panelset[
+.panel[.panel-name[Grundstruktur]
+```{r echo=TRUE, eval=FALSE}
+for (i in sequenz) {
+  # Hauptteil: wird pro Iteration einmal ausgeführt
+  do_something(i)
+}
+```
+]
+.panel[.panel-name[Ergebnis speichern]
+```{r echo=TRUE}
+result <- list()
+for (kanton in c("TG", "ZH", "BE")) {
+  result[[kanton]] <- paste0("Kanton: ", kanton)
+}
+result
+```
+]
+.panel[.panel-name[break & next]
+```{r echo=TRUE}
+# next: aktuelle Iteration überspringen
+for (i in 1:5) {
+  if (i == 3) next
+  print(i)
+}
+```
+```{r echo=TRUE}
+# break: Loop vorzeitig beenden
+for (i in 1:5) {
+  if (i == 3) break
+  print(i)
+}
+```
+]
+.panel[.panel-name[while-Loop]
+Läuft **solange** eine Bedingung erfüllt ist – Abbruchbedingung nicht vergessen!
+```{r echo=TRUE}
+i <- 1
+while (i <= 3) {
+  print(paste0("Iteration: ", i))
+  i <- i + 1
+}
+```
+]
+]
+
+---
+----
+## Recap: apply-Familie
+
+Die `apply`-Funktionen wenden eine Funktion auf jedes Element einer Liste / eines Vektors / einer Matrix an – **kompakter** als ein Loop.
+
+.panelset[
+.panel[.panel-name[lapply]
+Gibt immer eine **Liste** zurück:
+```{r echo=TRUE}
+zahlen <- list(a = c(1,3,5), b = c(2,4,6), c = c(10,20,30))
+lapply(zahlen, mean)
+```
+]
+.panel[.panel-name[sapply]
+Wie `lapply`, gibt aber wenn möglich einen **Vektor** zurück:
+```{r echo=TRUE}
+sapply(zahlen, mean)
+```
+]
+.panel[.panel-name[apply]
+Für data.frames / Matrizen – reihen- (`1`) oder spaltenweise (`2`):
+```{r echo=TRUE}
+df <- data.frame(a = c(1,2,3), b = c(4,5,6))
+apply(df, 2, sum)   # Spaltensummen
+```
+]
+.panel[.panel-name[Anonyme Funktion]
+Eigene Logik direkt mitgeben – ohne separaten Funktionsnamen:
+```{r echo=TRUE}
+lapply(zahlen, function(x) {
+  paste0("Mittelwert: ", mean(x))
+})
+```
+]
+]
+
+---
+----
+## Recap: purrr – map()
+
+`purrr::map()` ist das tidyverse-Äquivalent zu `lapply` – integrierbar in `%>%` / `|>` Pipelines.
+
+.panelset[
+.panel[.panel-name[map]
+Gibt immer eine **Liste** zurück (= `lapply`):
+```{r echo=TRUE, eval=FALSE}
+csv_files %>%
+  map(read_csv2)
+```
+]
+.panel[.panel-name[map mit ~.x]
+Kurzschreibweise für anonyme Funktionen: `~` ersetzt `function(x)`, `.x` ist das aktuelle Element:
+```{r echo=TRUE, eval=FALSE}
+# Statt:  function(x) { mean(x, na.rm = TRUE) }
+zahlen %>% map(~ mean(.x, na.rm = TRUE))
+```
+]
+.panel[.panel-name[map-Varianten]
+
+| Funktion | Rückgabe |
+|----------|----------|
+| `map()` | Liste |
+| `map_df()` / `map_dfr()` | data.frame (Zeilen gebunden) |
+| `map_chr()` | character-Vektor |
+| `map_dbl()` | numeric-Vektor |
+| `map_lgl()` | logical-Vektor |
+
+]
+.panel[.panel-name[Vergleich]
+```{r echo=TRUE, eval=FALSE}
+# for-loop
+result <- list()
+for (f in csv_files) { result[[f]] <- read_csv2(f) }
+
+# lapply
+result <- lapply(csv_files, read_csv2)
+
+# purrr
+result <- csv_files %>% map(read_csv2)
+```
+Alle drei liefern dasselbe Ergebnis – `map` ist am kürzesten und Pipeline-freundlich.
+]
+]
+
+---
+----
+## Recap: purrr – Weitere nützliche Funktionen
+
+<figure class="logo-fig logo-fig-small">
+  <a href='https://purrr.tidyverse.org' target="_blank">
+    <img src='https://purrr.tidyverse.org/logo.png' class='logo'/>
+  </a>
+</figure>
+
+.panelset[
+.panel[.panel-name[keep & discard]
+Listen filtern nach einer Bedingung:
+```{r echo=TRUE}
+zahlen <- list(a = c(1,3,5), b = c(2,4,6), c = c(10,20,30))
+
+keep(zahlen,    ~ mean(.x) > 5)  # nur Elemente mit Mittelwert > 5
+discard(zahlen, ~ mean(.x) > 5)  # alle anderen
+```
+]
+.panel[.panel-name[every & some]
+```{r echo=TRUE}
+every(zahlen, ~ max(.x) > 0)   # Gilt Bedingung für JEDES Element?
+some(zahlen,  ~ max(.x) > 25)  # Gilt Bedingung für MINDESTENS EINES?
+```
+]
+.panel[.panel-name[pluck]
+Sicherer Zugriff auf verschachtelte Listen (kein Error, sondern `NULL` wenn fehlt):
+```{r echo=TRUE, eval=FALSE}
+nested_list %>% pluck("geo", "kanton")
+# entspricht: nested_list[["geo"]][["kanton"]]
+```
+]
+]
+
+---
+----
+## Recap Session 4: Zusammenfassung
+
+| Konzept / Funktion | Wo? | Was macht es? |
+|--------------------|-----|---------------|
+| `list()` | base R | Flexibler Container für gemischte Daten |
+| `[[]]` / `$` | base R | Direkter Zugriff auf Listenelement |
+| `unlist()` | base R | Liste → Vektor |
+| `bind_rows()` | dplyr | Liste von data.frames → ein data.frame |
+| `for (i in x) {}` | base R | Schleife über alle Elemente von x |
+| `while (bed) {}` | base R | Schleife solange Bedingung gilt |
+| `break` / `next` | base R | Loop abbrechen / Iteration überspringen |
+| `lapply()` | base R | Funktion auf Liste anwenden → Liste |
+| `sapply()` | base R | Funktion auf Liste anwenden → Vektor |
+| `apply()` | base R | Funktion auf data.frame/Matrix anwenden |
+| `map()` | purrr | Tidyverse-Äquivalent zu `lapply` |
+| `map_df()` / `map_chr()` | purrr | `map` mit typisiertem Rückgabewert |
+| `keep()` / `discard()` | purrr | Liste nach Bedingung filtern |
+| `pluck()` | purrr | Sicherer Zugriff auf nested Lists |
+
+> **Merke:** `for`-Loops für komplexe Ablaufsteuerung, `lapply`/`map` für einfache
+> Wiederholungen über Listen – beide sind gültige Werkzeuge.

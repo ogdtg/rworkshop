@@ -100,6 +100,9 @@ xaringanExtra::use_tachyons()
 ```{r child='rmd/loops_apply.Rmd'}
 ```
 ---
+```{r child='rmd/recap_session4.Rmd'}
+```
+---
 ```{r child='rmd/funktionen.Rmd'}
 ```
 ---
