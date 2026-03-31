@@ -1827,7 +1827,7 @@ dataset &lt;- readRDS("data.rds")
 
 Benutze jeweils die `head()` Funktion um **die ersten 3 Zeilen** des Datensatzes anzeigen zu lassen. 
 
-<countdown-timer class="countdown" id="timer_3a9852d4" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_3cfa122b" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 
 ---
 ----
@@ -2155,7 +2155,7 @@ Das Ergebnis soll auf eine Nachkommastelle gerundet werden.
   &lt;/li&gt;
 &lt;/ol&gt;
 
-<countdown-timer class="countdown" id="timer_95889255" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_aad98046" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 
 ---
 ----
@@ -2472,7 +2472,7 @@ abstimmungen &lt;- readRDS("Daten/Abstimmungen.rds")
 2. Bringe die Daten wieder in die Ursprungsform (long format)&lt;br&gt;
   Speichere das Ergebnis unter "abstimmungen_not_tidy" 
   
-<countdown-timer class="countdown" id="timer_836b08f3" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_219662d6" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 
 
@@ -2741,7 +2741,7 @@ df_tidy %&gt;%
 4. Speichere das Resultat in der Variable **geburten_ch_2010**
 
 
-<countdown-timer class="countdown" id="timer_79b8c115" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_2a18517b" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 
 ---
 ----
@@ -3124,7 +3124,7 @@ Speichere das Resultat unter dem Namen **geburten_ch_2010_date**
 3. Zähle die Geburten pro (Geburts-)Jahr im Datensatz&lt;br&gt;
 **Tipp:** Nutze `group_by()` sowie `count()` bzw. `summarise()` und `n()`
 
-<countdown-timer class="countdown" id="timer_f50c5228" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_fc52df94" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 ----
 
@@ -3491,7 +3491,7 @@ Speichere den neuen Datensatz unter dem Namen `geburten_join`
 
 2. Wie lautet der häufigste männliche Vorname für Kinder mit der Nationalität Nordmazedonien im Datensatz?
 
-<countdown-timer class="countdown" id="timer_9b6f89bb" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_f9d1954b" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 ----
 ## Good to know: Joins
@@ -4642,7 +4642,7 @@ Nutze dafür den Regex `\\d\\d\\d\\d-\\d\\d-\\d\\d`
 
 4. Entferne die Leerzeichen anführenden Leerzeichen aus der Spalte `Datum und Vorlage` (" Test " -&gt; "Test")
 
-<countdown-timer class="countdown" id="timer_075d2ecb" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_4d372c22" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 ----
 ## Good to know: stringi
@@ -4774,7 +4774,7 @@ Erstelle einen neuen Datensatz `geburten_time` und füge die neue Spalte hinzu.
 
 3. Wie könnte man dieses Problem theoretisch lösen?
 
-<countdown-timer class="countdown" id="timer_40363cd4" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_c84c07ba" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 
 
@@ -6385,6 +6385,422 @@ Weiterführende Informationen zum `purr` Package:
 
 
 
+---
+----
+## Recap Session 4: Was haben wir gelernt?
+
+.pull-left[
+**Session 4 – Themen:**
+
+1. Listen – flexible Container für beliebige Datentypen
+2. Loops – `for`, `while`, `break`, `next`
+3. `apply`-Familie – `lapply`, `sapply`, `apply`, …
+4. `purrr` – Iterationen im Tidyverse-Stil
+]
+
+.pull-right[
+&lt;figure style="text-align:center; margin-top:2em;"&gt;
+  &lt;a href='https://purrr.tidyverse.org' target="_blank"&gt;
+    &lt;img src='https://purrr.tidyverse.org/logo.png' style='height:110px; margin:5px;'/&gt;
+  &lt;/a&gt;
+&lt;/figure&gt;
+]
+
+---
+----
+## Recap: Listen
+
+Listen sind die **flexibelsten Datencontainer** in R – jedes Element kann einen anderen Typ und eine andere Länge haben.
+
+.panelset[
+.panel[.panel-name[Erstellen &amp; Zugriff]
+
+``` r
+my_list &lt;- list(name = "Thurgau", einwohner = 285000, kantone = c("TG","SH"))
+
+my_list[["name"]]       # direkter Zugriff → gibt Wert zurück
+```
+
+```
+## [1] "Thurgau"
+```
+
+``` r
+my_list["name"]         # Container-Zugriff → gibt Liste zurück
+```
+
+```
+## $name
+## [1] "Thurgau"
+```
+
+``` r
+my_list$einwohner       # $ -Operator
+```
+
+```
+## [1] 285000
+```
+]
+.panel[.panel-name[Bearbeiten]
+
+``` r
+my_list[["hauptort"]] &lt;- "Frauenfeld"  # Element hinzufügen
+my_list[["einwohner"]] &lt;- NULL          # Element entfernen
+names(my_list)
+```
+
+```
+## [1] "name"     "kantone"  "hauptort"
+```
+]
+.panel[.panel-name[Nested Lists]
+
+``` r
+nested &lt;- list(
+  geo  = list(kanton = "TG", flaeche = 991),
+  bev  = list(einwohner = 285000, dichte = 288)
+)
+nested$geo$kanton
+```
+
+```
+## [1] "TG"
+```
+
+``` r
+nested[["bev"]][["dichte"]]
+```
+
+```
+## [1] 288
+```
+]
+.panel[.panel-name[Liste → Vektor / Data Frame]
+
+``` r
+unlist(my_list)                 # Liste → Vektor (wenn möglich)
+dplyr::bind_rows(list_of_dfs)  # Liste von data.frames → ein data.frame
+```
+]
+]
+
+---
+----
+## Recap: for-Loop
+
+Ein `for`-Loop führt einen Codeblock **für jedes Element** einer Sequenz aus.
+
+.panelset[
+.panel[.panel-name[Grundstruktur]
+
+``` r
+for (i in sequenz) {
+  # Hauptteil: wird pro Iteration einmal ausgeführt
+  do_something(i)
+}
+```
+]
+.panel[.panel-name[Ergebnis speichern]
+
+``` r
+result &lt;- list()
+for (kanton in c("TG", "ZH", "BE")) {
+  result[[kanton]] &lt;- paste0("Kanton: ", kanton)
+}
+result
+```
+
+```
+## $TG
+## [1] "Kanton: TG"
+## 
+## $ZH
+## [1] "Kanton: ZH"
+## 
+## $BE
+## [1] "Kanton: BE"
+```
+]
+.panel[.panel-name[break &amp; next]
+
+``` r
+# next: aktuelle Iteration überspringen
+for (i in 1:5) {
+  if (i == 3) next
+  print(i)
+}
+```
+
+```
+## [1] 1
+## [1] 2
+## [1] 4
+## [1] 5
+```
+
+``` r
+# break: Loop vorzeitig beenden
+for (i in 1:5) {
+  if (i == 3) break
+  print(i)
+}
+```
+
+```
+## [1] 1
+## [1] 2
+```
+]
+.panel[.panel-name[while-Loop]
+Läuft **solange** eine Bedingung erfüllt ist – Abbruchbedingung nicht vergessen!
+
+``` r
+i &lt;- 1
+while (i &lt;= 3) {
+  print(paste0("Iteration: ", i))
+  i &lt;- i + 1
+}
+```
+
+```
+## [1] "Iteration: 1"
+## [1] "Iteration: 2"
+## [1] "Iteration: 3"
+```
+]
+]
+
+---
+----
+## Recap: apply-Familie
+
+Die `apply`-Funktionen wenden eine Funktion auf jedes Element einer Liste / eines Vektors / einer Matrix an – **kompakter** als ein Loop.
+
+.panelset[
+.panel[.panel-name[lapply]
+Gibt immer eine **Liste** zurück:
+
+``` r
+zahlen &lt;- list(a = c(1,3,5), b = c(2,4,6), c = c(10,20,30))
+lapply(zahlen, mean)
+```
+
+```
+## $a
+## [1] 3
+## 
+## $b
+## [1] 4
+## 
+## $c
+## [1] 20
+```
+]
+.panel[.panel-name[sapply]
+Wie `lapply`, gibt aber wenn möglich einen **Vektor** zurück:
+
+``` r
+sapply(zahlen, mean)
+```
+
+```
+##  a  b  c 
+##  3  4 20
+```
+]
+.panel[.panel-name[apply]
+Für data.frames / Matrizen – reihen- (`1`) oder spaltenweise (`2`):
+
+``` r
+df &lt;- data.frame(a = c(1,2,3), b = c(4,5,6))
+apply(df, 2, sum)   # Spaltensummen
+```
+
+```
+##  a  b 
+##  6 15
+```
+]
+.panel[.panel-name[Anonyme Funktion]
+Eigene Logik direkt mitgeben – ohne separaten Funktionsnamen:
+
+``` r
+lapply(zahlen, function(x) {
+  paste0("Mittelwert: ", mean(x))
+})
+```
+
+```
+## $a
+## [1] "Mittelwert: 3"
+## 
+## $b
+## [1] "Mittelwert: 4"
+## 
+## $c
+## [1] "Mittelwert: 20"
+```
+]
+]
+
+---
+----
+## Recap: purrr – map()
+
+`purrr::map()` ist das tidyverse-Äquivalent zu `lapply` – integrierbar in `%&gt;%` / `|&gt;` Pipelines.
+
+.panelset[
+.panel[.panel-name[map]
+Gibt immer eine **Liste** zurück (= `lapply`):
+
+``` r
+csv_files %&gt;%
+  map(read_csv2)
+```
+]
+.panel[.panel-name[map mit ~.x]
+Kurzschreibweise für anonyme Funktionen: `~` ersetzt `function(x)`, `.x` ist das aktuelle Element:
+
+``` r
+# Statt:  function(x) { mean(x, na.rm = TRUE) }
+zahlen %&gt;% map(~ mean(.x, na.rm = TRUE))
+```
+]
+.panel[.panel-name[map-Varianten]
+
+| Funktion | Rückgabe |
+|----------|----------|
+| `map()` | Liste |
+| `map_df()` / `map_dfr()` | data.frame (Zeilen gebunden) |
+| `map_chr()` | character-Vektor |
+| `map_dbl()` | numeric-Vektor |
+| `map_lgl()` | logical-Vektor |
+
+]
+.panel[.panel-name[Vergleich]
+
+``` r
+# for-loop
+result &lt;- list()
+for (f in csv_files) { result[[f]] &lt;- read_csv2(f) }
+
+# lapply
+result &lt;- lapply(csv_files, read_csv2)
+
+# purrr
+result &lt;- csv_files %&gt;% map(read_csv2)
+```
+Alle drei liefern dasselbe Ergebnis – `map` ist am kürzesten und Pipeline-freundlich.
+]
+]
+
+---
+----
+## Recap: purrr – Weitere nützliche Funktionen
+
+&lt;figure class="logo-fig logo-fig-small"&gt;
+  &lt;a href='https://purrr.tidyverse.org' target="_blank"&gt;
+    &lt;img src='https://purrr.tidyverse.org/logo.png' class='logo'/&gt;
+  &lt;/a&gt;
+&lt;/figure&gt;
+
+.panelset[
+.panel[.panel-name[keep &amp; discard]
+Listen filtern nach einer Bedingung:
+
+``` r
+zahlen &lt;- list(a = c(1,3,5), b = c(2,4,6), c = c(10,20,30))
+
+keep(zahlen,    ~ mean(.x) &gt; 5)  # nur Elemente mit Mittelwert &gt; 5
+```
+
+```
+## $c
+## [1] 10 20 30
+```
+
+``` r
+discard(zahlen, ~ mean(.x) &gt; 5)  # alle anderen
+```
+
+```
+## $a
+## [1] 1 3 5
+## 
+## $b
+## [1] 2 4 6
+```
+]
+.panel[.panel-name[every &amp; some]
+
+``` r
+every(zahlen, ~ max(.x) &gt; 0)   # Gilt Bedingung für JEDES Element?
+```
+
+```
+## [1] TRUE
+```
+
+``` r
+some(zahlen,  ~ max(.x) &gt; 25)  # Gilt Bedingung für MINDESTENS EINES?
+```
+
+```
+## [1] TRUE
+```
+]
+.panel[.panel-name[pluck]
+Sicherer Zugriff auf verschachtelte Listen (kein Error, sondern `NULL` wenn fehlt):
+
+``` r
+nested_list %&gt;% pluck("geo", "kanton")
+# entspricht: nested_list[["geo"]][["kanton"]]
+```
+]
+]
+
+---
+----
+## Recap Session 4: Zusammenfassung
+
+| Konzept / Funktion | Wo? | Was macht es? |
+|--------------------|-----|---------------|
+| `list()` | base R | Flexibler Container für gemischte Daten |
+| `[[]]` / `$` | base R | Direkter Zugriff auf Listenelement |
+| `unlist()` | base R | Liste → Vektor |
+| `bind_rows()` | dplyr | Liste von data.frames → ein data.frame |
+| `for (i in x) {}` | base R | Schleife über alle Elemente von x |
+| `while (bed) {}` | base R | Schleife solange Bedingung gilt |
+| `break` / `next` | base R | Loop abbrechen / Iteration überspringen |
+| `lapply()` | base R | Funktion auf Liste anwenden → Liste |
+| `sapply()` | base R | Funktion auf Liste anwenden → Vektor |
+| `apply()` | base R | Funktion auf data.frame/Matrix anwenden |
+| `map()` | purrr | Tidyverse-Äquivalent zu `lapply` |
+| `map_df()` / `map_chr()` | purrr | `map` mit typisiertem Rückgabewert |
+| `keep()` / `discard()` | purrr | Liste nach Bedingung filtern |
+| `pluck()` | purrr | Sicherer Zugriff auf nested Lists |
+
+&gt; **Merke:** `for`-Loops für komplexe Ablaufsteuerung, `lapply`/`map` für einfache
+&gt; Wiederholungen über Listen – beide sind gültige Werkzeuge.
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6964,7 +7380,7 @@ ggplot(data = geburten_sample, aes(x=age_v, y=age_m))+
 .panel[.panel-name[Grafik]
 Alter des Vaters auf der x-Achse und Alter der Mutter auf der y-Achses
 
-&lt;img src="index_files/figure-html/unnamed-chunk-660-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-701-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 ]
 
@@ -6996,7 +7412,7 @@ ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = sex))+
 ```
 ]
 .panel[.panel-name[Fig 1]
-&lt;img src="index_files/figure-html/unnamed-chunk-662-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-703-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 .panel[.panel-name[Bsp 2]
 `sex` wird als numerische Variable erkannt weshalb eine Umwandlung nötig ist
@@ -7007,7 +7423,7 @@ ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = as.factor(sex)))+
 ```
 ]
 .panel[.panel-name[Fig 2]
-&lt;img src="index_files/figure-html/unnamed-chunk-664-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-705-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 .panel[.panel-name[Bsp 3]
 Ausserhalb des `aes()` Befehls können auch statische Variablen als aesthetics definiert werden (siehe [hier](https://ggplot2-book.org/layers.html#setting-mapping))
@@ -7018,7 +7434,7 @@ ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = as.factor(sex)))+
 ```
 ]
 .panel[.panel-name[Fig 3]
-&lt;img src="index_files/figure-html/unnamed-chunk-666-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-707-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 ]
 
@@ -7052,7 +7468,7 @@ ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = as.factor(sex)))+
 ```
 ]
 .panel[.panel-name[Fig]
-&lt;img src="index_files/figure-html/unnamed-chunk-668-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-709-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 ]
 
@@ -7083,7 +7499,7 @@ geburten %&gt;%
 
 ]
 .panel[.panel-name[Fig 1]
-&lt;img src="index_files/figure-html/unnamed-chunk-670-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-711-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 .panel[.panel-name[Bsp 2]
 - Hinzufügen einer Linie als zusätzlicher Layer
@@ -7099,7 +7515,7 @@ geburten %&gt;%
 ```
 ]
 .panel[.panel-name[Fig 2]
-&lt;img src="index_files/figure-html/unnamed-chunk-672-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-713-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 .panel[.panel-name[Bsp 3]
 - Durchschnittliches Alter der Mutter und des Vaters bei Geburt
@@ -7116,7 +7532,7 @@ geburten %&gt;%
 ```
 ]
 .panel[.panel-name[Fig 3]
-&lt;img src="index_files/figure-html/unnamed-chunk-674-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-715-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 .panel[.panel-name[Bsp 4]
 - Ermittlung von Missing Values
@@ -7132,7 +7548,7 @@ geburten %&gt;%
 ```
 ]
 .panel[.panel-name[Fig 3]
-&lt;img src="index_files/figure-html/unnamed-chunk-676-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-717-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 ]
 
@@ -7162,7 +7578,7 @@ Stelle das erreichte Alter von Männern und Frauen im Zeitverlauf gegenüber.
 - Füge einen Titel sowie eine Beschriftung für X- und Y-Achse hinzu.
 - Verwende dafür die labs() Funktion (`?ggplot2::labs()` für Hilfe)
 
-<countdown-timer class="countdown" id="timer_0c8c7156" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_b88a0a21" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 
 ---
 ----
@@ -7732,7 +8148,7 @@ csv_sas_win |&gt; slice(42) |&gt; select(GdenameTG,Quote_Kategorie)
 &lt;/figure&gt;
 ## Daten Zwischenspeichern
 
-![](index_files/figure-html/unnamed-chunk-719-1.png)&lt;!-- --&gt;
+![](index_files/figure-html/unnamed-chunk-760-1.png)&lt;!-- --&gt;
 ---
 
 
@@ -7917,7 +8333,7 @@ Repliziere die Tabelle in `Slides/Daten/openxlsx_table.xlsx`.
 Speichere die Datei unter `Slides/Daten/openxlsx_table_DEIN_KÜRZEL.xlsx`.
 
 ![openxlsx Aufgabe](img/openxlsx_exercise.png)
-<countdown-timer class="countdown" id="timer_a051f7c1" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_4c45f429" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 ----
 &lt;figure class="logo-fig logo-fig-small"&gt;
@@ -8248,7 +8664,7 @@ Gegeben ist ausserdem die Datei `Slides/Daten/2023_Gde_Geb_ab2000.xlsx`
                                                                                                          
 Füge die Geburtenzahlen für das Jahr 2024 in die Excel `2023_Gde_Geb_ab2000.xlsx` ein und speichere sie als **`Slides/Daten/2024_Gde_Geb_ab2000_DEIN_KÜRZEL.xlsx`** neu ab         
 
-<countdown-timer class="countdown" id="timer_b54dda47" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_561fb41f" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 
 
@@ -8684,7 +9100,7 @@ response
 ## GET https://dataspot.apps.ktgcpp01.tg.ch/rest/dataspot/schemes/Referenzdaten/enumerations
 ## Status: 200 OK
 ## Content-Type: application/hal+json
-## Body: In memory (550117 bytes)
+## Body: In memory (550202 bytes)
 ```
 
 ``` r
@@ -8713,18 +9129,18 @@ referenzdaten
 
 ```
 ## # A tibble: 490 × 37
-##    `_type` id    `_version` tenantId publicState modelId href  description label
-##    &lt;chr&gt;   &lt;chr&gt;      &lt;int&gt; &lt;chr&gt;    &lt;chr&gt;       &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt;
-##  1 Refere… 9283…          4 51584d0… PUBLIC      13ae8d… /web… "ev. auch … Schw…
-##  2 Refere… 6a57…          1 51584d0… DRAFT       13ae8d… /web…  &lt;NA&gt;       Trae…
-##  3 Refere… 1127…          3 51584d0… DRAFT       13ae8d… /web… "nicht anw… Anza…
-##  4 Refere… 3eae…          1 51584d0… DRAFT       13ae8d… /web…  &lt;NA&gt;       Ehe/…
-##  5 Refere… 4412…          3 51584d0… DRAFT       13ae8d… /web… "Zählung d… Zaeh…
-##  6 Refere… d283…         11 51584d0… DRAFT       13ae8d… /web… "Privathau… Haus…
-##  7 Refere… 8a4a…          2 51584d0… DRAFT       13ae8d… /web…  &lt;NA&gt;       Haus…
-##  8 Refere… 018c…          6 51584d0… DRAFT       13ae8d… /web… "Berechnet… Fünf…
-##  9 Refere… eaa6…          2 51584d0… DRAFT       13ae8d… /web…  &lt;NA&gt;       Herk…
-## 10 Refere… a228…          1 51584d0… DRAFT       13ae8d… /web…  &lt;NA&gt;       Pfle…
+##    `_type` id    `_version` tenantId publicState modelId href  label description
+##    &lt;chr&gt;   &lt;chr&gt;      &lt;int&gt; &lt;chr&gt;    &lt;chr&gt;       &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;      
+##  1 Refere… 9283…          4 51584d0… PUBLIC      13ae8d… /web… Schw… "ev. auch …
+##  2 Refere… 6a57…          1 51584d0… DRAFT       13ae8d… /web… Trae…  &lt;NA&gt;      
+##  3 Refere… 1127…          3 51584d0… DRAFT       13ae8d… /web… Anza… "nicht anw…
+##  4 Refere… 3eae…          1 51584d0… DRAFT       13ae8d… /web… Ehe/…  &lt;NA&gt;      
+##  5 Refere… 4412…          3 51584d0… DRAFT       13ae8d… /web… Zaeh… "Zählung d…
+##  6 Refere… d283…         11 51584d0… DRAFT       13ae8d… /web… Haus… "Privathau…
+##  7 Refere… 8a4a…          2 51584d0… DRAFT       13ae8d… /web… Haus…  &lt;NA&gt;      
+##  8 Refere… 018c…          6 51584d0… DRAFT       13ae8d… /web… Fünf… "Berechnet…
+##  9 Refere… eaa6…          2 51584d0… DRAFT       13ae8d… /web… Herk…  &lt;NA&gt;      
+## 10 Refere… a228…          1 51584d0… DRAFT       13ae8d… /web… Pfle…  &lt;NA&gt;      
 ## # ℹ 480 more rows
 ## # ℹ 28 more variables: status &lt;chr&gt;, title &lt;chr&gt;, createdBy &lt;chr&gt;, db &lt;chr&gt;,
 ## #   dateCreated &lt;dbl&gt;, parentId &lt;chr&gt;, stringType &lt;chr&gt;,
@@ -9368,7 +9784,7 @@ Beachte, dass der finale Datensatz lokal als normaler R data.frame nutzbar sein 
 ## 4          2015   4471             4.10
 ```
 
-<countdown-timer class="countdown" id="timer_01de8f5f" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_48da31a4" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 
 
