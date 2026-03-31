@@ -1827,7 +1827,7 @@ dataset &lt;- readRDS("data.rds")
 
 Benutze jeweils die `head()` Funktion um **die ersten 3 Zeilen** des Datensatzes anzeigen zu lassen. 
 
-<countdown-timer class="countdown" id="timer_3cfa122b" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_4d2f5c40" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 
 ---
 ----
@@ -2155,7 +2155,7 @@ Das Ergebnis soll auf eine Nachkommastelle gerundet werden.
   &lt;/li&gt;
 &lt;/ol&gt;
 
-<countdown-timer class="countdown" id="timer_aad98046" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_bc4d6317" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 
 ---
 ----
@@ -2472,7 +2472,7 @@ abstimmungen &lt;- readRDS("Daten/Abstimmungen.rds")
 2. Bringe die Daten wieder in die Ursprungsform (long format)&lt;br&gt;
   Speichere das Ergebnis unter "abstimmungen_not_tidy" 
   
-<countdown-timer class="countdown" id="timer_219662d6" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_19ae4980" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 
 
@@ -2741,7 +2741,7 @@ df_tidy %&gt;%
 4. Speichere das Resultat in der Variable **geburten_ch_2010**
 
 
-<countdown-timer class="countdown" id="timer_2a18517b" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_d642f2ba" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 
 ---
 ----
@@ -3124,7 +3124,7 @@ Speichere das Resultat unter dem Namen **geburten_ch_2010_date**
 3. Zähle die Geburten pro (Geburts-)Jahr im Datensatz&lt;br&gt;
 **Tipp:** Nutze `group_by()` sowie `count()` bzw. `summarise()` und `n()`
 
-<countdown-timer class="countdown" id="timer_fc52df94" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_1f5035e2" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 ----
 
@@ -3491,7 +3491,7 @@ Speichere den neuen Datensatz unter dem Namen `geburten_join`
 
 2. Wie lautet der häufigste männliche Vorname für Kinder mit der Nationalität Nordmazedonien im Datensatz?
 
-<countdown-timer class="countdown" id="timer_f9d1954b" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_65e57531" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 ----
 ## Good to know: Joins
@@ -4642,7 +4642,7 @@ Nutze dafür den Regex `\\d\\d\\d\\d-\\d\\d-\\d\\d`
 
 4. Entferne die Leerzeichen anführenden Leerzeichen aus der Spalte `Datum und Vorlage` (" Test " -&gt; "Test")
 
-<countdown-timer class="countdown" id="timer_4d372c22" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_cf001cbb" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 ----
 ## Good to know: stringi
@@ -4774,7 +4774,7 @@ Erstelle einen neuen Datensatz `geburten_time` und füge die neue Spalte hinzu.
 
 3. Wie könnte man dieses Problem theoretisch lösen?
 
-<countdown-timer class="countdown" id="timer_c84c07ba" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_a635a350" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 
 
@@ -6776,6 +6776,14 @@ nested_list %&gt;% pluck("geo", "kanton")
 | `lapply()` | base R | Funktion auf Liste anwenden → Liste |
 | `sapply()` | base R | Funktion auf Liste anwenden → Vektor |
 | `apply()` | base R | Funktion auf data.frame/Matrix anwenden |
+
+
+---
+----
+## Recap Session 4: Zusammenfassung
+
+| Konzept / Funktion | Wo? | Was macht es? |
+|--------------------|-----|---------------|
 | `map()` | purrr | Tidyverse-Äquivalent zu `lapply` |
 | `map_df()` / `map_chr()` | purrr | `map` mit typisiertem Rückgabewert |
 | `keep()` / `discard()` | purrr | Liste nach Bedingung filtern |
@@ -6801,441 +6809,799 @@ nested_list %&gt;% pluck("geo", "kanton")
 
 
 
-
-
-
-
-
-
 ----
-## Funktionen
+## Warum eigene Funktionen schreiben?
 
-Eigene Funktionen sind hilfreich, wenn Code immer wieder ausgeführt werden muss. Im Vergleich zu copy-paste von Code ergeben sich folgende Vorteile:
-
-1. Lesbarer Code: Du kannst deinen Funktionen aussagekräftige Namen geben, sodass andere sofort wissen, was in der Funktion passiert.
-
-2. Erleichtertes Korrigieren: Sollte sich etwas ändern musst du nicht jeden kopierten Codeblock einzeln bearbeiten sondern nur die Funktion einmalig.
-
-3. Weniger Flüchtigkeitsfehler: veränderst du zum Beispiel bei einem Code Block die Vaiablenzuweisung bei der Kopie aber nicht, kann das zu Problemen führen. Diese entstehen mit Funktionen erst gar nicht
+Stell dir vor, du berechnest denselben Wert an fünf verschiedenen Stellen im Skript:
 
 
+``` r
+bev_tg &lt;- 285000;  flaeche_tg &lt;- 991
+bev_zh &lt;- 1590000; flaeche_zh &lt;- 1729
+bev_be &lt;- 1050000; flaeche_be &lt;- 5959
+
+# Bevölkerungsdichte = Einwohner / Fläche
+dichte_tg &lt;- bev_tg / flaeche_tg
+dichte_zh &lt;- bev_zh / flaeche_zh
+dichte_be &lt;- bev_be / flaeche_be   # Fehler: falscher Nenner eingefügt?
+```
+
+--
+
+**Probleme mit copy-paste:**
+- Ein Tippfehler muss **überall** korrigiert werden
+- Die Formel ändert sich? → **überall** anpassen
+- Schwer lesbar: Was berechnet dieser Codeblock eigentlich?
 
 ---
 ----
+## Warum eigene Funktionen schreiben?
 
-## Komponenten von Funktionen
-.panelset[
-.panel[.panel-name[formals]
-- eine Liste von Argumenten, die an die Funktion übergeben werden
-- jedes Argument hat einen Namen (hier `vektor`) und es kann ein Objekt (Wert, oder sogar Funktion zugewisen werden)
+**Lösung: Eine Funktion für die Berechnung**
+
 
 ``` r
-durchschnitt &lt;- function(`vektor`){
-  # Ein Kommentar, der den Body beschreibt
-  temp &lt;- sum(vektor)/length(vektor)
-  return(temp)
+bev_dichte &lt;- function(einwohner, flaeche) {
+  return(einwohner / flaeche)
+}
+
+bev_dichte(285000, 991)   # TG
+```
+
+```
+## [1] 287.5883
+```
+
+``` r
+bev_dichte(1590000, 1729) # ZH
+```
+
+```
+## [1] 919.6067
+```
+
+``` r
+bev_dichte(1050000, 5959) # BE
+```
+
+```
+## [1] 176.2041
+```
+
+**Vorteile:**
+1. **Lesbarkeit:** Der Name sagt, was passiert
+2. **Einfaches Korrigieren:** Änderung nur einmal nötig
+3. **Weniger Flüchtigkeitsfehler:** Kein copy-paste von Variablennamen
+
+---
+----
+## Anatomie einer Funktion
+
+
+``` r
+#     Name       Argumente
+#      ↓             ↓
+bev_dichte &lt;- function(einwohner, flaeche) {
+  # ↑ function()-Keyword öffnet die Funktionsdefinition
+
+  dichte &lt;- einwohner / flaeche  # ← Body: die eigentliche Logik
+
+  return(dichte)  # ← Return: was die Funktion zurückgibt
 }
 ```
 
-Mit der `formals()` Funktionen können die Argumente aufgerufen werden. mit `?durchschnitt` kann ausserdem die Dokumentation (sofern vorhanden) eingesehen werden. 
+Eine Funktion besteht aus **drei Teilen:**
+
+| Teil | Beschreibung |
+|------|-------------|
+| **Argumente** (formals) | Was die Funktion „hereinnimmt" |
+| **Body** | Was die Funktion berechnet / ausführt |
+| **Return** | Was die Funktion zurückgibt |
+
+---
+----
+## Schritt für Schritt: Erste eigene Funktion
+
+**Ziel:** Eine Funktion, die eine Zahl in Prozent formatiert (z.B. `0.753` → `"75.3 %"`)
+
+--
+
+**Schritt 1 – erst ohne Funktion denken:**
 
 ``` r
-formals(durchschnitt)
+wert &lt;- 0.753
+paste0(round(wert * 100, 1), " %")
 ```
 
 ```
-## $vektor
+## [1] "75.3 %"
 ```
-]
-.panel[.panel-name[body (1)]
-- der Code der in der Funktion ausgeführt wird und zwischen `{ }` steht
 
-``` r
-durchschnitt &lt;- function(vektor)`{`
-  # Ein Kommentar, der den Body beschreibt
-  temp &lt;- sum(vektor)/length(vektor) #&lt;&lt;
-  return(temp) #&lt;&lt;
- `}`
-```
-]
-.panel[.panel-name[body (2)]
-Mit `attr(funktionsname, "srcref")` können sowohl der Funktions-Body als auch Inline-Kommentare sichtbar gemacht werden.
+--
+
+**Schritt 2 – in eine Funktion einpacken:**
 
 ``` r
-attr(durchschnitt, "srcref")
+als_prozent &lt;- function(wert) {
+  paste0(round(wert * 100, 1), " %")
+}
+als_prozent(0.753)
 ```
 
 ```
-## NULL
+## [1] "75.3 %"
 ```
-Die `body()` Funktion zeigt nur den Body ohne Kommentare
+
+``` r
+als_prozent(0.5)
+```
+
+```
+## [1] "50 %"
+```
+
+&gt; **Tipp:** Schreibe den Code zuerst *ohne* Funktion, prüfe ob er funktioniert – dann erst verpacken.
+
+---
+----
+## Funktionen: Argumente
+
+.panelset[
+.panel[.panel-name[Ein Argument]
+
+``` r
+quadrat &lt;- function(x) {
+  return(x^2)
+}
+quadrat(5)
+```
+
+```
+## [1] 25
+```
+
+``` r
+quadrat(c(1, 2, 3, 4))  # funktioniert auch mit Vektoren!
+```
+
+```
+## [1]  1  4  9 16
+```
 ]
-.panel[.panel-name[environment]
+.panel[.panel-name[Mehrere Argumente]
 
+``` r
+potenz &lt;- function(basis, exponent) {
+  return(basis^exponent)
+}
+potenz(2, 10)
+```
+
+```
+## [1] 1024
+```
+
+``` r
+potenz(3, 3)
+```
+
+```
+## [1] 27
+```
+Argumente können auch **mit Namen** übergeben werden (Reihenfolge egal):
+
+``` r
+potenz(exponent = 3, basis = 5)
+```
+
+```
+## [1] 125
+```
+]
+.panel[.panel-name[Default-Werte]
+Argumente können einen **Standardwert** haben – wird kein Wert übergeben, gilt der Default:
+
+``` r
+potenz &lt;- function(basis, exponent = 2) {
+  return(basis^exponent)
+}
+potenz(4)      # exponent = 2 (Default)
+```
+
+```
+## [1] 16
+```
+
+``` r
+potenz(4, 3)   # exponent = 3 (überschrieben)
+```
+
+```
+## [1] 64
+```
+]
+.panel[.panel-name[Kein Argument]
+Auch Funktionen ohne Argumente sind sinnvoll:
+
+``` r
+aktuelles_jahr &lt;- function() {
+  return(as.integer(format(Sys.Date(), "%Y")))
+}
+aktuelles_jahr()
+```
+
+```
+## [1] 2026
+```
 ]
 ]
 
 ---
 ----
-## Funktionen: Wichtige Konzepte
+## Funktionen: Der Body
+
+Der Body enthält die **gesamte Logik** der Funktion – alles zwischen `{` und `}`.
+
+
+``` r
+bmi_berechnen &lt;- function(gewicht_kg, groesse_m) {
+  # Schritt 1: BMI berechnen
+  bmi &lt;- gewicht_kg / groesse_m^2
+
+  # Schritt 2: Kategorie bestimmen
+  kategorie &lt;- case_when(
+    bmi &lt; 18.5 ~ "Untergewicht",
+    bmi &lt; 25   ~ "Normalgewicht",
+    bmi &lt; 30   ~ "Übergewicht",
+    .default   =  "Adipositas"
+  )
+
+  # Schritt 3: Ergebnis als Text
+  ergebnis &lt;- paste0("BMI: ", round(bmi, 1), " (", kategorie, ")")
+  return(ergebnis)
+}
+
+bmi_berechnen(70, 1.75)
+```
+
+```
+## [1] "BMI: 22.9 (Normalgewicht)"
+```
+
+``` r
+bmi_berechnen(95, 1.70)
+```
+
+```
+## [1] "BMI: 32.9 (Adipositas)"
+```
+
+---
+----
+## Funktionen: Return
 
 .panelset[
-.panel[.panel-name[Name Masking]
-Namen, die innerhalb einer Funktion definiert werden, "maskieren" Namen, die ausserhalb derFunktion definiert wurden.
+.panel[.panel-name[Explizites return()]
+**Empfehlung:** Immer `return()` verwenden – macht klar, was zurückgegeben wird.
 
 ``` r
-x &lt;- 10
-f1 &lt;- function() {
-  x &lt;- 1
-  return(x)
+addiere &lt;- function(a, b) {
+  ergebnis &lt;- a + b
+  return(ergebnis)  # ← klar und deutlich
 }
-f1()
-```
-
-```
-## [1] 1
-```
-Die Variable ausserhalb der Funktion bleibt unverändert. Gleichzeitig verwendet die Funktion, das `x` welches **innerhalb** der Funktion verwendet wird. Die Zuweisung ausserhalb der Funktion hat keinen Einfluss
-
-]
-.panel[.panel-name[Funktionen vs. Variablen]
-
-Es kann zu Problemen kommen, wenn Funktionen und nicht Funktionen den gleichen Namen tragen.
-
-Daher ist wichtig zu vermeiden, dass dieser Fall auftritt. Namen sollten jeweils nur für **ein** Objekt verwendet werden.
-
-]
-.panel[.panel-name[Dynamic Lookup]
-Vorsicht ist geboten, wenn man eine Variable ausserhalb der Funktion definiert und diese dann in der Funktion verwendet.
-
-``` r
-x &lt;- 10
-f2 &lt;- function() {
-  return(x)
-}
-f2()
+addiere(3, 7)
 ```
 
 ```
 ## [1] 10
 ```
-
-R sieht, schaut als erstes, ob die Variable `x` irgendwo in der Funktion definiert wurde. Da dies nicht der Fall ist schaut R als nächstes ausserhalb der Variable im Globalen Environment. Dort wird `x` in diesem Fall gefunden und zurückgegeben.
-
 ]
-.panel[.panel-name["Neustart"]
-Das Environment einer Funktion wird bei jeder Ausführung zurückgesetzt. Zuweisungen bleiben somit nur für einen Durchlauf bestehen.
+.panel[.panel-name[Implizites Return]
+R gibt automatisch den **letzten Ausdruck** zurück (wenn kein `return()` steht):
 
 ``` r
-f3 &lt;- function() {
-  if (!exists("a")) { 
-    a &lt;- 1 
-  }  else { 
-      a &lt;- a + 1 
+addiere_impl &lt;- function(a, b) {
+  a + b  # wird automatisch zurückgegeben
+}
+addiere_impl(3, 7)
+```
+
+```
+## [1] 10
+```
+Du wirst diese Schreibweise in vielen Beispielen sehen – beide Varianten sind korrekt.
+]
+.panel[.panel-name[Mehrere Werte]
+Eine Funktion kann immer nur **ein Objekt** zurückgeben.
+Um mehrere Werte zurückzugeben, packt man sie in eine **Liste**:
+
+``` r
+statistiken &lt;- function(x) {
+  return(list(
+    mittelwert = mean(x),
+    median     = median(x),
+    sd         = sd(x),
+    n          = length(x)
+  ))
+}
+erg &lt;- statistiken(c(4, 8, 15, 16, 23, 42))
+erg$mittelwert
+```
+
+```
+## [1] 18
+```
+
+``` r
+erg$sd
+```
+
+```
+## [1] 13.49074
+```
+]
+.panel[.panel-name[Frühzeitiger Ausstieg]
+`return()` beendet die Funktion **sofort** – der Rest des Bodys wird nicht ausgeführt:
+
+``` r
+sicheres_teilen &lt;- function(zaehler, nenner) {
+  if (nenner == 0) {
+    return(NA)  # ← sofortiger Abbruch
   }
-  a
+  return(zaehler / nenner)
 }
-f3()
+sicheres_teilen(10, 2)
 ```
 
 ```
-## [1] 1
+## [1] 5
+```
+
+``` r
+sicheres_teilen(10, 0)
+```
+
+```
+## [1] NA
 ```
 ]
 ]
 
 ---
 ----
-## Funktionen: Wichtige Konzepte
+## Funktionen: Scoping (wo sucht R nach Variablen?)
+
+R hat klare Regeln, wo es nach Variablen sucht:
 
 .panelset[
-.panel[.panel-name[Lazy Evaluation]
-- `Lazy Evaluation` bedeutet im Falle von R Funktionen, dass Argumenete erst dann evaluiert werden, wenn sie wirklich aufgerufen werden.
-- Wenn ein Argument in einer Funktion nie verwendet wird, entsteht auch keine Fehlermeldung
-- Das bietet den Vorteil dass potentiell aufwändige Berechnungen nur dann ausgeführt werden, wenn diese wirklich benötigt werden
+.panel[.panel-name[Regel 1: Innen vor Aussen]
+Variablen **innerhalb** der Funktion haben Vorrang vor gleichnamigen Variablen aussen:
 
 ``` r
-f4 &lt;- function(y) {
-  x &lt;- 1
+x &lt;- 100  # globale Variable
+
+f &lt;- function() {
+  x &lt;- 1  # lokale Variable – "maskiert" die globale
   return(x)
 }
-f4()
+f()   # gibt 1 zurück, nicht 100
 ```
 
 ```
 ## [1] 1
 ```
+
+``` r
+x     # globale Variable bleibt unverändert
+```
+
+```
+## [1] 100
+```
 ]
-.panel[.panel-name[Default Argumente]
-- Dank `Lazy Evaluation` können in Funktionen default Argumente mitgegeben werden
-- Wenn kein expliziter Wert angegeben wird, verwendet die Funktion den default Wert
-- Diese können jedoch auch einfach überschrieben werden
+.panel[.panel-name[Regel 2: Suche aussen]
+Wird eine Variable innerhalb der Funktion nicht gefunden, sucht R **ausserhalb**:
 
 ``` r
-f5 &lt;- function(y=10) {
-  return(y)
+multiplikator &lt;- 10
+
+skalieren &lt;- function(wert) {
+  return(wert * multiplikator)  # multiplikator kommt von aussen
 }
-f5()
-```
-
-```
-## [1] 10
-```
-
-``` r
-f5(50)
+skalieren(5)
 ```
 
 ```
 ## [1] 50
 ```
+&gt; **Empfehlung:** Besser alle benötigten Werte als Argument übergeben – macht die Funktion unabhängiger und testbarer.
 ]
-.panel[.panel-name[Mehr Informationen]
-
-Ausführlichere Informationen und mehr Beispiele zu den Konzepten findet ihr in [Hadley Wickhams Buch "Advanced R"](https://adv-r.hadley.nz/functions.html#lexical-scoping)
-
-]
-]
-
----
-----
-## Funktionen: Wichtige Konzepte
-
-1. Jedes Objekt, das innerhalb einer Funktion erzeugt wird (einschließlich der Argumente, die an die Funktion übergeben werden), wird entfernt, wenn ein Funktionsdurchlauf abgeschlossen ist.
-
-2. Existiert ein Objekt nicht innerhalb der Funktion, sucht R nach einem Objekt außerhalb der Funktion.
-
-3. Argumenete werden erst dann evaluiert, wenn sie wirklich aufgerufen werden (*Lazy Evaluation*)
-
-4. In R-Funktionen ist es möglich den Argumenten default Werte zuzuweisen
-
-.bg-washed-green.b--dark-green.ba.bw2.br3.shadow-5.ph4.mt5.b[
-Alles, was innerhalb einer Funktion verwendet werden muss, sollte als Argument übergeben werden. Alles, was von einer Funktion gespeichert werden muss, sollte zurückgegeben werden
-
-]
- 
----
-----
-## Funktionen erstellen
-
-Eine Funktion wird mit dem `function()` Keyword definiert.
+.panel[.panel-name[Regel 3: Fresh Start]
+Bei jedem Aufruf startet die Funktion **frisch** – Variablen aus dem letzten Aufruf sind weg:
 
 ``` r
-durchschnitt &lt;- function(vektor){
-  temp &lt;- sum(vektor)/length(vektor)
-  return(temp)
+zaehle_aufrufe &lt;- function() {
+  n &lt;- 0    # bei jedem Aufruf wieder 0
+  n &lt;- n + 1
+  return(n)
 }
-wert &lt;- durchschnitt(c(5,6,2,7,8))
-wert
+zaehle_aufrufe()
 ```
 
 ```
-## [1] 5.6
+## [1] 1
 ```
-.panelset[
-.panel[.panel-name[Name]
-- `durchschnitt` ist in diesem Fall der Name der Funktion. Somit kann sie mit `durchschnitt()` aufgerufen werden
-- wir haben die `anonymus functions` bereits kennen gelernt. Diese besitzen *keinen* Namen
-]
-.panel[.panel-name[Argumente]
-Das einzige Argument dieser Funktion ist `vektor`. Eine Funktion kann unbegrenzt Argumente besitzen oder aber keines. 
-]
-.panel[.panel-name[Return]
-Um das Ergebnis einer Funktion einer neuen Variable zuweisen zu können, wird ein `return` Statement verwendet.
-]
-]
----
-----
-## Return Value
-Return bildet den Abschluss einer Funktion. Alles was nach einem `return()` Statement im Funktions-Body folgt, wird nicht mehr ausgeführt.
-In R- Funktionen gibt es implizite als auch explizite `return` Statements.
-.panelset[
-.panel[.panel-name[Implizites Return]
-Wenn kein `return()` definiert wird, wird der letzte **ausgegebene** Wert in der Funktion zurückgegben.
 
 ``` r
-f5 &lt;- function(y) {
-  y
+zaehle_aufrufe()  # immer noch 1, nicht 2
+```
+
+```
+## [1] 1
+```
+]
+.panel[.panel-name[Merksatz]
+.bg-washed-green.b--dark-green.ba.bw2.br3.shadow-5.ph4.mt3[
+**Alles, was eine Funktion braucht → als Argument übergeben.**
+
+**Alles, was sie produziert → mit `return()` zurückgeben.**
+
+Was innerhalb der Funktion passiert, bleibt dort. Was aussen ist, sollte dort auch bleiben.
+]
+]
+]
+
+---
+----
+## Funktionen in dplyr-Pipelines
+
+Eigene Funktionen lassen sich nahtlos in `mutate()`, `filter()` etc. einsetzen:
+
+.panelset[
+.panel[.panel-name[Funktion definieren]
+
+``` r
+# Funktion: Altersklasse aus Alter berechnen
+altersklasse &lt;- function(alter) {
+  case_when(
+    alter &lt; 20          ~ "unter 20",
+    alter &lt; 40          ~ "20 bis 39",
+    alter &lt; 65          ~ "40 bis 64",
+    .default            =  "65 und älter"
+  )
 }
-f5(20)
+
+altersklasse(c(15, 35, 55, 75))
 ```
 
 ```
-## [1] 20
+## [1] "unter 20"     "20 bis 39"    "40 bis 64"    "65 und älter"
 ```
 ]
-.panel[.panel-name[Explizites Return]
-Meiner Meinung nach empfiehlt es sich **immer** ein `return()` Statement zu verwenden, wenn ein Wert zurückgegeben werden soll. Dies macht den Code einfacher lesbar.
+.panel[.panel-name[In mutate() verwenden]
 
 ``` r
-f6 &lt;- function(y) {
-  return(y)
-}
-f6(20)
+personen &lt;- tibble::tibble(
+  name  = c("Anna", "Ben", "Clara", "David"),
+  alter = c(17, 34, 58, 72)
+)
+
+personen %&gt;%
+  mutate(klasse = altersklasse(alter))
 ```
 
 ```
-## [1] 20
+## # A tibble: 4 × 3
+##   name  alter klasse      
+##   &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt;       
+## 1 Anna     17 unter 20    
+## 2 Ben      34 20 bis 39   
+## 3 Clara    58 40 bis 64   
+## 4 David    72 65 und älter
 ```
+]
+.panel[.panel-name[Vorteil]
+Ohne eigene Funktion wäre das `case_when` direkt im `mutate()` – schlechter lesbar und nicht wiederverwendbar:
+
+``` r
+# Ohne Funktion: Logik liegt versteckt im mutate
+personen %&gt;%
+  mutate(klasse = case_when(
+    alter &lt; 20 ~ "unter 20",
+    alter &lt; 40 ~ "20 bis 39",
+    alter &lt; 65 ~ "40 bis 64",
+    .default   =  "65 und älter"
+  ))
+```
+Mit Funktion: `mutate(klasse = altersklasse(alter))` – selbsterklärend!
 ]
 ]
 
 ---
 ----
-## Sprechende Funktionen
+## Funktionen: Eingaben prüfen (Conditions)
 
-- der Sinn von Funktionen liegt unter anderem darin, den Code für Menschen einfacher verständlich zu machen.
+Gute Funktionen prüfen ihre Eingaben und geben **verständliche Fehlermeldungen**.
 
-- es ist daher sehr wichtig den eigenen Funktionen *sprechende* Namen zu geben
-
-- idealerweise sind Namen kurz und klar, im Zweifel ist es aber wichtiger klar als kurz zu sein, da die RStudio-Autovervollständigung dabei hilft auch lange Namen einzugeben
-
-- deutsche Funktionsnamen sind völlig okay, aber auf keinen Fall sollten Umlaute verwendet werden
-
-
-
----
-----
-## Funktionen: Best Practices
-
-Best Practice laut [R for Data Science](https://r4ds.had.co.nz/functions.html#functions-are-for-humans-and-computers)
 .panelset[
-.panel[.panel-name[Verben/Nomen]
-- generell sollten Funktionen Verben sein und Argumente Nomen
-- Nomen sollten nur dann als Funktionsnamen verwendet werden, wenn das angedachte Verb zu "generisch" klingt (z.B. “get”, “compute”, “calculate” oder “determine”)
+.panel[.panel-name[stop() – Fehler]
+Bricht die Ausführung **komplett ab**:
 
 ``` r
-# Zu kurzer Name
+bev_dichte &lt;- function(einwohner, flaeche) {
+  if (!is.numeric(einwohner) || !is.numeric(flaeche)) {
+    stop("'einwohner' und 'flaeche' müssen numerisch sein.")
+  }
+  if (flaeche &lt;= 0) {
+    stop("'flaeche' muss grösser als 0 sein.")
+  }
+  return(einwohner / flaeche)
+}
+
+bev_dichte("viele", 100)   # Fehler
+```
+
+```
+## Error in bev_dichte("viele", 100): 'einwohner' und 'flaeche' müssen numerisch sein.
+```
+]
+.panel[.panel-name[warning() – Warnung]
+Läuft **weiter**, aber warnt den Nutzer:
+
+``` r
+als_prozent &lt;- function(wert) {
+  if (any(wert &gt; 1)) {
+    warning("Einige Werte sind &gt; 1 – bitte prüfen ob es sich um Anteile handelt.")
+  }
+  paste0(round(wert * 100, 1), " %")
+}
+als_prozent(c(0.5, 1.2))
+```
+
+```
+## [1] "50 %"  "120 %"
+```
+]
+.panel[.panel-name[message() – Info]
+Gibt **nützliche Infos** aus, ohne zu warnen:
+
+``` r
+lade_daten &lt;- function(pfad) {
+  message("Lese Datei: ", pfad)
+  # readRDS(pfad)  # in der Praxis würde hier geladen
+}
+lade_daten("Daten/beispiel.rds")
+```
+]
+.panel[.panel-name[Wann was?]
+
+| Funktion | Wann verwenden? |
+|----------|----------------|
+| `stop()` | Eingabe ist falsch → Funktion kann nicht sinnvoll ausgeführt werden |
+| `warning()` | Eingabe ist verdächtig → Ergebnis könnte falsch sein |
+| `message()` | Information für den Nutzer (z.B. Ladefortschritt) |
+
+]
+]
+
+---
+----
+## Funktionen: Benennung und Best Practices
+
+.panelset[
+.panel[.panel-name[Sprechende Namen]
+Der Name soll **verraten, was die Funktion tut**. Verben sind ideal:
+
+``` r
+# Schlecht: vage, nichtssagend
 f()
-# Weder ein Verb noch beschreibend
-my_awesome_function()
-# Lang aber klar
-impute_missing()
-collapse_years()
+meine_funktion()
+berechne()
+
+# Besser: klar und spezifisch
+berechne_bmi()
+formatiere_datum()
+lade_abstimmungsdaten()
+filter_nach_kanton()
 ```
 ]
-.panel[.panel-name[Mehrere Wörter]
-- besteht ein Funktionsname aus mehreren Worten, empfiehlt sich die Trennung mit `_` (*snake_case*) 
-- alternativ kann *camelCase* verwendet werden (erstes Wort klein, alle folgenden Worte mit grosse Anfangsbuchstaben)
-- Wichtig ist **Konsistenz** (mische nicht *snake_case* und *camelCase*, wenn mehrere Funktionen erstellt werden)
+.panel[.panel-name[snake_case]
+Mehrere Wörter werden mit `_` getrennt – **konsistent** bleiben:
 
 ``` r
-camelCaseFunction()
+# Empfohlen: snake_case (tidyverse-Stil)
+bev_dichte_berechnen()
+daten_aufbereiten()
 
-snake_case_function()
+# Alternativ (aber nicht mischen!): camelCase
+bevDichteBerechnen()
+datenAufbereiten()
 ```
 ]
 .panel[.panel-name[Kommentare]
+Kommentiere das **Warum**, nicht das **Was**:
 
-- kommentiere innerhalb des Funktions-Body in dem du `#` verwendest
+``` r
+bev_dichte &lt;- function(einwohner, flaeche) {
+  # Division durch 0 vermeiden (leere Fläche ist kein valider Kanton)
+  if (flaeche &lt;= 0) stop("'flaeche' muss &gt; 0 sein.")
 
-- beim Kommentieren gilt: Versuche zu beschreiben, **warum** du etwas tust und nicht **was** du tust.
-.bg-light-gray.b--dark-gray.ba.bw2.br3.shadow-5.ph4.mt2[
-Do you need to add some intermediate variables with useful names? Do you need to break out a subcomponent of a large function so you can name it? However, your code can never capture the reasoning behind your decisions: why did you choose this approach instead of an alternative? What else did you try that didn’t work? It’s a great idea to capture that sort of thinking in a comment.
-.tr[
-— Hadley Wickham, R for Data Science, Chapter 19.3
-]
-]
+  einwohner / flaeche
+}
+```
+Ein guter Kommentar erklärt, warum ein bestimmter Ansatz gewählt wurde – nicht was `a / b` macht.
 ]
 .panel[.panel-name[Argumente]
+Argumente sollten **Nomen** sein, klar benannt und mit Default-Wert wenn sinnvoll:
 
-- Argumente sollten wie Funktionen selbst aussagekräftige Namen besitzen (generell Nomen)
+``` r
+# Schlecht: kryptische Argumente
+f(x, y, z = TRUE)
 
-- es gibt einige spezielle Argumente, für die sich eine einheitliche Benennung durchgesetzt hat. Diese findet ihr [hier](https://r4ds.had.co.nz/functions.html#choosing-names)
-
-- ein guter Tipp ist es ausserdem, sich Argumente bestehender Funktionen anzusehen
-
+# Besser: selbsterklärend
+berechne_anteil(zaehler, nenner, nachkommastellen = 1)
+```
+Eine gute Faustregel: Wenn du nach 3 Monaten den Code liest, verstehst du ohne Kommentar was jedes Argument bedeutet?
 ]
 ]
 
 ---
 ----
-## Funktionen: Conditions
+## Beispiel: Funktion für Reporting
 
-Ein R Workflow (oder eine Funktion) kann unterbrochen werden, um einen speziellen Zustand (*condition*) zu siganlisieren.
+Eine Praxisnahe Funktion, wie man sie in der Statistik einsetzen würde:
 
-In R gibt es generell drei `conditions`:
 
-1. **Error:** Ein Fehler im Ablauf, der ein weiterlaufen verhindert -&gt; Der Prozess stopt an der Stelle, an der der Fehler aufgetreten ist.
-2. **Warning:** Weist auf ein mögliches Problem hin, das das Programm nicht anhält, sondern den Benutzer warnt
-3. **Info:** Gibt informatives Feedback über den laufenden Prozess, ohne einen Fehler oder eine Warnung zu implizieren
+``` r
+# Erstellt einen formatierten Zusammenfassungstext für einen numerischen Vektor
+zusammenfassung_text &lt;- function(x, variable_name = "Wert", einheit = "") {
+  if (!is.numeric(x)) stop("'x' muss ein numerischer Vektor sein.")
 
+  mw  &lt;- round(mean(x, na.rm = TRUE), 1)
+  med &lt;- round(median(x, na.rm = TRUE), 1)
+  n   &lt;- sum(!is.na(x))
+
+  einheit_str &lt;- if (nchar(einheit) &gt; 0) paste0(" ", einheit) else ""
+
+  paste0(variable_name, ": Mittelwert = ", mw, einheit_str,
+         ", Median = ", med, einheit_str,
+         " (n = ", n, ")")
+}
+```
+
+
+``` r
+zusammenfassung_text(c(45, 62, 38, 71, 55), "Alter", "Jahre")
+```
+
+```
+## [1] "Alter: Mittelwert = 54.2 Jahre, Median = 55 Jahre (n = 5)"
+```
+
+``` r
+zusammenfassung_text(c(80.5, 92.1, 78.3, 85.0), "Gewicht", "kg")
+```
+
+```
+## [1] "Gewicht: Mittelwert = 84 kg, Median = 82.8 kg (n = 4)"
+```
 
 ---
 ----
-## Funktionen: Conditions
+## Hands-On: Funktionen (10 Minuten)
 
-In Funktionen können eigene `conditions` erzeugt werden. Das ist wichtig, da es dem Benutzer später hilft herauszufinden, was er/sie womöglich falsch gemacht hat. 
+**Aufgabe 1:** Schreibe eine Funktion `varianz()`, die die Stichprobenvarianz berechnet:
+
+`$$\text{Var}(x) = \frac{1}{n-1} \sum_{i=1}^n (x_i - \bar{x})^2$$`
+
+- `\(n\)` = Anzahl Elemente, `\(\bar{x}\)` = Mittelwert
+- Prüfe: Gibt `varianz(c(2,4,4,4,5,5,7,9))` dasselbe zurück wie `var(c(2,4,4,4,5,5,7,9))`?
+
+**Aufgabe 2:** Erweitere `varianz()` mit `stop()`, sodass sie einen Fehler ausgibt, wenn der Eingabevektor nicht numerisch ist.
+
+**Aufgabe 3 (Bonus):** Schreibe eine Funktion `kanton_info()`, die als Argument einen Kantonsabkürzung nimmt (`"TG"`, `"ZH"`, etc.) und einen formatierten Text zurückgibt, z.B.:
+
+&gt; *"Kanton Thurgau (TG): 285'000 Einwohner, Hauptort Frauenfeld"*
+
+Verwende `case_when()` innerhalb der Funktion. Decke mindestens 3 Kantone ab.
+
+<countdown-timer class="countdown" id="timer_0e1fefcc" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+
+---
+----
+## Hands-On: Lösung Aufgabe 1 &amp; 2
 
 .panelset[
-.panel[.panel-name[stop]
-Mit `stop()` kann ein *Error* erzeugt werden
+.panel[.panel-name[Lösung 1]
 
 ``` r
-f7 &lt;- function(x){
-  if (!is.numeric(x)){
-    stop(paste0("Der Wert für x (",x,") ist nicht numerisch."))
-  }
-  return(x*7)
+varianz &lt;- function(x) {
+  n  &lt;- length(x)
+  mw &lt;- mean(x)
+  v  &lt;- sum((x - mw)^2) / (n - 1)
+  return(v)
 }
-f7("2")
+
+varianz(c(2, 4, 4, 4, 5, 5, 7, 9))
 ```
 
 ```
-## Error in f7("2"): Der Wert für x (2) ist nicht numerisch.
+## [1] 4.571429
 ```
-]
-.panel[.panel-name[warning]
-Mit `warning()` kann eine *Warning Message* erzeugt werden
-
 
 ``` r
-f7 &lt;- function(x){
-  if (!is.numeric(x)){
-    x &lt;- as.numeric(x)
-    warning("x wurde zu numeric konvertiert")
-  }
-  return(x*7)
-}
-f7("2")
+var(c(2, 4, 4, 4, 5, 5, 7, 9))      # Vergleich mit base R
 ```
 
 ```
-## [1] 14
+## [1] 4.571429
 ```
 ]
-.panel[.panel-name[message]
-`message()` erzeugt eine `Info Message` 
+.panel[.panel-name[Lösung 2]
 
 ``` r
-f8 &lt;- function(x){
-  if (is.numeric(x)){
-    message("x ist ein numerischer Wert")
+varianz &lt;- function(x) {
+  if (!is.numeric(x)) {
+    stop("'x' muss ein numerischer Vektor sein. Erhalten: ", class(x))
   }
-  return(x*7)
+  n  &lt;- length(x)
+  mw &lt;- mean(x)
+  return(sum((x - mw)^2) / (n - 1))
 }
-f8(2)
+
+varianz(c(2, 4, 4, 4, 5, 5, 7, 9))  # funktioniert
 ```
 
 ```
-## [1] 14
+## [1] 4.571429
+```
+
+``` r
+varianz(c("a", "b", "c"))            # Fehler mit Hinweis
+```
+
+```
+## Error in varianz(c("a", "b", "c")): 'x' muss ein numerischer Vektor sein. Erhalten: character
+```
+]
+.panel[.panel-name[Lösung 3 (Bonus)]
+
+``` r
+kanton_info &lt;- function(kuerzel) {
+  info &lt;- case_when(
+    kuerzel == "TG" ~ "Kanton Thurgau (TG): 285'000 Einwohner, Hauptort Frauenfeld",
+    kuerzel == "ZH" ~ "Kanton Zürich (ZH): 1'590'000 Einwohner, Hauptort Zürich",
+    kuerzel == "BE" ~ "Kanton Bern (BE): 1'050'000 Einwohner, Hauptort Bern",
+    kuerzel == "SG" ~ "Kanton St. Gallen (SG): 510'000 Einwohner, Hauptort St. Gallen",
+    .default = paste0("Kanton '", kuerzel, "' nicht gefunden.")
+  )
+  return(info)
+}
+
+kanton_info("TG")
+```
+
+```
+## [1] "Kanton Thurgau (TG): 285'000 Einwohner, Hauptort Frauenfeld"
+```
+
+``` r
+kanton_info("ZH")
+```
+
+```
+## [1] "Kanton Zürich (ZH): 1'590'000 Einwohner, Hauptort Zürich"
+```
+
+``` r
+kanton_info("GR")
+```
+
+```
+## [1] "Kanton 'GR' nicht gefunden."
 ```
 ]
 ]
-
-
----
-----
-
-## Hands-On: Funktionen
-
-1. Schreibe eine eigene Funktion zur Berechnung der Varianz eines numerischen Vektors und nenne sie `varianz`
-`$$\mathrm{Var}(x) = \frac{1}{n - 1} \sum_{i=1}^n (x_i - \bar{x}) ^2$$`
-**Erklärung:**
-- `\(n\)` ist die Stichprobengrösse (-&gt; die Anzahl der Elemente im Vektor)
-- `\(x_i\)` ist der Wert von Vektor `\(x\)` an Stelle `\(i\)`
-- `\(\bar{x}\)` ist der Mittelwert von Vektor `\(x\)`
-- `\(\sum_{i=1}^n (x_i - \bar{x}) ^2\)` bedeuted das alle Ergebnisse von `\((x_i - \bar{x}) ^2\)` für jedes Element im vektor aufsummiert werden.
 ---
 
 
@@ -7380,7 +7746,7 @@ ggplot(data = geburten_sample, aes(x=age_v, y=age_m))+
 .panel[.panel-name[Grafik]
 Alter des Vaters auf der x-Achse und Alter der Mutter auf der y-Achses
 
-&lt;img src="index_files/figure-html/unnamed-chunk-701-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-735-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 ]
 
@@ -7412,7 +7778,7 @@ ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = sex))+
 ```
 ]
 .panel[.panel-name[Fig 1]
-&lt;img src="index_files/figure-html/unnamed-chunk-703-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-737-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 .panel[.panel-name[Bsp 2]
 `sex` wird als numerische Variable erkannt weshalb eine Umwandlung nötig ist
@@ -7423,7 +7789,7 @@ ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = as.factor(sex)))+
 ```
 ]
 .panel[.panel-name[Fig 2]
-&lt;img src="index_files/figure-html/unnamed-chunk-705-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-739-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 .panel[.panel-name[Bsp 3]
 Ausserhalb des `aes()` Befehls können auch statische Variablen als aesthetics definiert werden (siehe [hier](https://ggplot2-book.org/layers.html#setting-mapping))
@@ -7434,7 +7800,7 @@ ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = as.factor(sex)))+
 ```
 ]
 .panel[.panel-name[Fig 3]
-&lt;img src="index_files/figure-html/unnamed-chunk-707-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-741-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 ]
 
@@ -7468,7 +7834,7 @@ ggplot(data = geburten_sample, aes(x=age_v, y=age_m, color = as.factor(sex)))+
 ```
 ]
 .panel[.panel-name[Fig]
-&lt;img src="index_files/figure-html/unnamed-chunk-709-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-743-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 ]
 
@@ -7499,7 +7865,7 @@ geburten %&gt;%
 
 ]
 .panel[.panel-name[Fig 1]
-&lt;img src="index_files/figure-html/unnamed-chunk-711-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-745-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 .panel[.panel-name[Bsp 2]
 - Hinzufügen einer Linie als zusätzlicher Layer
@@ -7515,7 +7881,7 @@ geburten %&gt;%
 ```
 ]
 .panel[.panel-name[Fig 2]
-&lt;img src="index_files/figure-html/unnamed-chunk-713-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-747-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 .panel[.panel-name[Bsp 3]
 - Durchschnittliches Alter der Mutter und des Vaters bei Geburt
@@ -7532,7 +7898,7 @@ geburten %&gt;%
 ```
 ]
 .panel[.panel-name[Fig 3]
-&lt;img src="index_files/figure-html/unnamed-chunk-715-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-749-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 .panel[.panel-name[Bsp 4]
 - Ermittlung von Missing Values
@@ -7548,7 +7914,7 @@ geburten %&gt;%
 ```
 ]
 .panel[.panel-name[Fig 3]
-&lt;img src="index_files/figure-html/unnamed-chunk-717-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-751-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
 ]
 ]
 
@@ -7578,7 +7944,7 @@ Stelle das erreichte Alter von Männern und Frauen im Zeitverlauf gegenüber.
 - Füge einen Titel sowie eine Beschriftung für X- und Y-Achse hinzu.
 - Verwende dafür die labs() Funktion (`?ggplot2::labs()` für Hilfe)
 
-<countdown-timer class="countdown" id="timer_b88a0a21" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_b92d6633" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 
 ---
 ----
@@ -8148,7 +8514,7 @@ csv_sas_win |&gt; slice(42) |&gt; select(GdenameTG,Quote_Kategorie)
 &lt;/figure&gt;
 ## Daten Zwischenspeichern
 
-![](index_files/figure-html/unnamed-chunk-760-1.png)&lt;!-- --&gt;
+![](index_files/figure-html/unnamed-chunk-794-1.png)&lt;!-- --&gt;
 ---
 
 
@@ -8333,7 +8699,7 @@ Repliziere die Tabelle in `Slides/Daten/openxlsx_table.xlsx`.
 Speichere die Datei unter `Slides/Daten/openxlsx_table_DEIN_KÜRZEL.xlsx`.
 
 ![openxlsx Aufgabe](img/openxlsx_exercise.png)
-<countdown-timer class="countdown" id="timer_4c45f429" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_77597aa0" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 ----
 &lt;figure class="logo-fig logo-fig-small"&gt;
@@ -8664,7 +9030,7 @@ Gegeben ist ausserdem die Datei `Slides/Daten/2023_Gde_Geb_ab2000.xlsx`
                                                                                                          
 Füge die Geburtenzahlen für das Jahr 2024 in die Excel `2023_Gde_Geb_ab2000.xlsx` ein und speichere sie als **`Slides/Daten/2024_Gde_Geb_ab2000_DEIN_KÜRZEL.xlsx`** neu ab         
 
-<countdown-timer class="countdown" id="timer_561fb41f" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_b1815ce3" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 
 
@@ -9784,7 +10150,7 @@ Beachte, dass der finale Datensatz lokal als normaler R data.frame nutzbar sein 
 ## 4          2015   4471             4.10
 ```
 
-<countdown-timer class="countdown" id="timer_48da31a4" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_7845aa7a" minutes="10" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 ---
 
 
