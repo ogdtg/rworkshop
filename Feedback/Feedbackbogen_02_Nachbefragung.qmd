@@ -1,0 +1,317 @@
+---
+title: "R im Arbeitsalltag – kurze Nachbefragung"
+subtitle: "R-Workshop Kanton Thurgau · Nachbefragung"
+format:
+  html:
+    theme: cosmo
+    toc: false
+    embed-resources: true
+    css: |
+      body { max-width: 750px; margin: auto; font-family: 'Segoe UI', sans-serif; color: #222; }
+      h2 { color: #003366; border-bottom: 2px solid #003366; padding-bottom: 6px; margin-top: 2em; }
+      h3 { color: #336699; margin-top: 1.5em; }
+      .frage { background: #f7f9fc; border-left: 4px solid #003366;
+               padding: 12px 16px; margin: 16px 0; border-radius: 0 6px 6px 0; }
+      .frage-verzweig { background: #fff8ec; border-left: 4px solid #e6a817;
+                        padding: 12px 16px; margin: 16px 0 16px 32px;
+                        border-radius: 0 6px 6px 0; font-size: 0.97em; }
+      .skala { display: flex; gap: 12px; align-items: center; margin: 8px 0; flex-wrap: wrap; }
+      .skala label { display: flex; align-items: center; gap: 4px; cursor: pointer; }
+      .hinweis { color: #666; font-size: 0.88em; font-style: italic; margin-top: 6px; }
+      .ankreuz { width: 18px; height: 18px; }
+      textarea { width: 100%; border: 1px solid #ccc; border-radius: 4px;
+                 padding: 8px; font-family: inherit; font-size: 0.95em; resize: vertical; }
+      .footer { margin-top: 3em; padding: 16px; background: #f0f4f8;
+                border-radius: 6px; font-size: 0.88em; color: #555; }
+      @media print { body { max-width: 100%; } }
+---
+
+```{=html}
+<p style="background:#003366;color:white;padding:14px 20px;border-radius:6px;margin-bottom:2em;">
+<strong>Anonym &nbsp;·&nbsp; Dauer ca. 8–10 Minuten</strong><br>
+<span style="font-size:0.9em;">
+Vor einigen Monaten hast du den R-Workshop abgeschlossen. Mit dieser kurzen Befragung möchten wir verstehen,
+wie R seither für dich funktioniert hat – ganz unabhängig davon, ob du es viel, wenig oder gar nicht nutzt.
+Es gibt keine richtigen oder falschen Antworten. Deine Offenheit hilft uns, künftige Angebote besser zu gestalten.
+</span>
+</p>
+```
+
+## 1 &nbsp; R-Nutzung seit dem Kurs
+
+::: frage
+**F1 &nbsp; Nutzt du R seit dem Kursabschluss?**
+
+```{=html}
+<label><input type="radio" name="f1" value="regelmaessig"> &nbsp; Ja, regelmässig (mehrmals pro Woche)</label><br>
+<label><input type="radio" name="f1" value="gelegentlich"> &nbsp; Ja, gelegentlich (1–3 Mal pro Monat)</label><br>
+<label><input type="radio" name="f1" value="selten">       &nbsp; Ja, selten (weniger als 1× pro Monat)</label><br>
+<label><input type="radio" name="f1" value="versucht">     &nbsp; Ich habe es versucht, aber aufgehört</label><br>
+<label><input type="radio" name="f1" value="nein">         &nbsp; Nein, gar nicht</label>
+```
+:::
+
+::: frage-verzweig
+**F1a &nbsp; *(nur ausfüllen, falls du R nicht oder kaum nutzt)* &nbsp; Was hat dich daran gehindert?**
+*(Mehrfachauswahl möglich)*
+
+```{=html}
+<label><input type="checkbox"> &nbsp; Keine Zeit, mich in neue Aufgaben einzuarbeiten</label><br>
+<label><input type="checkbox"> &nbsp; Ich habe schnell vergessen, was ich gelernt habe</label><br>
+<label><input type="checkbox"> &nbsp; Keine passenden Aufgaben in meiner Arbeit gefunden</label><br>
+<label><input type="checkbox"> &nbsp; Zu schwierig ohne laufende Unterstützung</label><br>
+<label><input type="checkbox"> &nbsp; Andere Tools reichen für meine Bedürfnisse (Excel, etc.)</label><br>
+<label><input type="checkbox"> &nbsp; Technische Hindernisse (Berechtigungen, Software)</label><br>
+<label><input type="checkbox"> &nbsp; Sonstiges: <input type="text" style="width:250px;"></label>
+```
+
+<p class="hinweis">➡ Du kannst danach direkt zu Abschnitt 4 springen.</p>
+:::
+
+---
+
+## 2 &nbsp; Wofür nutzt du R?
+
+*(Nur ausfüllen, falls du R nutzt)*
+
+::: frage
+**F2 &nbsp; Für welche Aufgaben setzt du R ein?** *(Mehrfachauswahl möglich)*
+
+```{=html}
+<label><input type="checkbox"> &nbsp; Daten aus verschiedenen Quellen einlesen und zusammenführen</label><br>
+<label><input type="checkbox"> &nbsp; Datenbereinigung (fehlende Werte, Formatprobleme)</label><br>
+<label><input type="checkbox"> &nbsp; Statistische Analysen und Auswertungen</label><br>
+<label><input type="checkbox"> &nbsp; Grafiken und Visualisierungen (ggplot2)</label><br>
+<label><input type="checkbox"> &nbsp; Excel-Reports erstellen (openxlsx)</label><br>
+<label><input type="checkbox"> &nbsp; Automatisierung von wiederkehrenden Aufgaben</label><br>
+<label><input type="checkbox"> &nbsp; Sonstiges: <input type="text" style="width:250px;"></label>
+```
+:::
+
+::: frage
+**F3 &nbsp; Welche Techniken aus dem Kurs nutzt du am häufigsten?** *(Mehrfachauswahl möglich)*
+
+```{=html}
+<label><input type="checkbox"> &nbsp; Daten einlesen (read_csv, read_excel)</label><br>
+<label><input type="checkbox"> &nbsp; Pipes ( |> / %>% )</label><br>
+<label><input type="checkbox"> &nbsp; dplyr: select, filter, mutate</label><br>
+<label><input type="checkbox"> &nbsp; dplyr: group_by & summarise</label><br>
+<label><input type="checkbox"> &nbsp; dplyr: Joins (left_join etc.)</label><br>
+<label><input type="checkbox"> &nbsp; tidyr: pivot_longer / pivot_wider</label><br>
+<label><input type="checkbox"> &nbsp; stringr (Textverarbeitung)</label><br>
+<label><input type="checkbox"> &nbsp; lubridate (Datumsangaben)</label><br>
+<label><input type="checkbox"> &nbsp; case_when / ifelse</label><br>
+<label><input type="checkbox"> &nbsp; Loops oder apply / map</label><br>
+<label><input type="checkbox"> &nbsp; Eigene Funktionen</label><br>
+<label><input type="checkbox"> &nbsp; ggplot2</label><br>
+<label><input type="checkbox"> &nbsp; openxlsx</label>
+```
+:::
+
+::: frage
+**F4 &nbsp; Gibt es eine konkrete Aufgabe oder ein Projekt, bei dem R dir geholfen hat?**
+
+*Beschreibe kurz (anonymisiert) – auch eine kleine Arbeitserleichterung zählt.*
+
+```{=html}
+<textarea rows="4" placeholder="z.B. «Ich lese monatlich 3 Dateien ein und erstelle automatisch einen Bericht statt alles manuell zu kopieren.» …"></textarea>
+```
+:::
+
+---
+
+## 3 &nbsp; Rückblickende Einschätzung
+
+::: frage
+**F5 &nbsp; Hat R deine tägliche Arbeit verändert?**
+
+```{=html}
+<div class="skala">
+  <span>Gar nicht</span>
+  <label><input type="radio" name="f5" class="ankreuz"> 1</label>
+  <label><input type="radio" name="f5" class="ankreuz"> 2</label>
+  <label><input type="radio" name="f5" class="ankreuz"> 3</label>
+  <label><input type="radio" name="f5" class="ankreuz"> 4</label>
+  <label><input type="radio" name="f5" class="ankreuz"> 5</label>
+  <span>Stark verändert</span>
+</div>
+```
+:::
+
+::: frage
+**F6 &nbsp; Schätze: Wie viel Zeit sparst du pro Monat durch R (im Vergleich zu vorher)?**
+
+```{=html}
+<label><input type="radio" name="f6"> &nbsp; Ich spare keine Zeit (oder nutze R nicht)</label><br>
+<label><input type="radio" name="f6"> &nbsp; Weniger als 1 Stunde</label><br>
+<label><input type="radio" name="f6"> &nbsp; 1–3 Stunden</label><br>
+<label><input type="radio" name="f6"> &nbsp; 3–8 Stunden</label><br>
+<label><input type="radio" name="f6"> &nbsp; Mehr als 8 Stunden</label>
+```
+<p class="hinweis">Eine grobe Schätzung genügt – auch «keine Ahnung» ist eine valide Antwort.</p>
+:::
+
+::: frage
+**F7 &nbsp; War der Zeitaufwand für den Kurs (6 × 3.5h = 21h) im Nachhinein gerechtfertigt?**
+
+```{=html}
+<div class="skala">
+  <span>Gar nicht<br>gerechtfertigt</span>
+  <label><input type="radio" name="f7" class="ankreuz"> 1</label>
+  <label><input type="radio" name="f7" class="ankreuz"> 2</label>
+  <label><input type="radio" name="f7" class="ankreuz"> 3</label>
+  <label><input type="radio" name="f7" class="ankreuz"> 4</label>
+  <label><input type="radio" name="f7" class="ankreuz"> 5</label>
+  <span>Vollständig<br>gerechtfertigt</span>
+</div>
+```
+:::
+
+::: frage
+**F8 &nbsp; Wie schätzt du dein R-Kenntnislevel HEUTE ein?**
+
+```{=html}
+<div class="skala">
+  <span>0 – Kaum noch<br>vorhanden</span>
+  <label><input type="radio" name="f8" class="ankreuz"> 0</label>
+  <label><input type="radio" name="f8" class="ankreuz"> 1</label>
+  <label><input type="radio" name="f8" class="ankreuz"> 2</label>
+  <label><input type="radio" name="f8" class="ankreuz"> 3</label>
+  <label><input type="radio" name="f8" class="ankreuz"> 4</label>
+  <label><input type="radio" name="f8" class="ankreuz"> 5</label>
+  <span>5 – Gut<br>gefestigt</span>
+</div>
+```
+:::
+
+---
+
+## 4 &nbsp; Hürden und Unterstützungsbedarf
+
+::: frage
+**F9 &nbsp; Was ist für dich heute die grösste Hürde beim Einsatz von R?** *(Mehrfachauswahl möglich)*
+
+```{=html}
+<label><input type="checkbox"> &nbsp; Fehlende Zeit, mich in neue Aufgaben einzuarbeiten</label><br>
+<label><input type="checkbox"> &nbsp; Ich vergesse Syntax / muss vieles neu nachschlagen</label><br>
+<label><input type="checkbox"> &nbsp; Keine Aufgaben in meiner Arbeit, die sich für R eignen</label><br>
+<label><input type="checkbox"> &nbsp; Niemand in meinem Team nutzt R (fehlende Unterstützung)</label><br>
+<label><input type="checkbox"> &nbsp; Zu komplex für meine konkreten Anforderungen</label><br>
+<label><input type="checkbox"> &nbsp; Technische Hürden (Berechtigungen, IT-Restriktionen)</label><br>
+<label><input type="checkbox"> &nbsp; Keine Hürde – ich nutze R zufriedenstellend</label>
+```
+:::
+
+::: frage
+**F10 &nbsp; Was würde dir helfen, R (mehr) in deiner Arbeit einzusetzen?** *(Mehrfachauswahl möglich)*
+
+```{=html}
+<label><input type="checkbox"> &nbsp; Ein Aufbaukurs zu spezifischen Themen</label><br>
+<label><input type="checkbox"> &nbsp; Regelmässige Austauschtreffen mit anderen R-Nutzenden (Community)</label><br>
+<label><input type="checkbox"> &nbsp; Mehr Übungsaufgaben aus meinem konkreten Arbeitsfeld</label><br>
+<label><input type="checkbox"> &nbsp; Zugang zu Unterstützung bei konkreten Problemen (Helpdesk / Slack)</label><br>
+<label><input type="checkbox"> &nbsp; Vorlagen und wiederverwendbare Skripte für typische Aufgaben</label><br>
+<label><input type="checkbox"> &nbsp; Mehr Zeit für Einarbeitung im Arbeitsalltag</label><br>
+<label><input type="checkbox"> &nbsp; Nichts – ich bin zufrieden mit meiner aktuellen Nutzung</label><br>
+<label><input type="checkbox"> &nbsp; Sonstiges: <input type="text" style="width:250px;"></label>
+```
+:::
+
+---
+
+## 5 &nbsp; R und KI-Tools
+
+::: frage
+**F11 &nbsp; Nutzt du KI-Tools (z.B. ChatGPT, Claude, GitHub Copilot) für R-Aufgaben?**
+
+```{=html}
+<label><input type="radio" name="f11"> &nbsp; Ja, regelmässig</label><br>
+<label><input type="radio" name="f11"> &nbsp; Ja, manchmal</label><br>
+<label><input type="radio" name="f11"> &nbsp; Nein, aber ich würde es ausprobieren wollen</label><br>
+<label><input type="radio" name="f11"> &nbsp; Nein, ich ziehe andere Quellen vor (Dokumentation, StackOverflow)</label><br>
+<label><input type="radio" name="f11"> &nbsp; Nein, aus Datenschutzgründen nicht möglich</label>
+```
+:::
+
+::: frage-verzweig
+**F11a &nbsp; *(nur falls du KI-Tools für R nutzt)* &nbsp; Wie hilfreich ist die Kombination R-Kenntnisse + KI für dich?**
+
+```{=html}
+<label><input type="radio" name="f11a"> &nbsp; Sehr hilfreich – ich komme mit KI deutlich weiter als ohne</label><br>
+<label><input type="radio" name="f11a"> &nbsp; Eher hilfreich</label><br>
+<label><input type="radio" name="f11a"> &nbsp; Neutral – KI hilft, aber das Ergebnis ist ähnlich</label><br>
+<label><input type="radio" name="f11a"> &nbsp; Eher nicht hilfreich (Fehlerquote zu hoch etc.)</label>
+```
+:::
+
+::: frage
+**F12 &nbsp; Hat dir das Grundlagenwissen aus dem Kurs geholfen, KI-generierten R-Code zu verstehen und zu überprüfen?**
+
+```{=html}
+<label><input type="radio" name="f12"> &nbsp; Ja, definitiv – ich kann Code besser einschätzen und Fehler erkennen</label><br>
+<label><input type="radio" name="f12"> &nbsp; Eher ja</label><br>
+<label><input type="radio" name="f12"> &nbsp; Schwer zu sagen</label><br>
+<label><input type="radio" name="f12"> &nbsp; Eher nein</label><br>
+<label><input type="radio" name="f12"> &nbsp; Nicht zutreffend (nutze keine KI für R)</label>
+```
+:::
+
+---
+
+## 6 &nbsp; Empfehlung und Ausblick
+
+::: frage
+**F13 &nbsp; Sollte der R-Kurs weiteren Kolleginnen und Kollegen angeboten werden?**
+
+```{=html}
+<label><input type="radio" name="f13"> &nbsp; Ja, auf jeden Fall – so wie er war</label><br>
+<label><input type="radio" name="f13"> &nbsp; Ja, aber mit Anpassungen</label><br>
+<label><input type="radio" name="f13"> &nbsp; Bin unsicher</label><br>
+<label><input type="radio" name="f13"> &nbsp; Eher nein</label>
+```
+:::
+
+::: frage-verzweig
+**F13a &nbsp; Welche Anpassungen würdest du empfehlen?**
+
+```{=html}
+<textarea rows="3" placeholder="z.B. kürzerer Kurs, mehr Praxisbezug, andere Themenreihenfolge …"></textarea>
+```
+:::
+
+---
+
+## 7 &nbsp; Offene Fragen
+
+::: frage
+**F14 &nbsp; Was hat sich in deiner Arbeit durch den R-Kurs konkret verändert?**
+
+*Auch eine kleine Veränderung ist wertvoll – auch «nichts» ist eine wichtige Rückmeldung.*
+
+```{=html}
+<textarea rows="4" placeholder="Deine Antwort …"></textarea>
+```
+:::
+
+::: frage
+**F15 &nbsp; Gibt es etwas, das du dir rückblickend anders gewünscht hättest – im Kurs oder in der Nachbetreuung?**
+
+```{=html}
+<textarea rows="3" placeholder="Deine Antwort …"></textarea>
+```
+:::
+
+::: frage
+**F16 &nbsp; Sonstige Bemerkungen?**
+
+```{=html}
+<textarea rows="3" placeholder="Optional …"></textarea>
+```
+:::
+
+---
+
+::: footer
+**Vielen Dank für deine Zeit!** &nbsp;·&nbsp; Alle Antworten sind anonym und werden aggregiert ausgewertet.<br>
+Rückfragen: Amt für Daten und Statistik, Kanton Thurgau
+:::
