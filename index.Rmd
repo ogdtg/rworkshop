@@ -111,6 +111,9 @@ xaringanExtra::use_tachyons()
 ```
 ---
 
+```{r child='rmd/praxisbeispiel.Rmd'}
+```
+---
 
 ```{r child='rmd/rest_apis.Rmd'}
 ```

@@ -1,0 +1,448 @@
+---
+title: "Praxisbeispiel: Einwohnerstatistik"
+author: "Felix Lorenz"
+date: "Workshop 2026"
+amt: "Amt für Daten und Statistik"
+stelle: ""
+output:
+  xaringan::moon_reader:
+    highlightStyle: github
+    highlightlines: true
+    highlightSpans: true
+    css: ["default","styles_x.css"]
+---
+
+```{r setup-praxis, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, dpi = 300, message = FALSE, warning = FALSE,
+                      eval = TRUE)
+library(dplyr); library(tidyr); library(stringr); library(lubridate)
+library(ggplot2); library(purrr); library(openxlsx)
+
+# ── Minimaldatensatz für Folien ────────────────────────────────────────────
+set.seed(42)
+gemeinden_ref <- tibble::tibble(
+  gemeinde_code = c(2101L, 2102L, 2103L, 2104L),
+  gemeinde_name = c("Stadtberg", "Seebach", "Waldheim", "Bergdorf"),
+  bezirk        = c("Bezirk Nord", "Bezirk Nord", "Bezirk Süd", "Bezirk Süd")
+)
+
+nachnamen  <- c("Müller","Meier","Schmid","Keller","Fischer","Weber","Huber","Bauer")
+vornamen_m <- c("Hans","Peter","Thomas","Martin","Stefan","Klaus","Andreas","Beat")
+vornamen_f <- c("Anna","Maria","Sandra","Julia","Laura","Monika","Petra","Ursula")
+nats       <- c(rep("CH",70), rep("DE",12), rep("IT",9), rep("FR",6), rep("other",3))
+
+make_year <- function(jahr, n = 120) {
+  g  <- sample(c("M","F"), n, replace = TRUE)
+  vn <- ifelse(g=="M", sample(vornamen_m,n,TRUE), sample(vornamen_f,n,TRUE))
+  # Absichtlich schmutzige Strings (Leerzeichen)
+  vn <- ifelse(runif(n)<.15, paste0("  ",vn,"  "), vn)
+  nn <- sample(nachnamen, n, TRUE)
+  nn <- ifelse(runif(n)<.1,  paste0(nn," "), nn)
+  geb <- sample(seq(as.Date("1940-01-01"), as.Date("2010-12-31"), by="day"), n, TRUE)
+  tibble::tibble(
+    id            = paste0(jahr,"_",sprintf("%04d",seq_len(n))),
+    vorname       = vn,
+    nachname      = nn,
+    geburtsdatum  = format(geb, "%d.%m.%Y"),
+    geschlecht    = g,
+    nationalitaet = sample(nats, n, TRUE),
+    gemeinde_code = sample(c(2101L,2102L,2103L,2104L), n, TRUE),
+    stichtag      = paste0(jahr,"-12-31")
+  )
+}
+
+roh_2022 <- make_year(2022)
+roh_2023 <- make_year(2023)
+roh_2024 <- make_year(2024)
+
+# Rohdaten zusammenführen (so wie nach dem Einlesen)
+roh_alle <- bind_rows(roh_2022, roh_2023, roh_2024)
+```
+
+----
+## Praxisbeispiel: Das Szenario
+
+.pull-left[
+Das Statistikamt einer fiktiven Region erhält **jährlich** von 4 Gemeinden CSV-Dateien mit Einwohnerdaten.
+
+**Aufgabe:** Einen vollständig **automatisierten Workflow** erstellen, der:
+
+1. Alle CSV-Files einliest
+2. Datenfehler bereinigt
+3. Analysen berechnet
+4. Visualisierungen erstellt
+5. Einen Excel-Report exportiert
+
+> Ohne Programmierung: stundenlanges Kopieren.
+> Mit R: einmal schreiben, jedes Jahr wiederverwenden.
+]
+
+.pull-right[
+**Verwendete Techniken:**
+
+| Technik | Zweck |
+|---------|-------|
+| `purrr::map` | CSVs einlesen |
+| `stringr` | Namen bereinigen |
+| `lubridate` | Daten parsen |
+| `dplyr` | Filtern, Anreichern |
+| `case_when` | Altersklassen |
+| `tidyr` | Jahresvergleich |
+| Funktionen | Wiederverwend. Logik |
+| `ggplot2` | Visualisierung |
+| `openxlsx` | Excel-Export |
+]
+
+---
+----
+## Schritt 1: Rohdaten – was erhalten wir?
+
+Jede Gemeinde liefert eine CSV mit Einträgen pro Person. Die Daten haben **typische Qualitätsprobleme**:
+
+```{r echo=FALSE}
+roh_2024 |> head(5) |> select(id, vorname, nachname, geburtsdatum, nationalitaet, gemeinde_code)
+```
+
+**Probleme:**
+- `vorname` / `nachname` haben führende / abschliessende **Leerzeichen**
+- `geburtsdatum` ist ein **String** (`"15.03.1985"`), kein Datum
+- `gemeinde_code` ist nur eine Zahl – **Gemeindename und Bezirk fehlen**
+
+---
+----
+## Schritt 2: Alle CSVs einlesen – `purrr::map_df`
+
+Statt drei `read_csv()`-Aufrufe: eine Zeile mit `map_df`.
+
+```{r eval=FALSE}
+library(purrr); library(readr)
+
+# Alle CSV-Dateien im Ordner finden
+csv_files <- list.files("Daten/einwohner", pattern = "\\.csv$", full.names = TRUE)
+
+# Funktion: eine CSV einlesen und Dateinamen als Spalte anhängen
+lese_csv <- function(pfad) {
+  read_csv(pfad) |>
+    mutate(quelldatei = basename(pfad))
+}
+
+# Alle CSVs auf einmal laden → ein zusammenhängender data.frame
+roh_alle <- map_df(csv_files, lese_csv)
+```
+
+.bg-washed-blue.b--dark-blue.ba.bw1.br3.ph3.mt3[
+**Warum das wichtig ist:**
+Kommen nächstes Jahr 3 weitere Gemeinden dazu? → Keine Codeänderung nötig.
+Alle neuen CSVs im Ordner werden automatisch eingelesen.
+]
+
+---
+----
+## Schritt 3: Bereinigung – `stringr` & `lubridate`
+
+.panelset[
+.panel[.panel-name[Vorher]
+```{r echo=FALSE}
+roh_alle |>
+  select(vorname, nachname, geburtsdatum) |>
+  slice(c(1,3,7)) |>
+  mutate(vorname_laenge = nchar(vorname))
+```
+Leerzeichen unsichtbar, aber `nchar()` zeigt sie.
+]
+.panel[.panel-name[str_trim & dmy]
+```{r}
+sauber <- roh_alle |>
+  mutate(
+    vorname      = str_trim(vorname),       # Leerzeichen entfernen
+    nachname     = str_trim(nachname),
+    vollname     = paste(vorname, nachname),
+    geburtsdatum = dmy(geburtsdatum),       # String → Datum
+    stichtag     = ymd(stichtag),
+    alter        = as.integer(
+                     (stichtag - geburtsdatum) / 365.25)
+  )
+```
+]
+.panel[.panel-name[Nachher]
+```{r echo=FALSE}
+sauber |>
+  select(vollname, geburtsdatum, alter, stichtag) |>
+  slice(c(1,3,7))
+```
+Vollname sauber, Datum als `Date`, Alter als Ganzzahl.
+]
+]
+
+---
+----
+## Schritt 4: Anreicherung – `join` & `case_when`
+
+```{r}
+# Referenztabelle: Gemeindecode → Name + Bezirk
+# (in der Praxis aus einer Datei eingelesen)
+
+aufbereitet <- sauber |>
+  left_join(gemeinden_ref, by = "gemeinde_code") |>   # Gemeindename & Bezirk
+  mutate(
+    altersklasse = case_when(                          # Altersklassen
+      alter <  6  ~ "0–5",
+      alter < 18  ~ "6–17",
+      alter < 40  ~ "18–39",
+      alter < 65  ~ "40–64",
+      .default    =  "65+"
+    ),
+    nationalitaet_gr = case_when(                      # Nationalitätsgruppe
+      nationalitaet == "CH"            ~ "Schweiz",
+      nationalitaet %in% c("DE","AT") ~ "DACH",
+      .default                         =  "Übrige"
+    ),
+    jahr = year(stichtag)
+  )
+```
+
+---
+----
+## Schritt 5: Eigene Hilfsfunktionen
+
+Wiederkehrende Operationen in Funktionen auslagern:
+
+.panelset[
+.panel[.panel-name[als_prozent()]
+```{r}
+# Anteil als formatierten Prozentstring
+als_prozent <- function(anteil, stellen = 1) {
+  if (!is.numeric(anteil)) stop("'anteil' muss numerisch sein.")
+  paste0(round(anteil * 100, stellen), " %")
+}
+
+als_prozent(0.374)
+als_prozent(c(0.1, 0.5, 0.9), stellen = 0)
+```
+]
+.panel[.panel-name[zusammenfassung_gemeinde()]
+```{r}
+# Kennzahlen für eine Gemeinde + Jahr
+zusammenfassung_gemeinde <- function(df, gmd, j) {
+  df |>
+    filter(gemeinde_name == gmd, jahr == j) |>
+    summarise(
+      einwohner    = n(),
+      anteil_ch    = als_prozent(mean(nationalitaet == "CH")),
+      anteil_65p   = als_prozent(mean(altersklasse == "65+")),
+      median_alter = median(alter, na.rm = TRUE)
+    )
+}
+zusammenfassung_gemeinde(aufbereitet, "Stadtberg", 2024)
+```
+]
+]
+
+---
+----
+## Schritt 6: Analyse – Jahresvergleich mit `tidyr`
+
+.panelset[
+.panel[.panel-name[group_by + summarise]
+```{r}
+pro_jahr_gemeinde <- aufbereitet |>
+  group_by(jahr, gemeinde_name, bezirk) |>
+  summarise(
+    einwohner = n(),
+    anteil_ch = mean(nationalitaet == "CH"),
+    .groups   = "drop"
+  )
+
+pro_jahr_gemeinde |> filter(jahr == 2024)
+```
+]
+.panel[.panel-name[pivot_wider: Jahresvergleich]
+```{r}
+# Einwohnerzahl pro Gemeinde nebeneinander für alle Jahre
+pro_jahr_gemeinde |>
+  select(gemeinde_name, jahr, einwohner) |>
+  pivot_wider(names_from = jahr, values_from = einwohner) |>
+  mutate(wachstum = als_prozent((`2024` - `2022`) / `2022`))
+```
+]
+.panel[.panel-name[Altersklassen-Verteilung]
+```{r}
+aufbereitet |>
+  filter(jahr == 2024) |>
+  group_by(altersklasse) |>
+  summarise(n = n()) |>
+  mutate(anteil = als_prozent(n / sum(n))) |>
+  arrange(altersklasse)
+```
+]
+]
+
+---
+----
+## Schritt 7: Visualisierung – `ggplot2`
+
+.panelset[
+.panel[.panel-name[Altersverteilung]
+```{r fig.height=3.5, fig.width=7}
+aufbereitet |>
+  filter(jahr == 2024) |>
+  count(altersklasse, bezirk) |>
+  ggplot(aes(x = altersklasse, y = n, fill = bezirk)) +
+  geom_col(position = "dodge") +
+  labs(title = "Altersverteilung 2024 nach Bezirk",
+       x = "Altersklasse", y = "Einwohner", fill = "Bezirk") +
+  theme_minimal()
+```
+]
+.panel[.panel-name[Entwicklung über Zeit]
+```{r fig.height=3.5, fig.width=7}
+pro_jahr_gemeinde |>
+  ggplot(aes(x = jahr, y = einwohner,
+             colour = gemeinde_name, group = gemeinde_name)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 3) +
+  scale_x_continuous(breaks = 2022:2024) +
+  labs(title = "Einwohnerentwicklung 2022–2024",
+       x = NULL, y = "Einwohner", colour = "Gemeinde") +
+  theme_minimal()
+```
+]
+.panel[.panel-name[Nationalitäten]
+```{r fig.height=3.2, fig.width=7}
+aufbereitet |>
+  filter(jahr == 2024) |>
+  count(nationalitaet_gr, gemeinde_name) |>
+  group_by(gemeinde_name) |>
+  mutate(anteil = n / sum(n)) |>
+  ggplot(aes(x = gemeinde_name, y = anteil, fill = nationalitaet_gr)) +
+  geom_col() +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "Nationalitätsanteile 2024", x = NULL,
+       y = "Anteil", fill = "Gruppe") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 20, hjust = 1))
+```
+]
+]
+
+---
+----
+## Schritt 8: Export – `openxlsx`
+
+```{r eval=FALSE}
+library(openxlsx)
+
+# Zusammenfassungstabelle für den Report
+report_tabelle <- pro_jahr_gemeinde |>
+  pivot_wider(names_from = jahr, values_from = c(einwohner, anteil_ch)) |>
+  arrange(bezirk, gemeinde_name)
+
+# Workbook aufbauen
+wb <- createWorkbook()
+addWorksheet(wb, "Einwohner")
+
+# Header-Style
+style_titel   <- createStyle(fontSize = 14, textDecoration = "bold",
+                              fgFill = "#003366", fontColour = "white",
+                              halign = "center")
+style_header  <- createStyle(textDecoration = "bold", border = "Bottom",
+                              fgFill = "#D9E1F2")
+style_zahlen  <- createStyle(numFmt = "#,##0", halign = "right")
+
+# Titel schreiben
+writeData(wb, "Einwohner", "Einwohnerstatistik Region Mustertal", startRow = 1)
+addStyle(wb, "Einwohner", style_titel, rows = 1, cols = 1:ncol(report_tabelle))
+mergeCells(wb, "Einwohner", rows = 1, cols = 1:ncol(report_tabelle))
+
+# Daten schreiben
+writeData(wb, "Einwohner", report_tabelle, startRow = 3)
+addStyle(wb, "Einwohner", style_header,
+         rows = 3, cols = 1:ncol(report_tabelle), gridExpand = TRUE)
+addStyle(wb, "Einwohner", style_zahlen,
+         rows = 4:(3 + nrow(report_tabelle)),
+         cols = 3:ncol(report_tabelle), gridExpand = TRUE)
+setColWidths(wb, "Einwohner", cols = 1:ncol(report_tabelle), widths = "auto")
+
+saveWorkbook(wb, "Output/Einwohnerstatistik_2024.xlsx", overwrite = TRUE)
+```
+
+---
+----
+## Das grosse Bild: Was wir gebaut haben
+
+```
+CSV-Files (3 Jahre × 4 Gemeinden)
+        │
+        ▼ purrr::map_df()         ← mehrere Files einlesen
+   Rohdaten (1 Tabelle)
+        │
+        ▼ str_trim() + dmy()      ← stringr + lubridate
+   Saubere Daten
+        │
+        ▼ left_join()             ← Referenzdaten anfügen
+   Angereicherte Daten
+        │
+        ▼ case_when()             ← Altersklassen
+        ▼ group_by() + summarise()← Kennzahlen berechnen
+        ▼ pivot_wider()           ← Jahresvergleich
+   Analyse-Ergebnis
+        │
+        ├──▶ ggplot2              ← Visualisierung
+        └──▶ openxlsx            ← Excel-Report
+```
+
+.bg-washed-green.b--dark-green.ba.bw2.br3.ph3.mt2[
+**Das ist der Kern von Programmieren:** Einmal schreiben –
+nächstes Jahr nur die neuen CSV-Dateien in den Ordner legen und das Skript erneut ausführen.
+]
+
+---
+----
+## Alle verwendeten Techniken im Überblick
+
+.panelset[
+.panel[.panel-name[Daten]
+
+| Technik | Funktion | Aufgabe |
+|---------|----------|---------|
+| `purrr` | `map_df()` | Mehrere CSVs auf einmal laden |
+| `readr` | `read_csv()` | Einzelne CSV einlesen |
+| `dplyr` | `left_join()` | Referenzdaten anfügen |
+| `tidyr` | `pivot_wider()` | Long → Wide für Vergleich |
+
+]
+.panel[.panel-name[Bereinigung]
+
+| Technik | Funktion | Aufgabe |
+|---------|----------|---------|
+| `stringr` | `str_trim()` | Leerzeichen entfernen |
+| `stringr` | `str_detect()` | Muster prüfen |
+| `lubridate` | `dmy()` | String → Datum |
+| `lubridate` | `year()` | Jahr extrahieren |
+| `dplyr` | `mutate(across())` | Mehrere Spalten bearbeiten |
+
+]
+.panel[.panel-name[Analyse]
+
+| Technik | Funktion | Aufgabe |
+|---------|----------|---------|
+| `dplyr` | `case_when()` | Alters-/Nat.-Klassen |
+| `dplyr` | `group_by()` + `summarise()` | Kennzahlen |
+| `dplyr` | `filter()`, `select()` | Datensätze einschränken |
+| Funktionen | `als_prozent()` | Formatierung wiederverwenden |
+| Funktionen | `zusammenfassung_gemeinde()` | Bericht je Gemeinde |
+
+]
+.panel[.panel-name[Output]
+
+| Technik | Funktion | Aufgabe |
+|---------|----------|---------|
+| `ggplot2` | `geom_col()` | Balkendiagramm |
+| `ggplot2` | `geom_line()` | Zeitreihe |
+| `ggplot2` | `facet_wrap()` | Mehrere Panels |
+| `openxlsx` | `createWorkbook()` | Excel-Workbook anlegen |
+| `openxlsx` | `createStyle()` | Formatierung definieren |
+| `openxlsx` | `saveWorkbook()` | Datei speichern |
+
+]
+]
