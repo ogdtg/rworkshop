@@ -1,0 +1,346 @@
+---
+title: "Kursevaluation R-Workshop"
+subtitle: "Deine Rückmeldung hilft uns, den Kurs zu verbessern"
+format:
+  html:
+    theme: cosmo
+    toc: false
+    embed-resources: true
+    css: |
+      body { max-width: 750px; margin: auto; font-family: 'Segoe UI', sans-serif; color: #222; }
+      h2 { color: #003366; border-bottom: 2px solid #003366; padding-bottom: 6px; margin-top: 2em; }
+      h3 { color: #336699; margin-top: 1.5em; }
+      .frage { background: #f7f9fc; border-left: 4px solid #003366;
+               padding: 12px 16px; margin: 16px 0; border-radius: 0 6px 6px 0; }
+      .skala { display: flex; gap: 12px; align-items: center; margin: 8px 0; flex-wrap: wrap; }
+      .skala label { display: flex; align-items: center; gap: 4px; cursor: pointer; }
+      .hinweis { color: #666; font-size: 0.88em; font-style: italic; margin-top: 4px; }
+      .pflicht { color: #cc0000; font-size: 0.85em; }
+      .ankreuz { width: 18px; height: 18px; }
+      table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+      th { background: #003366; color: white; padding: 8px 12px; text-align: center; }
+      td { border: 1px solid #ccc; padding: 8px 12px; }
+      td:first-child { text-align: left; }
+      td:not(:first-child) { text-align: center; }
+      tr:nth-child(even) { background: #f2f6fb; }
+      .footer { margin-top: 3em; padding: 16px; background: #f0f4f8;
+                border-radius: 6px; font-size: 0.88em; color: #555; }
+      textarea { width: 100%; border: 1px solid #ccc; border-radius: 4px;
+                 padding: 8px; font-family: inherit; font-size: 0.95em; resize: vertical; }
+      @media print { body { max-width: 100%; } }
+---
+
+```{=html}
+<p style="background:#003366;color:white;padding:14px 20px;border-radius:6px;margin-bottom:2em;">
+<strong>Anonym &nbsp;·&nbsp; Dauer ca. 8–10 Minuten &nbsp;·&nbsp; Alle Angaben freiwillig</strong><br>
+<span style="font-size:0.9em;">Deine Rückmeldung wird vertraulich behandelt und ausschliesslich zur Verbesserung des Kurses genutzt.</span>
+</p>
+```
+
+## 1 &nbsp; Gesamteindruck
+
+::: frage
+**F1 &nbsp; Wie zufrieden bist du insgesamt mit dem R-Workshop?**
+
+```{=html}
+<div class="skala">
+  <span>😞 Gar nicht</span>
+  <label><input type="radio" name="f1" class="ankreuz"> 1</label>
+  <label><input type="radio" name="f1" class="ankreuz"> 2</label>
+  <label><input type="radio" name="f1" class="ankreuz"> 3</label>
+  <label><input type="radio" name="f1" class="ankreuz"> 4</label>
+  <label><input type="radio" name="f1" class="ankreuz"> 5</label>
+  <span>😊 Sehr zufrieden</span>
+</div>
+```
+:::
+
+::: frage
+**F2 &nbsp; Haben sich deine Erwartungen an den Kurs erfüllt?**
+
+```{=html}
+<div class="skala">
+  <span>Gar nicht</span>
+  <label><input type="radio" name="f2" class="ankreuz"> 1</label>
+  <label><input type="radio" name="f2" class="ankreuz"> 2</label>
+  <label><input type="radio" name="f2" class="ankreuz"> 3</label>
+  <label><input type="radio" name="f2" class="ankreuz"> 4</label>
+  <label><input type="radio" name="f2" class="ankreuz"> 5</label>
+  <span>Vollständig</span>
+</div>
+```
+:::
+
+::: frage
+**F3 &nbsp; Würdest du den Workshop Kolleginnen und Kollegen empfehlen?**
+
+```{=html}
+<label><input type="radio" name="f3"> &nbsp; Ja, auf jeden Fall</label><br>
+<label><input type="radio" name="f3"> &nbsp; Ja, mit Einschränkungen</label><br>
+<label><input type="radio" name="f3"> &nbsp; Bin unsicher</label><br>
+<label><input type="radio" name="f3"> &nbsp; Eher nein</label>
+```
+:::
+
+---
+
+## 2 &nbsp; Kursinhalte
+
+::: frage
+**F4 &nbsp; Wie relevant waren die Kursinhalte für deine tägliche Arbeit?**
+
+```{=html}
+<div class="skala">
+  <span>Gar nicht relevant</span>
+  <label><input type="radio" name="f4" class="ankreuz"> 1</label>
+  <label><input type="radio" name="f4" class="ankreuz"> 2</label>
+  <label><input type="radio" name="f4" class="ankreuz"> 3</label>
+  <label><input type="radio" name="f4" class="ankreuz"> 4</label>
+  <label><input type="radio" name="f4" class="ankreuz"> 5</label>
+  <span>Sehr relevant</span>
+</div>
+```
+:::
+
+::: frage
+**F5 &nbsp; Welche Themen waren für dich am wertvollsten?** *(Mehrfachauswahl möglich)*
+
+```{=html}
+<label><input type="checkbox"> &nbsp; Daten einlesen (CSV, Excel, SAS)</label><br>
+<label><input type="checkbox"> &nbsp; Tidy Data & tidyr (Daten umformen)</label><br>
+<label><input type="checkbox"> &nbsp; dplyr (select, filter, mutate, group_by, joins)</label><br>
+<label><input type="checkbox"> &nbsp; Pipes ( |> und %>% )</label><br>
+<label><input type="checkbox"> &nbsp; Stringr & Regular Expressions</label><br>
+<label><input type="checkbox"> &nbsp; Lubridate (Datumsangaben)</label><br>
+<label><input type="checkbox"> &nbsp; Conditional Statements (ifelse, case_when)</label><br>
+<label><input type="checkbox"> &nbsp; Loops & apply-Funktionen</label><br>
+<label><input type="checkbox"> &nbsp; purrr (map-Funktionen)</label><br>
+<label><input type="checkbox"> &nbsp; Eigene Funktionen schreiben</label><br>
+<label><input type="checkbox"> &nbsp; Visualisierung mit ggplot2</label><br>
+<label><input type="checkbox"> &nbsp; Excel-Export mit openxlsx</label><br>
+<label><input type="checkbox"> &nbsp; Praxisbeispiel (Einwohnerstatistik-Workflow)</label>
+```
+:::
+
+::: frage
+**F6 &nbsp; Welche Themen waren für dich am wenigsten relevant?** *(Mehrfachauswahl möglich)*
+
+```{=html}
+<label><input type="checkbox"> &nbsp; Daten einlesen (CSV, Excel, SAS)</label><br>
+<label><input type="checkbox"> &nbsp; Tidy Data & tidyr (Daten umformen)</label><br>
+<label><input type="checkbox"> &nbsp; dplyr (select, filter, mutate, group_by, joins)</label><br>
+<label><input type="checkbox"> &nbsp; Pipes ( |> und %>% )</label><br>
+<label><input type="checkbox"> &nbsp; Stringr & Regular Expressions</label><br>
+<label><input type="checkbox"> &nbsp; Lubridate (Datumsangaben)</label><br>
+<label><input type="checkbox"> &nbsp; Conditional Statements (ifelse, case_when)</label><br>
+<label><input type="checkbox"> &nbsp; Loops & apply-Funktionen</label><br>
+<label><input type="checkbox"> &nbsp; purrr (map-Funktionen)</label><br>
+<label><input type="checkbox"> &nbsp; Eigene Funktionen schreiben</label><br>
+<label><input type="checkbox"> &nbsp; Visualisierung mit ggplot2</label><br>
+<label><input type="checkbox"> &nbsp; Excel-Export mit openxlsx</label>
+```
+:::
+
+::: frage
+**F7 &nbsp; Welche Themen hättest du gerne vertieft oder ausgebaut?**
+
+```{=html}
+<textarea rows="3" placeholder="z.B. mehr Übungen zu ggplot2, mehr Praxisbeispiele aus dem Verwaltungsalltag …"></textarea>
+```
+:::
+
+---
+
+## 3 &nbsp; Dein Lernfortschritt
+
+::: frage
+**F8 &nbsp; Wie schätzt du dein R-Kenntnislevel VOR dem Kurs ein?**
+
+```{=html}
+<div class="skala">
+  <span>0 – Keine Kenntnisse</span>
+  <label><input type="radio" name="f8" class="ankreuz"> 0</label>
+  <label><input type="radio" name="f8" class="ankreuz"> 1</label>
+  <label><input type="radio" name="f8" class="ankreuz"> 2</label>
+  <label><input type="radio" name="f8" class="ankreuz"> 3</label>
+  <label><input type="radio" name="f8" class="ankreuz"> 4</label>
+  <label><input type="radio" name="f8" class="ankreuz"> 5</label>
+  <span>5 – Fortgeschritten</span>
+</div>
+```
+:::
+
+::: frage
+**F9 &nbsp; Wie schätzt du dein R-Kenntnislevel JETZT (nach dem Kurs) ein?**
+
+```{=html}
+<div class="skala">
+  <span>0 – Keine Kenntnisse</span>
+  <label><input type="radio" name="f9" class="ankreuz"> 0</label>
+  <label><input type="radio" name="f9" class="ankreuz"> 1</label>
+  <label><input type="radio" name="f9" class="ankreuz"> 2</label>
+  <label><input type="radio" name="f9" class="ankreuz"> 3</label>
+  <label><input type="radio" name="f9" class="ankreuz"> 4</label>
+  <label><input type="radio" name="f9" class="ankreuz"> 5</label>
+  <span>5 – Fortgeschritten</span>
+</div>
+```
+:::
+
+::: frage
+**F10 &nbsp; Kannst du dir vorstellen, R in deiner täglichen Arbeit einzusetzen?**
+
+```{=html}
+<div class="skala">
+  <span>Gar nicht</span>
+  <label><input type="radio" name="f10" class="ankreuz"> 1</label>
+  <label><input type="radio" name="f10" class="ankreuz"> 2</label>
+  <label><input type="radio" name="f10" class="ankreuz"> 3</label>
+  <label><input type="radio" name="f10" class="ankreuz"> 4</label>
+  <label><input type="radio" name="f10" class="ankreuz"> 5</label>
+  <span>Sehr gut</span>
+</div>
+```
+:::
+
+---
+
+## 4 &nbsp; Bewertung der einzelnen Sitzungen
+
+*Bitte bewerte jede Sitzung nach Verständlichkeit und Relevanz für deine Arbeit (1 = tief, 5 = hoch).*
+
+```{=html}
+<table>
+<thead>
+<tr>
+  <th style="text-align:left;">Sitzung</th>
+  <th>Verständlich<br><small>1–5</small></th>
+  <th>Relevant für<br>meine Arbeit<br><small>1–5</small></th>
+  <th>Tempo<br><small>zu langsam / genau /<br>zu schnell</small></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>S1</strong> &nbsp; R &amp; RStudio, Mindset, Tidyverse,<br>Daten einlesen, Pipes</td>
+  <td><input type="text" style="width:40px;text-align:center;" placeholder="1–5"></td>
+  <td><input type="text" style="width:40px;text-align:center;" placeholder="1–5"></td>
+  <td><input type="text" style="width:80px;text-align:center;" placeholder="l / g / s"></td>
+</tr>
+<tr>
+  <td><strong>S2</strong> &nbsp; Tidy Data, tidyr, dplyr<br>(select, filter, Joins)</td>
+  <td><input type="text" style="width:40px;text-align:center;" placeholder="1–5"></td>
+  <td><input type="text" style="width:40px;text-align:center;" placeholder="1–5"></td>
+  <td><input type="text" style="width:80px;text-align:center;" placeholder="l / g / s"></td>
+</tr>
+<tr>
+  <td><strong>S3</strong> &nbsp; dplyr (mutate, group_by),<br>stringr, lubridate</td>
+  <td><input type="text" style="width:40px;text-align:center;" placeholder="1–5"></td>
+  <td><input type="text" style="width:40px;text-align:center;" placeholder="1–5"></td>
+  <td><input type="text" style="width:80px;text-align:center;" placeholder="l / g / s"></td>
+</tr>
+<tr>
+  <td><strong>S4</strong> &nbsp; Listen, Conditional Statements,<br>Loops, apply, purrr</td>
+  <td><input type="text" style="width:40px;text-align:center;" placeholder="1–5"></td>
+  <td><input type="text" style="width:40px;text-align:center;" placeholder="1–5"></td>
+  <td><input type="text" style="width:80px;text-align:center;" placeholder="l / g / s"></td>
+</tr>
+<tr>
+  <td><strong>S5</strong> &nbsp; Eigene Funktionen, ggplot2</td>
+  <td><input type="text" style="width:40px;text-align:center;" placeholder="1–5"></td>
+  <td><input type="text" style="width:40px;text-align:center;" placeholder="1–5"></td>
+  <td><input type="text" style="width:80px;text-align:center;" placeholder="l / g / s"></td>
+</tr>
+<tr>
+  <td><strong>S6</strong> &nbsp; openxlsx, Praxisbeispiel<br>(End-to-End-Workflow)</td>
+  <td><input type="text" style="width:40px;text-align:center;" placeholder="1–5"></td>
+  <td><input type="text" style="width:40px;text-align:center;" placeholder="1–5"></td>
+  <td><input type="text" style="width:80px;text-align:center;" placeholder="l / g / s"></td>
+</tr>
+</tbody>
+</table>
+<p class="hinweis">l = zu langsam &nbsp;|&nbsp; g = genau richtig &nbsp;|&nbsp; s = zu schnell</p>
+```
+
+---
+
+## 5 &nbsp; Organisation & Durchführung
+
+::: frage
+**F11 &nbsp; Wie war das Gesamttempo des Kurses?**
+
+```{=html}
+<label><input type="radio" name="f11"> &nbsp; Zu langsam</label><br>
+<label><input type="radio" name="f11"> &nbsp; Genau richtig</label><br>
+<label><input type="radio" name="f11"> &nbsp; Zu schnell</label>
+```
+:::
+
+::: frage
+**F12 &nbsp; Wie gut waren die Hands-On-Übungen auf die Theorie abgestimmt?**
+
+```{=html}
+<div class="skala">
+  <span>Schlecht</span>
+  <label><input type="radio" name="f12" class="ankreuz"> 1</label>
+  <label><input type="radio" name="f12" class="ankreuz"> 2</label>
+  <label><input type="radio" name="f12" class="ankreuz"> 3</label>
+  <label><input type="radio" name="f12" class="ankreuz"> 4</label>
+  <label><input type="radio" name="f12" class="ankreuz"> 5</label>
+  <span>Sehr gut</span>
+</div>
+```
+:::
+
+::: frage
+**F13 &nbsp; War der Zeitaufwand (6 × 3.5 Stunden = 21 Stunden) angemessen für das, was du gelernt hast?**
+
+```{=html}
+<label><input type="radio" name="f13"> &nbsp; Ja, gut investierte Zeit</label><br>
+<label><input type="radio" name="f13"> &nbsp; Eher ja</label><br>
+<label><input type="radio" name="f13"> &nbsp; Schwer zu sagen</label><br>
+<label><input type="radio" name="f13"> &nbsp; Eher zu viel für den Ertrag</label>
+```
+:::
+
+---
+
+## 6 &nbsp; Offene Fragen
+
+::: frage
+**F14 &nbsp; Was hat dir am Kurs am besten gefallen?**
+
+```{=html}
+<textarea rows="3" placeholder="Deine Antwort …"></textarea>
+```
+:::
+
+::: frage
+**F15 &nbsp; Was würdest du am Kurs ändern oder verbessern?**
+
+```{=html}
+<textarea rows="3" placeholder="Deine Antwort …"></textarea>
+```
+:::
+
+::: frage
+**F16 &nbsp; Gibt es konkrete Themen oder Aufgaben aus deiner Arbeit, die du gerne im Kurs behandelt gesehen hättest?**
+
+```{=html}
+<textarea rows="3" placeholder="Deine Antwort …"></textarea>
+```
+:::
+
+::: frage
+**F17 &nbsp; Sonstige Bemerkungen oder Ideen?**
+
+```{=html}
+<textarea rows="3" placeholder="Optional …"></textarea>
+```
+:::
+
+---
+
+::: footer
+**Vielen Dank für deine Rückmeldung!** &nbsp;·&nbsp; Die Auswertung erfolgt anonym und aggregiert.<br>
+Rückfragen: Amt für Daten und Statistik, Kanton Thurgau
+:::
