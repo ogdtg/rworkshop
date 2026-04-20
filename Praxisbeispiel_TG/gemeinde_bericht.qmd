@@ -1,0 +1,247 @@
+---
+title: "Einwohnerstatistik `r params$gemeinde`"
+subtitle: "Kanton Thurgau – Auswertungsjahr 2023"
+date: today
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-title: "Inhalt"
+    embed-resources: true
+params:
+  bfs_nr: 4421
+  gemeinde: "Arbon"
+  bezirk: "Arbon"
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r setup}
+library(tidyverse)
+library(ggplot2)
+library(scales)
+
+# Daten laden
+alle_daten <- read_csv("daten/alle_gemeinden.csv")
+
+# Gemeindedaten filtern (ohne fehlende Werte)
+gem_daten <- alle_daten |>
+  filter(bfs_nr == params$bfs_nr, !is.na(anzahl))
+
+# Kantonsdaten (alle Gemeinden, ohne fehlende Werte)
+kanton_daten <- alle_daten |>
+  filter(!is.na(anzahl))
+
+# Hilfswerte berechnen
+daten_2023 <- gem_daten |> filter(jahr == 2023)
+daten_2021 <- gem_daten |> filter(jahr == 2021)
+
+total_2023 <- daten_2023 |>
+  summarise(total = sum(anzahl)) |>
+  pull(total)
+
+total_2021 <- daten_2021 |>
+  summarise(total = sum(anzahl)) |>
+  pull(total)
+
+veraenderung_pct <- round((total_2023 - total_2021) / total_2021 * 100, 1)
+
+anteil_weiblich <- daten_2023 |>
+  filter(geschlecht == "Weiblich") |>
+  summarise(total = sum(anzahl)) |>
+  pull(total) / total_2023 * 100
+anteil_weiblich <- round(anteil_weiblich, 1)
+```
+
+## 1. Übersicht
+
+Die Gemeinde **`r params$gemeinde`** liegt im Bezirk **`r params$bezirk`** im Kanton Thurgau.
+Im Jahr 2023 zählte die Gemeinde insgesamt
+**`r format(total_2023, big.mark="'", scientific = FALSE)`** Einwohnerinnen und Einwohner.
+Gegenüber 2021 entspricht dies einer Veränderung von **`r veraenderung_pct` %**.
+Der Frauenanteil betrug **`r anteil_weiblich` %**.
+
+```{r uebersicht-tabelle}
+uebersicht <- tibble(
+  Merkmal = c(
+    "Einwohner 2023",
+    "Veränderung seit 2021",
+    "Anteil Ausländer"
+  ),
+  Wert = c(
+    format(total_2023, big.mark = "'", scientific = FALSE),
+    paste0(veraenderung_pct, " %"),
+    "Angabe nicht verfügbar (kein Merkmal im Datensatz)"
+  )
+)
+
+knitr::kable(
+  uebersicht,
+  col.names = c("Merkmal", "Wert"),
+  caption = paste("Kennzahlen Gemeinde", params$gemeinde, "– Jahr 2023")
+)
+```
+
+---
+
+## 2. Bevölkerungsentwicklung
+
+```{r bevoelkerungsentwicklung}
+# Jährliche Gesamtzahl nach Geschlecht
+trend_daten <- gem_daten |>
+  group_by(jahr, geschlecht) |>
+  summarise(anzahl = sum(anzahl), .groups = "drop")
+
+ggplot(trend_daten, aes(x = jahr, y = anzahl, color = geschlecht)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2.5) +
+  scale_color_manual(
+    values = c("Männlich" = "#003366", "Weiblich" = "#CC3300"),
+    name = "Geschlecht"
+  ) +
+  scale_y_continuous(labels = label_number(big.mark = "'")) +
+  scale_x_continuous(breaks = scales::breaks_pretty()) +
+  labs(
+    title = paste("Bevölkerungsentwicklung –", params$gemeinde),
+    x = "Jahr",
+    y = "Anzahl Einwohner",
+    caption = "Datenquelle: data.tg.ch"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(legend.position = "bottom")
+```
+
+---
+
+## 3. Altersstruktur
+
+```{r altersstruktur}
+# Bevölkerungspyramide: Männer links (negativ), Frauen rechts (positiv)
+pyramide_daten <- daten_2023 |>
+  group_by(altersklasse, geschlecht) |>
+  summarise(anzahl = sum(anzahl), .groups = "drop") |>
+  mutate(
+    anzahl_gerichtet = if_else(geschlecht == "Männlich", -anzahl, anzahl)
+  )
+
+# Sicherstellen, dass altersklasse als geordneter Faktor vorliegt
+if (!is.factor(pyramide_daten$altersklasse)) {
+  pyramide_daten <- pyramide_daten |>
+    mutate(altersklasse = factor(altersklasse))
+}
+
+x_limit <- max(abs(pyramide_daten$anzahl_gerichtet), na.rm = TRUE) * 1.05
+
+ggplot(
+  pyramide_daten,
+  aes(x = anzahl_gerichtet, y = altersklasse, fill = geschlecht)
+) +
+  geom_col() +
+  scale_fill_manual(
+    values = c("Männlich" = "#003366", "Weiblich" = "#CC3300"),
+    name = "Geschlecht"
+  ) +
+  scale_x_continuous(
+    limits = c(-x_limit, x_limit),
+    labels = function(x) format(abs(x), big.mark = "'")
+  ) +
+  labs(
+    title = paste("Altersstruktur 2023 –", params$gemeinde),
+    x = "Anzahl Einwohner",
+    y = "Altersklasse",
+    caption = "Datenquelle: data.tg.ch"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(legend.position = "bottom")
+```
+
+---
+
+## 4. Vergleich mit dem Kantonsschnitt
+
+```{r kantonsvergleich}
+# Anteil je Altersklasse in der Gemeinde (2023)
+gem_anteil <- daten_2023 |>
+  group_by(altersklasse) |>
+  summarise(anzahl = sum(anzahl), .groups = "drop") |>
+  mutate(anteil = anzahl / sum(anzahl) * 100) |>
+  select(altersklasse, anteil) |>
+  mutate(gruppe = paste("Gemeinde", params$gemeinde))
+
+# Durchschnittlicher Anteil je Altersklasse im Kanton (2023)
+kanton_anteil <- kanton_daten |>
+  filter(jahr == 2023) |>
+  group_by(bfs_nr, altersklasse) |>
+  summarise(anzahl = sum(anzahl), .groups = "drop") |>
+  group_by(bfs_nr) |>
+  mutate(anteil_gem = anzahl / sum(anzahl) * 100) |>
+  ungroup() |>
+  group_by(altersklasse) |>
+  summarise(anteil = mean(anteil_gem, na.rm = TRUE), .groups = "drop") |>
+  mutate(gruppe = "Kanton Ø")
+
+# Zusammenführen
+vergleich_daten <- bind_rows(gem_anteil, kanton_anteil)
+
+# Altersklasse als Faktor (gleiche Reihenfolge wie Gemeinde)
+altersklasse_level <- gem_anteil |>
+  arrange(altersklasse) |>
+  pull(altersklasse)
+
+vergleich_daten <- vergleich_daten |>
+  mutate(altersklasse = factor(altersklasse, levels = altersklasse_level))
+
+ggplot(
+  vergleich_daten,
+  aes(x = altersklasse, y = anteil, fill = gruppe)
+) +
+  geom_col(position = "dodge") +
+  scale_fill_manual(
+    values = c(
+      "Kanton Ø" = "#888888"
+    ) |>
+      c(setNames("#003366", paste("Gemeinde", params$gemeinde))),
+    name = NULL
+  ) +
+  scale_y_continuous(labels = function(x) paste0(round(x, 1), " %")) +
+  labs(
+    title = paste("Altersstruktur im Vergleich –", params$gemeinde, "vs. Kanton TG"),
+    x = "Altersklasse",
+    y = "Anteil an Gesamtbevölkerung (%)",
+    caption = "Datenquelle: data.tg.ch"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    legend.position = "bottom",
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+```
+
+---
+
+## 5. Fazit
+
+Die Gemeinde `r params$gemeinde` hatte im Jahr 2023 insgesamt
+`r format(total_2023, big.mark="'", scientific = FALSE)` Einwohnerinnen und Einwohner.
+
+```{r fazit-text, results='asis'}
+richtung <- if_else(veraenderung_pct >= 0, "zugenommen", "abgenommen")
+betrag    <- abs(veraenderung_pct)
+
+cat(
+  "Gegenüber dem Jahr 2021 hat die Bevölkerung um **",
+  betrag, " %** ", richtung, ". ",
+  "Der Frauenanteil lag bei **", anteil_weiblich, " %**. ",
+  "Die Altersstruktur der Gemeinde **", params$gemeinde,
+  "** zeigt im Vergleich mit dem kantonalen Durchschnitt, ",
+  "ob die Gemeinde eher jung oder alt geprägt ist – ",
+  "dies lässt sich aus dem Diagramm in Abschnitt 4 ablesen.",
+  sep = ""
+)
+```
+
+---
+
+*Bericht erstellt am `r format(Sys.Date(), "%d. %B %Y")` · Kanton Thurgau – Auswertungsjahr 2023*
