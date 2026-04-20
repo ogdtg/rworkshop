@@ -1,0 +1,471 @@
+---
+title: "Praxisbeispiel: Bevölkerungsstatistik TG"
+author: "Felix Lorenz"
+date: "Workshop 2026"
+amt: "Amt für Daten und Statistik"
+stelle: ""
+output:
+  xaringan::moon_reader:
+    highlightStyle: github
+    highlightlines: true
+    highlightSpans: true
+    css: ["default","styles_x.css"]
+---
+
+```{r setup-bev, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, dpi = 300, message = FALSE,
+                      warning = FALSE, eval = FALSE)
+library(dplyr); library(tidyr); library(stringr)
+library(lubridate); library(ggplot2)
+```
+
+---
+class: title-slide
+
+# Praxisbeispiel
+## Bevölkerungsstatistik Kanton Thurgau
+
+.pull-left[
+**Datenquelle:** data.tg.ch  
+*Datensatz sk-stat-67*
+
+**Was wir analysieren:**
+- Bevölkerungsentwicklung im Kanton
+- Altersstruktur & Bevölkerungspyramide
+- Vergleich der 5 Bezirke
+- Top-10-Gemeinden nach Einwohnerzahl
+]
+
+.pull-right[
+.center[
+```
+data.tg.ch (sk-stat-67)
+        ↓
+   read_csv2()
+        ↓
+ lubridate / factor
+        ↓
+group_by + summarise
+        ↓
+   ggplot2 plots
+```
+]
+]
+
+---
+----
+## Der Datensatz: sk-stat-67
+
+Ständige Wohnbevölkerung des Kantons Thurgau nach Gemeinden, Geschlecht und Altersklassen.
+
+| Spalte | Typ | Beschreibung |
+|--------|-----|--------------|
+| `bfs_nr_gemeinde` | chr | BFS-Gemeindenummer |
+| `gemeinde_name` | chr | Gemeindename |
+| `bezirk_name` | chr | Bezirksbezeichnung |
+| `jahr` | date | Statistikjahr (Stand 31.12.) |
+| `geschlecht_bezeichnung` | chr | Geschlecht |
+| `alter5klassen_bezeichnung` | chr | Altersklasse (5-Jahresgruppen) |
+| `anzahl_personen` | int | Anzahl Personen |
+
+```{r laden}
+library(tidyverse); library(lubridate)
+
+url <- "https://data.tg.ch/api/explore/v2.1/catalog/datasets/sk-stat-67/exports/csv?delimiter=%3B&lang=de&timezone=Europe%2FZurich"
+
+bev <- read_csv2(url)
+```
+
+.footnote[Quelle: data.tg.ch – Open Data Kanton Thurgau]
+
+---
+----
+## Schritt 1: Daten erkunden
+
+```{r erkunden}
+glimpse(bev)
+```
+
+```
+Rows: ~120'000    Columns: 10
+$ bfs_nr_gemeinde          <chr> "4621", "4621", ...
+$ gemeinde_name            <chr> "Aadorf", "Aadorf", ...
+$ bezirk_name              <chr> "Bezirk Münchwilen", ...
+$ jahr                     <date> 2010-12-31, 2010-12-31, ...
+$ geschlecht_bezeichnung   <chr> "männlich", "männlich", ...
+$ alter5klassen_bezeichnung<chr> "0 - 4 Jahre", "5 - 9 Jahre", ...
+$ anzahl_personen          <int> 312, 289, 301, ...
+```
+
+.pull-left[
+```{r erkunden2}
+bev |> count(geschlecht_bezeichnung)
+bev |> distinct(alter5klassen_bezeichnung)
+bev |> count(jahr)          # wie viele Jahre?
+```
+]
+
+.pull-right[
+**Beobachtungen:**
+- `jahr` ist ein Datumswert → nur das Jahr brauchen wir
+- Altersklassen als Text → geordneter Faktor für Plots
+- ~80 Gemeinden × Geschlecht × Altersklassen × Jahre
+]
+
+---
+----
+## Schritt 2: Bereinigung
+
+.panelset[
+.panel[.panel-name[Jahr extrahieren]
+`jahr` liegt als vollständiges Datum vor (31.12. des Jahres).  
+Wir extrahieren die Jahreszahl mit `lubridate::year()`.
+
+```{r bereinigung-jahr}
+bev <- bev |>
+  mutate(jahr = year(jahr))   # "2023-12-31" → 2023
+
+bev |> count(jahr)
+```
+]
+.panel[.panel-name[Altersklasse als Faktor]
+Ohne `ordered = TRUE` sortiert ggplot alphabetisch: "10 - 14" vor "5 - 9"!
+
+```{r bereinigung-faktor}
+# Reihenfolge der Altersklassen sicherstellen
+altersklassen <- bev |>
+  arrange(alter5klassen_code) |>    # numerischer Code gibt richtige Reihenfolge
+  distinct(alter5klassen_bezeichnung) |>
+  pull()
+
+bev <- bev |>
+  mutate(
+    altersklasse = factor(alter5klassen_bezeichnung,
+                          levels  = altersklassen,
+                          ordered = TRUE)
+  )
+```
+]
+.panel[.panel-name[Strings säubern]
+```{r bereinigung-strings}
+# Leerzeichen in Zeichenketten entfernen (präventiv)
+bev <- bev |>
+  mutate(across(where(is.character), str_trim))
+
+# Prüfen: einheitliche Schreibweise Geschlecht?
+bev |> count(geschlecht_bezeichnung)
+```
+]
+]
+
+---
+----
+## Schritt 3: Bevölkerungsentwicklung Kanton
+
+**Gesamtbevölkerung pro Jahr** — alle Gemeinden, beide Geschlechter, alle Altersklassen summiert.
+
+.pull-left[
+```{r bev-kanton}
+bev_kanton <- bev |>
+  group_by(jahr) |>
+  summarise(
+    einwohner = sum(anzahl_personen),
+    .groups = "drop"
+  )
+
+bev_kanton
+```
+]
+
+.pull-right[
+```{r plot-kanton}
+bev_kanton |>
+  ggplot(aes(x = jahr, y = einwohner)) +
+  geom_line(linewidth = 1, colour = "#003366") +
+  geom_point(size = 2.5,  colour = "#003366") +
+  scale_y_continuous(
+    labels = scales::label_number(big.mark = "'")
+  ) +
+  labs(
+    title   = "Ständige Wohnbevölkerung Kanton Thurgau",
+    x = NULL, y = "Einwohner",
+    caption = "Quelle: data.tg.ch (sk-stat-67)"
+  ) +
+  theme_minimal()
+```
+]
+
+---
+----
+## Schritt 4: Bevölkerungspyramide
+
+Männer werden mit **negativen** Werten dargestellt, damit die Pyramidenform entsteht.
+
+.panelset[
+.panel[.panel-name[Daten vorbereiten]
+```{r pyramide-daten}
+letztes_jahr <- max(bev$jahr)
+
+pyramide <- bev |>
+  filter(jahr == letztes_jahr) |>
+  group_by(geschlecht_bezeichnung, altersklasse) |>
+  summarise(n = sum(anzahl_personen), .groups = "drop") |>
+  mutate(
+    n_plot = if_else(
+      str_detect(geschlecht_bezeichnung, "männlich"),
+      -n, n        # Männer links (negativ), Frauen rechts (positiv)
+    )
+  )
+```
+]
+.panel[.panel-name[Plot]
+```{r pyramide-plot}
+pyramide |>
+  ggplot(aes(x = n_plot, y = altersklasse,
+             fill = geschlecht_bezeichnung)) +
+  geom_col() +
+  scale_x_continuous(
+    labels = \(x) scales::label_number(big.mark = "'")(abs(x))
+  ) +
+  scale_fill_manual(
+    values = c("männlich" = "#003366", "weiblich" = "#CC3300")
+  ) +
+  labs(
+    title = paste("Bevölkerungspyramide Kanton Thurgau", letztes_jahr),
+    x = "Anzahl Personen", y = NULL, fill = NULL,
+    caption = "Quelle: data.tg.ch (sk-stat-67)"
+  ) +
+  theme_minimal()
+```
+]
+]
+
+---
+----
+## Schritt 5: Vergleich der 5 Bezirke
+
+.panelset[
+.panel[.panel-name[Aggregation]
+```{r bezirk-daten}
+bev_bezirk <- bev |>
+  group_by(bezirk_name, jahr) |>
+  summarise(einwohner = sum(anzahl_personen), .groups = "drop")
+
+# Aktuellstes Jahr: Bevölkerung pro Bezirk
+bev_bezirk |>
+  filter(jahr == letztes_jahr) |>
+  arrange(desc(einwohner))
+```
+]
+.panel[.panel-name[Entwicklung]
+```{r bezirk-plot}
+bev_bezirk |>
+  ggplot(aes(x = jahr, y = einwohner,
+             colour = bezirk_name, group = bezirk_name)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  scale_y_continuous(
+    labels = scales::label_number(big.mark = "'")
+  ) +
+  labs(
+    title   = "Bevölkerungsentwicklung nach Bezirk",
+    x = NULL, y = "Einwohner", colour = "Bezirk",
+    caption = "Quelle: data.tg.ch (sk-stat-67)"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "right")
+```
+]
+.panel[.panel-name[Altersstruktur]
+```{r bezirk-alter}
+# Anteil 65+ pro Bezirk (aktuellstes Jahr)
+bev |>
+  filter(jahr == letztes_jahr) |>
+  mutate(
+    gruppe = if_else(
+      alter5klassen_code >= 14,   # Code 14 entspricht 65-69 Jahre
+      "65+", "unter 65"
+    )
+  ) |>
+  group_by(bezirk_name, gruppe) |>
+  summarise(n = sum(anzahl_personen), .groups = "drop") |>
+  group_by(bezirk_name) |>
+  mutate(anteil = n / sum(n) * 100) |>
+  filter(gruppe == "65+") |>
+  arrange(desc(anteil))
+```
+]
+]
+
+---
+----
+## Schritt 6: Top-10-Gemeinden
+
+```{r top10}
+top10 <- bev |>
+  filter(jahr == letztes_jahr) |>
+  group_by(bfs_nr_gemeinde, gemeinde_name) |>
+  summarise(einwohner = sum(anzahl_personen), .groups = "drop") |>
+  slice_max(einwohner, n = 10)
+```
+
+```{r top10-plot}
+top10 |>
+  mutate(gemeinde_name = reorder(gemeinde_name, einwohner)) |>
+  ggplot(aes(x = einwohner, y = gemeinde_name)) +
+  geom_col(fill = "#003366") +
+  geom_text(
+    aes(label = scales::label_number(big.mark = "'")(einwohner)),
+    hjust = -0.1, size = 3.5
+  ) +
+  scale_x_continuous(
+    labels = scales::label_number(big.mark = "'"),
+    expand = expansion(mult = c(0, 0.15))
+  ) +
+  labs(
+    title   = paste("Top 10 Gemeinden nach Einwohnerzahl", letztes_jahr),
+    x = "Einwohner", y = NULL,
+    caption = "Quelle: data.tg.ch (sk-stat-67)"
+  ) +
+  theme_minimal()
+```
+
+---
+----
+## Schritt 7: Geschlechteranteil im Zeitverlauf
+
+```{r anteil-frauen}
+anteil <- bev |>
+  group_by(jahr, geschlecht_bezeichnung) |>
+  summarise(n = sum(anzahl_personen), .groups = "drop") |>
+  group_by(jahr) |>
+  mutate(anteil_pct = n / sum(n) * 100) |>
+  filter(str_detect(geschlecht_bezeichnung, "weiblich"))
+```
+
+.pull-left[
+```{r anteil-plot}
+anteil |>
+  ggplot(aes(x = jahr, y = anteil_pct)) +
+  geom_line(linewidth = 1, colour = "#CC3300") +
+  geom_point(size = 2.5,  colour = "#CC3300") +
+  scale_y_continuous(
+    limits = c(48, 52),
+    labels = scales::label_percent(scale = 1, suffix = " %")
+  ) +
+  geom_hline(yintercept = 50, linetype = "dashed",
+             colour = "grey50") +
+  labs(
+    title = "Anteil Frauen an der Wohnbevölkerung",
+    x = NULL, y = "Anteil Frauen (%)",
+    caption = "Quelle: data.tg.ch (sk-stat-67)"
+  ) +
+  theme_minimal()
+```
+]
+
+.pull-right[
+**Was sehen wir?**
+
+- Der Frauenanteil liegt stabil knapp über 50 %
+- `geom_hline()` als Referenzlinie bei 50 %
+- `scale_y_continuous(limits = ...)` zoomt die Achse sinnvoll ein
+
+**Neue Funktion:**
+```{r anteil-note, eval=FALSE}
+# group_by() → mutate() (statt summarise)
+# → relativer Anteil innerhalb jedes Jahres
+```
+]
+
+---
+----
+## Schritt 8: Jahresvergleich mit `pivot_wider`
+
+Bevölkerung nach Bezirk — im **Breitformat** für übersichtliche Tabellen.
+
+```{r pivot-wider}
+bev_bezirk |>
+  filter(jahr %in% c(2015, 2020, letztes_jahr)) |>
+  pivot_wider(
+    names_from  = jahr,
+    values_from = einwohner
+  ) |>
+  mutate(
+    veraenderung = .data[[as.character(letztes_jahr)]] -
+                   .data[["2015"]]
+  ) |>
+  arrange(desc(veraenderung))
+```
+
+.footnote[
+`pivot_wider()` macht aus dem Langformat eine Kreuztabelle —  
+nützlich für Berichte und Exporte (z. B. nach Excel via `openxlsx`).
+]
+
+---
+----
+## Das grosse Bild
+
+.center[
+```
+data.tg.ch (sk-stat-67)
+          ↓
+    read_csv2(url)                 ← Daten laden
+          ↓
+ lubridate::year()                 ← Jahr extrahieren
+ factor(levels = altersklassen)    ← Reihenfolge sichern
+ str_trim()                        ← Strings säubern
+          ↓
+ group_by() |> summarise()         ← Aggregieren
+ mutate(n_plot = if_else(..., -n, n))
+          ↓
+    ┌─────────────────────────────┐
+    │  geom_line   Entwicklung    │
+    │  geom_col    Pyramide       │  ggplot2
+    │  geom_col    Top-10         │
+    └─────────────────────────────┘
+          ↓
+    pivot_wider()                  ← Kreuztabelle
+    slice_max()                    ← Top-N-Ranking
+```
+]
+
+**Alle Techniken des Kurses** auf einem echten Datensatz aus dem Kanton Thurgau.
+
+---
+----
+## Zusammenfassung
+
+.pull-left[
+| Schritt | Funktion(en) |
+|---------|-------------|
+| Laden | `read_csv2(url)` |
+| Jahr extrahieren | `lubridate::year()` |
+| Faktor mit Reihenfolge | `factor(..., ordered=TRUE)` |
+| Strings säubern | `str_trim()`, `across()` |
+| Aggregieren | `group_by()` + `summarise()` |
+| Anteil berechnen | `group_by()` + `mutate()` |
+| Pyramide | `if_else(-n, n)` + `geom_col` |
+| Top-N | `slice_max()` |
+| Kreuztabelle | `pivot_wider()` |
+| Bezirkstrend | `geom_line()` |
+]
+
+.pull-right[
+**Datensatz auf data.tg.ch:**
+
+```r
+url <- paste0(
+  "https://data.tg.ch/api/explore/",
+  "v2.1/catalog/datasets/",
+  "sk-stat-67/exports/csv",
+  "?delimiter=%3B&lang=de",
+  "&timezone=Europe%2FZurich"
+)
+bev <- read_csv2(url)
+```
+
+Echte Daten — kein Simulate nötig!  
+.footnote[Quelle: data.tg.ch – Open Data Kanton Thurgau]
+]
