@@ -753,6 +753,29 @@ test_vec <- c(4,5,6,4,9,7,2,9,1,4)
 var(test_vec)
 varianz(test_vec)
 
+varianz <- function(x)
+  if (!is.numeric(x)){
+    stop("x muss numerisch sein")
+  }
+
+
+kanton_info <- function(x) {
+  info <- case_when(
+    x == "TG" ~ "Kanton Thurgau (TG): 285'000 Einwohner, Hauptort Frauenfeld",
+    x == "ZH" ~ "Kanton Zürich (ZH): 1'600'000 Einwohner, Hauptort Zürich",
+    x == "BE" ~ "Kanton Bern (BE): 1'050'000 Einwohner, Hauptort Bern",
+    x == "LU" ~ "Kanton Luzern (LU): 420'000 Einwohner, Hauptort Luzern",
+    TRUE ~ "Unbekannter Kanton"
+  )
+  
+  return(info)
+}
+
+kanton_info("TG")
+kanton_info("ZH")
+kanton_info("BE")
+kanton_info("LU")
+
 ####################################################################################################
 # b) Vereinfache den untenstehenden Code, sodass so wenig Code wie möglich geschrieben werden muss #
 ####################################################################################################

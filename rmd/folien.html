@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Praxisbeispiel</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Felix Lorenz" />
+    <script src="folien_files/header-attrs-2.29/header-attrs.js"></script>
+    <link href="folien_files/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="styles_x.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Praxisbeispiel
+]
+.author[
+### Felix Lorenz
+]
+.date[
+### Workshop 2026
+]
+
+---
+
+
+
+
+
+
+---
+----
+
+## Energiewende im Thurgau
+
+.pull-left[
+**Ziel:** Vier offene Datensätze des Kantons Thurgau auswerten und einen automatisierten Gemeindebericht erstellen.
+
+- Erneuerbare Stromproduktion analysieren
+- Wärmeverbrauch fossil vs. erneuerbar vergleichen
+- Eigenversorgungsgrad aller Gemeinden berechnen
+- Parametrisierten HTML-Bericht generieren
+]
+
+.pull-right[
+.center[
+```
+data.tg.ch
+   | 4 Datensätze
+R: tidyverse
+   | Bereinigung
+   | Analyse
+   | Visualisierung
+   | Bericht
+Erkenntnisse
+```
+]
+]
+
+---
+
+# Übersicht
+
+| Nr. | Aufgabe | Zeit |
+|-----|---------|------|
+| 1 | Daten laden und erkunden | ~15 Min. |
+| 2 | Bereinigung und Kategorisierung | ~20 Min. |
+| 3 | Erneuerbare Stromproduktion visualisieren | ~20 Min. |
+| 4 | Wärmeverbrauch fossil vs. erneuerbar | ~20 Min. |
+| 5 | Eigenversorgungsgrad berechnen | ~20 Min. |
+| **Bonus** | **Parametrisierter Gemeindebericht** | **~20 Min.** |
+
+**Gesamtdauer:** ca. 90–120 Minuten
+
+**Benötigte Pakete:** `tidyverse`, `ggrepel`, `glue`, `quarto`
+
+---
+
+# Die Datensätze
+
+| Name | Dataset-ID | Inhalt | Ebene |
+|------|-----------|--------|-------|
+| `prod_erneuerbar` | div-energie-10 | Erneuerbare Stromproduktion | Gemeinde |
+| `verbrauch_gemeinde` | div-energie-5 | Gebäudeenergieverbrauch | Gemeinde |
+| `verbrauch_kanton` | div-energie-4 | Gebäudeenergieverbrauch | Kanton |
+| `heizsysteme` | div-energie-12 | Heizsysteme nach Art | Gemeinde |
+
+
+``` r
+url_a &lt;- "https://data.tg.ch/api/explore/v2.1/catalog/datasets/div-energie-10/exports/csv?delimiter=%3B&amp;lang=de&amp;timezone=Europe%2FZurich"
+# url_b, url_c, url_d analog...
+
+prod_erneuerbar    &lt;- read_csv2(url_a)
+verbrauch_gemeinde &lt;- read_csv2(url_b)
+verbrauch_kanton   &lt;- read_csv2(url_c)
+heizsysteme        &lt;- read_csv2(url_d)
+```
+
+.footnote[Quelle: data.tg.ch – Amt für Daten und Statistik Kanton Thurgau]
+
+---
+
+# Datenschema
+
+.panelset[
+.panel[.panel-name[prod_erneuerbar]
+```
+gemeinde_nr     &lt;int&gt;   BFS-Gemeindenummer
+gemeinde        &lt;chr&gt;   Gemeindename
+jahr            &lt;int&gt;   Erhebungsjahr
+energietraeger  &lt;chr&gt;   Sonne | Wasser | Biomasse/Biogas | Wind
+produktion_mwh  &lt;dbl&gt;   Produktion in MWh
+```
+]
+.panel[.panel-name[verbrauch_gemeinde]
+```
+gemeinde_nr     &lt;int&gt;   BFS-Gemeindenummer
+gemeinde        &lt;chr&gt;   Gemeindename
+jahr            &lt;int&gt;   Erhebungsjahr
+energietraeger  &lt;chr&gt;   Heizöl | Erdgas | Holz | Wärmepumpe |
+                        Fernwärme | Elektrizität | Sonne thermisch | Übrige
+verbrauch_mwh   &lt;dbl&gt;   Verbrauch in MWh
+```
+]
+.panel[.panel-name[verbrauch_kanton]
+```
+jahr            &lt;int&gt;   Erhebungsjahr
+energietraeger  &lt;chr&gt;   Energieträger (kantonal aggregiert)
+verbrauch_mwh   &lt;dbl&gt;   Verbrauch in MWh
+```
+]
+.panel[.panel-name[heizsysteme]
+```
+gemeinde_nr     &lt;int&gt;   BFS-Gemeindenummer
+gemeinde        &lt;chr&gt;   Gemeindename
+jahr            &lt;int&gt;   Erhebungsjahr
+heizsystem      &lt;chr&gt;   Art des Heizsystems
+anzahl          &lt;int&gt;   Anzahl Gebäude
+```
+]
+]
+
+---
+
+# Aufgabe 1: Daten laden und erkunden
+
+**Ziel:** Alle vier Datensätze einlesen und Struktur verstehen.
+
+.pull-left[
+**Was zu tun ist:**
+
+- Vier Datensätze mit `read_csv2()` laden
+- Struktur mit `glimpse()` erkunden
+- Welche Jahre sind vorhanden?
+- Welche Gemeinden und Energieträger?
+- Gibt es fehlende Werte?
+]
+
+.pull-right[
+**Starthilfe:**
+
+
+``` r
+library(tidyverse)
+
+glimpse(prod_erneuerbar)
+count(prod_erneuerbar, energietraeger)
+distinct(prod_erneuerbar, jahr)
+```
+]
+
+**Tipp:** `summary()` zeigt Min/Max/NAs auf einen Blick.
+
+---
+
+# Aufgabe 1: Hilfreiche Funktionen
+
+
+``` r
+# Spaltenstruktur anzeigen
+glimpse(prod_erneuerbar)
+
+# Häufigkeiten zählen
+prod_erneuerbar |&gt; count(energietraeger)
+prod_erneuerbar |&gt; count(jahr)
+
+# Anzahl eindeutiger Gemeinden
+prod_erneuerbar |&gt; distinct(gemeinde) |&gt; nrow()
+
+# Fehlwerte prüfen
+prod_erneuerbar |&gt; summarise(across(everything(), \(x) sum(is.na(x))))
+```
+
+**Erwartete Antworten:**
+
+| Frage | Hinweis |
+|-------|---------|
+| Wie viele Gemeinden? | Kanton TG hat 80 Gemeinden |
+| Welche Energieträger? | Sonne, Wasser, Biomasse/Biogas, Wind |
+| Welcher Zeitraum? | `min(jahr)` bis `max(jahr)` |
+
+---
+
+# Aufgabe 2: Bereinigung und Kategorisierung
+
+**Ziel:** Energieträger in Kategorien einteilen — zentral für alle Folgeanalysen.
+
+| Kategorie | Energieträger |
+|-----------|--------------|
+| **Fossil** | Heizöl, Erdgas |
+| **Erneuerbar** | Holz, Wärmepumpe, Fernwärme, Sonne thermisch |
+| **Sonstige** | Elektrizität, Übrige |
+
+
+``` r
+verbrauch_gemeinde &lt;- verbrauch_gemeinde |&gt;
+  mutate(
+    kategorie = case_when(
+      energietraeger %in% c("Heizöl", "Erdgas")                         ~ "Fossil",
+      energietraeger %in% c("Holz", "Wärmepumpe",
+                            "Fernwärme", "Sonne thermisch")              ~ "Erneuerbar",
+      .default = "Sonstige"
+    )
+  )
+```
+
+**Beachte:** Erst mit `count(verbrauch_gemeinde, energietraeger)` prüfen, ob alle Schreibweisen stimmen!
+
+---
+
+# Aufgabe 2: Syntaxhilfe
+
+.pull-left[
+**`case_when()` – Grundstruktur:**
+
+
+``` r
+# Bedingung ~ Ergebnis
+mutate(
+  neue_spalte = case_when(
+    bedingung_1 ~ "Wert A",
+    bedingung_2 ~ "Wert B",
+    .default    ~ "Sonstige"
+  )
+)
+```
+
+`.default` fängt alle nicht gematchten Werte auf.
+]
+
+.pull-right[
+**`str_trim()` – Leerzeichen entfernen:**
+
+
+``` r
+# Alle Zeichenspalten bereinigen
+verbrauch_gemeinde |&gt;
+  mutate(across(where(is.character), str_trim))
+```
+
+**Prüfen nach der Bereinigung:**
+
+
+``` r
+# Jeder Träger hat genau 1 Kategorie?
+verbrauch_gemeinde |&gt;
+  count(energietraeger, kategorie)
+```
+]
+
+---
+
+# Aufgabe 3: Erneuerbare Stromproduktion
+
+**Ziel:** Wie hat sich die erneuerbare Stromproduktion im Kanton entwickelt?
+
+.pull-left[
+**Teilaufgaben:**
+
+1. Produktion nach Jahr und Energieträger summieren
+2. Flächendiagramm: Zusammensetzung über Zeit
+3. Liniendiagramm: Trend je Energieträger
+4. Top-5-Gemeinden im letzten Jahr ermitteln
+]
+
+.pull-right[
+**Welche Funktion eignet sich hier?**
+
+Für die kantonale Aggregation:
+
+
+``` r
+prod_kanton &lt;- prod_erneuerbar |&gt;
+  group_by(jahr, energietraeger) |&gt;
+  summarise(
+    produktion_gwh = sum(produktion_mwh,
+                         na.rm = TRUE) / 1000,
+    .groups = "drop"
+  )
+```
+]
+
+---
+
+# Aufgabe 3: Erwartete Visualisierungen
+
+**Abbildung 1 – Kantonale Stromproduktion:**
+
+Gestapeltes Flächendiagramm, x = Jahr, y = GWh, Farben nach Energieträger.
+Erwartet: Solarenergie (Sonne) wächst stark.
+
+**Abbildung 2 – Top-5-Gemeinden:**
+
+Horizontales Balkendiagramm, Gemeinden sortiert nach Produktion.
+Hinweis: `reorder(gemeinde, produktion_gwh)` für korrekte Reihenfolge.
+
+**Bonus:** `ggsave("produktion_kanton.png", width = 10, height = 6, dpi = 150)` zum Speichern.
+
+---
+
+# Aufgabe 3: Top-5-Gemeinden
+
+
+``` r
+# Top-5-Gemeinden nach Produktion im letzten Jahr
+top5_gem &lt;- prod_erneuerbar |&gt;
+  filter(jahr == max(jahr)) |&gt;
+  group_by(gemeinde) |&gt;
+  summarise(total_gwh = sum(produktion_mwh, na.rm = TRUE) / 1000,
+            .groups = "drop") |&gt;
+  slice_max(total_gwh, n = 5)
+
+# Horizontales Balkendiagramm
+top5_gem |&gt;
+  ggplot(aes(x = total_gwh,
+             y = reorder(gemeinde, total_gwh))) +
+  geom_col(fill = "#F5A623") +
+  labs(x = "Produktion (GWh)", y = NULL,
+       title = "Top 5 Gemeinden – Erneuerbare Produktion",
+       caption = "Quelle: data.tg.ch (div-energie-10)") +
+  theme_minimal()
+```
+
+**Welche Funktion eignet sich hier?**
+`reorder(gemeinde, total_gwh)` sortiert die Balken nach Grösse — ohne sie wäre die Reihenfolge alphabetisch.
+
+---
+
+# Aufgabe 3: Visualisierungstipps
+
+.panelset[
+.panel[.panel-name[geom_area]
+
+``` r
+prod_kanton |&gt;
+  ggplot(aes(x = jahr, y = produktion_gwh, fill = energietraeger)) +
+  geom_area(alpha = 0.85) +
+  scale_fill_manual(values = c(
+    "Sonne"           = "#F5A623",
+    "Wasser"          = "#4A90D9",
+    "Biomasse/Biogas" = "#7ED321",
+    "Wind"            = "#9B9B9B"
+  )) +
+  theme_minimal()
+```
+]
+.panel[.panel-name[Achsen]
+
+``` r
+# Zahlen mit Tausendertrenner
+scale_y_continuous(
+  labels = scales::label_number(big.mark = "'")
+)
+
+# Prozentskala (Werte schon in %)
+scale_y_continuous(
+  labels = scales::label_percent(scale = 1)
+)
+```
+]
+.panel[.panel-name[Top-5]
+
+``` r
+prod_erneuerbar |&gt;
+  filter(jahr == max(jahr)) |&gt;
+  group_by(gemeinde) |&gt;
+  summarise(total = sum(produktion_mwh, na.rm = TRUE)) |&gt;
+  slice_max(total, n = 5)
+```
+]
+]
+
+---
+
+# Aufgabe 4: Wärmeverbrauch fossil vs. erneuerbar
+
+**Ziel:** Anteil erneuerbarer Wärme im Kanton über Zeit darstellen.
+
+.pull-left[
+**Vorgehen:**
+
+1. `verbrauch_kanton` — Kategorie-Spalte hinzufügen
+2. Nach `jahr` und `kategorie` aggregieren
+3. Anteil erneuerbar pro Jahr berechnen
+4. Zwei Plots: absolut (Stack) und relativ (Fill/Line)
+]
+
+.pull-right[
+| Spalte | Beschreibung |
+|--------|-------------|
+| `jahr` | Erhebungsjahr |
+| `energietraeger` | Träger (kantonal) |
+| `verbrauch_mwh` | Verbrauch in MWh |
+
+**Beachte:** `verbrauch_kanton` ist bereits kantonal aggregiert — kein `gemeinde`-Join nötig.
+]
+
+---
+
+# Aufgabe 4: Datenvorbereitung
+
+
+``` r
+# Schritt 1: Kategorie-Spalte hinzufügen (analog zu Aufgabe 2)
+verbr_kat &lt;- verbrauch_kanton |&gt;
+  mutate(
+    kategorie = case_when(
+      energietraeger %in% c("Heizöl", "Erdgas")                         ~ "Fossil",
+      energietraeger %in% c("Holz", "Wärmepumpe",
+                            "Fernwärme", "Sonne thermisch")              ~ "Erneuerbar",
+      .default = "Sonstige"
+    )
+  ) |&gt;
+  group_by(jahr, kategorie) |&gt;
+  summarise(verbrauch_gwh = sum(verbrauch_mwh, na.rm = TRUE) / 1000,
+            .groups = "drop")
+```
+
+**Prüfen:** `count(verbr_kat, kategorie)` — alle drei Kategorien vorhanden?
+
+**Tipp:** Anteil je Jahr berechnen mit `group_by(jahr) |&gt; mutate(anteil = verbrauch_gwh / sum(verbrauch_gwh))`.
+
+---
+
+# Aufgabe 4: Gestapelte Balken
+
+.pull-left[
+**Absolut (gestapelt):**
+
+
+``` r
+verbr_kat |&gt;
+  ggplot(aes(x = jahr,
+             y = verbrauch_gwh,
+             fill = kategorie)) +
+  geom_col(position = "stack")
+```
+
+Zeigt absolute Mengen — gut um Wachstum zu sehen.
+]
+
+.pull-right[
+**Relativ (gefüllt):**
+
+
+``` r
+verbr_kat |&gt;
+  ggplot(aes(x = jahr,
+             y = verbrauch_gwh,
+             fill = kategorie)) +
+  geom_col(position = "fill") +
+  scale_y_continuous(
+    labels = scales::label_percent()
+  )
+```
+
+`position = "fill"` normiert automatisch auf 100%.
+]
+
+---
+
+# Aufgabe 4: Trendlinie Erneuerbar-Anteil
+
+
+``` r
+# Anteil erneuerbar pro Jahr
+anteil_erneuerbar &lt;- verbr_kat |&gt;
+  group_by(jahr) |&gt;
+  mutate(anteil_pct = verbrauch_gwh / sum(verbrauch_gwh) * 100) |&gt;
+  filter(kategorie == "Erneuerbar")
+
+anteil_erneuerbar |&gt;
+  ggplot(aes(x = jahr, y = anteil_pct)) +
+  geom_line(color = "#27AE60", linewidth = 1.2) +
+  geom_point(color = "#27AE60", size = 3) +
+  scale_y_continuous(
+    labels = scales::label_percent(scale = 1),
+    limits = c(0, NA)
+  ) +
+  labs(
+    title   = "Anteil erneuerbarer Wärme – Kanton Thurgau",
+    x       = "Jahr",
+    y       = "Anteil am Wärmeverbrauch (%)",
+    caption = "Quelle: data.tg.ch (div-energie-4)"
+  ) +
+  theme_minimal(base_size = 13)
+```
+
+**Beachte:** `scale = 1` bei `label_percent()` wenn die Werte schon in Prozent vorliegen (z.B. 32.5 statt 0.325).
+
+---
+
+# Aufgabe 5: Eigenversorgungsgrad
+
+**Konzept:**
+
+Eigenversorgungsgrad = Erneuerbare Stromproduktion / Gesamter Gebäudeenergieverbrauch × 100%
+
+.pull-left[
+**Interpretation:**
+
+- **&lt; 100 %**: Eigenbedarf nicht vollständig gedeckt
+- **= 100 %**: Vollständige Eigenversorgung
+- **&gt; 100 %**: Überschussproduktion
+
+**Ziel:** Streudiagramm aller 80 Gemeinden mit Referenzlinie bei 100 % und Beschriftung der Ausreisser.
+]
+
+.pull-right[
+**Teilaufgaben:**
+
+1. Produktion und Verbrauch je Gemeinde im letzten Jahr aggregieren
+2. Join über `gemeinde_nr` und `gemeinde`
+3. Eigenversorgungsgrad berechnen
+4. Streudiagramm mit `geom_point()`
+5. Referenzlinie und Beschriftung mit ggrepel
+]
+
+---
+
+# Aufgabe 5: Join-Logik
+
+
+``` r
+# Produktion aggregieren (letztes verfügbares Jahr)
+prod_gem &lt;- prod_erneuerbar |&gt;
+  filter(jahr == max(jahr)) |&gt;
+  group_by(gemeinde_nr, gemeinde) |&gt;
+  summarise(prod_gwh = sum(produktion_mwh, na.rm = TRUE) / 1000,
+            .groups = "drop")
+
+# Verbrauch aggregieren
+verbr_gem &lt;- verbrauch_gemeinde |&gt;
+  filter(jahr == max(jahr)) |&gt;
+  group_by(gemeinde_nr, gemeinde) |&gt;
+  summarise(verbr_gwh = sum(verbrauch_mwh, na.rm = TRUE) / 1000,
+            .groups = "drop")
+
+# Join und Eigenversorgungsgrad berechnen
+evg &lt;- prod_gem |&gt;
+  left_join(verbr_gem, by = c("gemeinde_nr", "gemeinde")) |&gt;
+  mutate(evg_pct = prod_gwh / verbr_gwh * 100) |&gt;
+  arrange(desc(evg_pct))
+```
+
+**Tipp:** `geom_abline(slope = 1, intercept = 0, linetype = "dashed")` zeichnet die 1:1-Linie (Produktion = Verbrauch).
+
+---
+
+# Aufgabe 5: Beschriftung mit ggrepel
+
+
+``` r
+library(ggrepel)
+
+# Nur Top-5 und Bottom-5 beschriften
+ausreisser &lt;- bind_rows(
+  slice_max(evg, evg_pct, n = 5),
+  slice_min(evg, evg_pct, n = 5)
+)
+
+evg |&gt;
+  ggplot(aes(x = verbr_gwh, y = prod_gwh, label = gemeinde)) +
+  geom_abline(slope = 1, intercept = 0,
+              linetype = "dashed", color = "grey50") +
+  geom_point(size = 2.5, alpha = 0.8, color = "#27AE60") +
+  geom_label_repel(
+    data = ausreisser,
+    size = 3, max.overlaps = 20
+  ) +
+  labs(x = "Verbrauch (GWh)", y = "Produktion (GWh)") +
+  theme_minimal()
+```
+
+---
+
+# Das grosse Bild
+
+.center[
+```
+prod_erneuerbar          verbrauch_gemeinde
+       |                         |
+  group_by(jahr,           group_by(jahr,
+           energietraeger)          kategorie)
+  summarise(prod)          summarise(verbr)
+       |                         |
+  geom_area()              geom_col(position="fill")
+  Flächendiagramm          Fossil vs. Erneuerbar
+       |                         |
+       +--------+--------+--------+
+                |
+          left_join()
+          (gemeinde_nr + gemeinde)
+                |
+          mutate(evg_pct = prod / verbr * 100)
+                |
+          ggplot + geom_label_repel()
+          Eigenversorgungsgrad Kanton TG
+```
+]
+
+
+
+---
+
+# Nächste Schritte
+
+.pull-left[
+**Was ihr heute gemacht habt:**
+
+- Vier offene Datensätze per API geladen
+- Daten bereinigt und kategorisiert
+- Entwicklung erneuerbarer Energien visualisiert
+- Fossil-/Erneuerbar-Anteile verglichen
+- Eigenversorgungsgrad aller 80 Gemeinden berechnet
+- Automatisierte Gemeindeberichte erstellt
+]
+
+.pull-right[
+**Weiterlernen:**
+
+- `data.tg.ch` — weitere offene TG-Datensätze
+- `r4ds.hadley.nz` — R for Data Science
+- `quarto.org` — Parametrisierte Berichte und Dashboards
+- `ggplot2.tidyverse.org` — Visualisierungsreferenz
+
+**Pakete die heute nützlich waren:**
+
+`tidyverse` · `scales` · `ggrepel` · `glue` · `purrr` · `quarto`
+]
+
+.footnote[Quelle: data.tg.ch – Amt für Daten und Statistik Kanton Thurgau]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create();
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

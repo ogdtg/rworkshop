@@ -30,7 +30,7 @@ begruessen <- function(name) {
 }
 
 # Funktion aufrufen
-begruessen("Felix")
+begruessen(name = "Olaf")
 begruessen("Anna")
 begruessen("Welt")
 
@@ -70,7 +70,7 @@ potenz_mit_default(4, 0.5) # Wurzel ziehen!
 
 # --- 2d) Funktion ohne Argumente ---
 aktuelles_jahr <- function() {
-  return(as.integer(format(Sys.Date(), "%Y")))
+  return(lubridate::year(Sys.Date()))
 }
 
 aktuelles_jahr()
@@ -167,10 +167,14 @@ addiere_explizit <- function(a, b) {
   return(ergebnis)
 }
 
+
+
 # Implizit (letzter Ausdruck wird automatisch zurückgegeben):
 addiere_implizit <- function(a, b) {
   a + b
 }
+
+
 
 addiere_explizit(3, 7)
 addiere_implizit(3, 7)
@@ -186,6 +190,7 @@ statistiken <- function(x, na_entfernen = TRUE) {
     max        = max(x, na.rm = na_entfernen)
   ))
 }
+
 
 ergebnis <- statistiken(c(4, 8, 15, 16, 23, 42))
 ergebnis$mittelwert
@@ -401,3 +406,14 @@ map_chr(kantone, kanton_info)
 # → 45 sollte als Ausreisser erscheinen
 
 
+
+bev_dichte <- function(einwohner, flaeche) {
+  if (!is.numeric(einwohner) || !is.numeric(flaeche)) {
+    stop("'einwohner' und 'flaeche' müssen numerisch sein.")
+  }
+  if (flaeche <= 0) {
+    stop("'flaeche' muss grösser als 0 sein.")
+  }
+  return(einwohner / flaeche)
+}
+bev_dichte("viele", 100) 

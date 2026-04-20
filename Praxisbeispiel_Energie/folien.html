@@ -1,42 +1,77 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Praxisaufgabe: Energiewende im Thurgau</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Felix Lorenz" />
+    <script src="folien_files/header-attrs-2.29/header-attrs.js"></script>
+    <link href="folien_files/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="folien_files/xaringanExtra-banner-0.0.1/banner.css" rel="stylesheet" />
+    <script src="folien_files/xaringanExtra-banner-0.0.1/banner.js"></script>
+    <link href="folien_files/panelset-0.3.0/panelset.css" rel="stylesheet" />
+    <script src="folien_files/panelset-0.3.0/panelset.js"></script>
+    <link href="folien_files/tachyons-4.12.0/tachyons.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../img/styles_x.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Praxisaufgabe: Energiewende im Thurgau
+]
+.author[
+### Felix Lorenz
+]
+.date[
+### Workshop 2026
+]
+
 ---
-title: "Praxisaufgabe: Energiewende im Thurgau"
-author: "Felix Lorenz"
-date: "Workshop 2026"
-amt: "Amt für Daten und Statistik"
-stelle: ""
-output:
-  xaringan::moon_reader:
-    highlightStyle: github
-    highlightlines: true
-    highlightSpans: true
-    css: ["default","../img/styles_x.css"]
----
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, dpi = 300, message = FALSE, warning = FALSE, eval = FALSE)
-```
 
-```{r xaringan-logo, echo=FALSE, eval=TRUE}
-xaringanExtra::use_logo(image_url = "../img/tg.jpg")
-```
 
-```{r xaringan-banner, echo=FALSE, eval=TRUE}
-xaringanExtra::use_banner(
-  bottom_center = paste0("\U00A9 ", rmarkdown::metadata$amt),
-  top_left      = paste0("<h6>", rmarkdown::metadata$amt, "</h6><h7>",
-                         rmarkdown::metadata$stelle, "</h7>"),
-  bottom_left   = rmarkdown::metadata$date,
-  exclude       = "title-slide"
-)
-```
 
-```{r xaringan-panelset, echo=FALSE, eval=TRUE}
-xaringanExtra::use_panelset(TRUE)
-```
+<div>
+<style type="text/css">.xaringan-extra-logo {
+width: 110px;
+height: 128px;
+z-index: 0;
+background-image: url(../img/tg.jpg);
+background-size: contain;
+background-repeat: no-repeat;
+position: absolute;
+top:1em;right:1em;
+}
+</style>
+<script>(function () {
+  let tries = 0
+  function addLogo () {
+    if (typeof slideshow === 'undefined') {
+      tries += 1
+      if (tries < 10) {
+        setTimeout(addLogo, 100)
+      }
+    } else {
+      document.querySelectorAll('.remark-slide-content:not(.title-slide):not(.inverse):not(.hide_logo)')
+        .forEach(function (slide) {
+          const logo = document.createElement('div')
+          logo.classList = 'xaringan-extra-logo'
+          logo.href = null
+          slide.appendChild(logo)
+        })
+    }
+  }
+  document.addEventListener('DOMContentLoaded', addLogo)
+})()</script>
+</div>
 
-```{r xaringan-tachyons, echo=FALSE, eval=TRUE}
-xaringanExtra::use_tachyons()
-```
+<script>document.addEventListener('DOMContentLoaded',function(){new xeBanner(JSON.parse('{"left":"<h6>Amt für Daten und Statistik<\/h6><h7><\/h7>","exclude":["title-slide"],"position":"top"}'))})</script>
+<script>document.addEventListener('DOMContentLoaded',function(){new xeBanner(JSON.parse('{"left":"Workshop 2026","center":"© Amt für Daten und Statistik","exclude":["title-slide"],"position":"bottom"}'))})</script>
+
+
+
+
 
 ---
 class: title-slide
@@ -96,14 +131,15 @@ Erkenntnisse
 | `verbrauch_kanton` | div-energie-4 | Gebäudeenergieverbrauch | Kanton |
 | `heizsysteme` | div-energie-12 | Heizsysteme nach Art | Gemeinde |
 
-```{r daten-laden-demo}
-url_a <- "https://data.tg.ch/api/explore/v2.1/catalog/datasets/div-energie-10/exports/csv?delimiter=%3B&lang=de&timezone=Europe%2FZurich"
+
+``` r
+url_a &lt;- "https://data.tg.ch/api/explore/v2.1/catalog/datasets/div-energie-10/exports/csv?delimiter=%3B&amp;lang=de&amp;timezone=Europe%2FZurich"
 # url_b, url_c, url_d analog...
 
-prod_erneuerbar    <- read_csv2(url_a)
-verbrauch_gemeinde <- read_csv2(url_b)
-verbrauch_kanton   <- read_csv2(url_c)
-heizsysteme        <- read_csv2(url_d)
+prod_erneuerbar    &lt;- read_csv2(url_a)
+verbrauch_gemeinde &lt;- read_csv2(url_b)
+verbrauch_kanton   &lt;- read_csv2(url_c)
+heizsysteme        &lt;- read_csv2(url_d)
 ```
 
 .footnote[Quelle: data.tg.ch – Amt für Daten und Statistik Kanton Thurgau]
@@ -115,37 +151,37 @@ heizsysteme        <- read_csv2(url_d)
 .panelset[
 .panel[.panel-name[prod_erneuerbar]
 ```
-gemeinde_nr     <int>   BFS-Gemeindenummer
-gemeinde        <chr>   Gemeindename
-jahr            <int>   Erhebungsjahr
-energietraeger  <chr>   Sonne | Wasser | Biomasse/Biogas | Wind
-produktion_mwh  <dbl>   Produktion in MWh
+gemeinde_nr     &lt;int&gt;   BFS-Gemeindenummer
+gemeinde        &lt;chr&gt;   Gemeindename
+jahr            &lt;int&gt;   Erhebungsjahr
+energietraeger  &lt;chr&gt;   Sonne | Wasser | Biomasse/Biogas | Wind
+produktion_mwh  &lt;dbl&gt;   Produktion in MWh
 ```
 ]
 .panel[.panel-name[verbrauch_gemeinde]
 ```
-gemeinde_nr     <int>   BFS-Gemeindenummer
-gemeinde        <chr>   Gemeindename
-jahr            <int>   Erhebungsjahr
-energietraeger  <chr>   Heizöl | Erdgas | Holz | Wärmepumpe |
+gemeinde_nr     &lt;int&gt;   BFS-Gemeindenummer
+gemeinde        &lt;chr&gt;   Gemeindename
+jahr            &lt;int&gt;   Erhebungsjahr
+energietraeger  &lt;chr&gt;   Heizöl | Erdgas | Holz | Wärmepumpe |
                         Fernwärme | Elektrizität | Sonne thermisch | Übrige
-verbrauch_mwh   <dbl>   Verbrauch in MWh
+verbrauch_mwh   &lt;dbl&gt;   Verbrauch in MWh
 ```
 ]
 .panel[.panel-name[verbrauch_kanton]
 ```
-jahr            <int>   Erhebungsjahr
-energietraeger  <chr>   Energieträger (kantonal aggregiert)
-verbrauch_mwh   <dbl>   Verbrauch in MWh
+jahr            &lt;int&gt;   Erhebungsjahr
+energietraeger  &lt;chr&gt;   Energieträger (kantonal aggregiert)
+verbrauch_mwh   &lt;dbl&gt;   Verbrauch in MWh
 ```
 ]
 .panel[.panel-name[heizsysteme]
 ```
-gemeinde_nr     <int>   BFS-Gemeindenummer
-gemeinde        <chr>   Gemeindename
-jahr            <int>   Erhebungsjahr
-heizsystem      <chr>   Art des Heizsystems
-anzahl          <int>   Anzahl Gebäude
+gemeinde_nr     &lt;int&gt;   BFS-Gemeindenummer
+gemeinde        &lt;chr&gt;   Gemeindename
+jahr            &lt;int&gt;   Erhebungsjahr
+heizsystem      &lt;chr&gt;   Art des Heizsystems
+anzahl          &lt;int&gt;   Anzahl Gebäude
 ```
 ]
 ]
@@ -169,7 +205,8 @@ anzahl          <int>   Anzahl Gebäude
 .pull-right[
 **Starthilfe:**
 
-```{r aufgabe1-start}
+
+``` r
 library(tidyverse)
 
 glimpse(prod_erneuerbar)
@@ -184,19 +221,20 @@ distinct(prod_erneuerbar, jahr)
 
 # Aufgabe 1: Hilfreiche Funktionen
 
-```{r aufgabe1-funktionen}
+
+``` r
 # Spaltenstruktur anzeigen
 glimpse(prod_erneuerbar)
 
 # Häufigkeiten zählen
-prod_erneuerbar |> count(energietraeger)
-prod_erneuerbar |> count(jahr)
+prod_erneuerbar |&gt; count(energietraeger)
+prod_erneuerbar |&gt; count(jahr)
 
 # Anzahl eindeutiger Gemeinden
-prod_erneuerbar |> distinct(gemeinde) |> nrow()
+prod_erneuerbar |&gt; distinct(gemeinde) |&gt; nrow()
 
 # Fehlwerte prüfen
-prod_erneuerbar |> summarise(across(everything(), \(x) sum(is.na(x))))
+prod_erneuerbar |&gt; summarise(across(everything(), \(x) sum(is.na(x))))
 ```
 
 **Erwartete Antworten:**
@@ -219,8 +257,9 @@ prod_erneuerbar |> summarise(across(everything(), \(x) sum(is.na(x))))
 | **Erneuerbar** | Holz, Wärmepumpe, Fernwärme, Sonne thermisch |
 | **Sonstige** | Elektrizität, Übrige |
 
-```{r aufgabe2-case-when}
-verbrauch_gemeinde <- verbrauch_gemeinde |>
+
+``` r
+verbrauch_gemeinde &lt;- verbrauch_gemeinde |&gt;
   mutate(
     kategorie = case_when(
       energietraeger %in% c("Heizöl", "Erdgas")                         ~ "Fossil",
@@ -240,7 +279,8 @@ verbrauch_gemeinde <- verbrauch_gemeinde |>
 .pull-left[
 **`case_when()` – Grundstruktur:**
 
-```{r case-when-syntax}
+
+``` r
 # Bedingung ~ Ergebnis
 mutate(
   neue_spalte = case_when(
@@ -257,17 +297,19 @@ mutate(
 .pull-right[
 **`str_trim()` – Leerzeichen entfernen:**
 
-```{r str-trim}
+
+``` r
 # Alle Zeichenspalten bereinigen
-verbrauch_gemeinde |>
+verbrauch_gemeinde |&gt;
   mutate(across(where(is.character), str_trim))
 ```
 
 **Prüfen nach der Bereinigung:**
 
-```{r pruefung}
+
+``` r
 # Jeder Träger hat genau 1 Kategorie?
-verbrauch_gemeinde |>
+verbrauch_gemeinde |&gt;
   count(energietraeger, kategorie)
 ```
 ]
@@ -292,9 +334,10 @@ verbrauch_gemeinde |>
 
 Für die kantonale Aggregation:
 
-```{r aufgabe3-aggregation}
-prod_kanton <- prod_erneuerbar |>
-  group_by(jahr, energietraeger) |>
+
+``` r
+prod_kanton &lt;- prod_erneuerbar |&gt;
+  group_by(jahr, energietraeger) |&gt;
   summarise(
     produktion_gwh = sum(produktion_mwh,
                          na.rm = TRUE) / 1000,
@@ -323,17 +366,18 @@ Hinweis: `reorder(gemeinde, produktion_gwh)` für korrekte Reihenfolge.
 
 # Aufgabe 3: Top-5-Gemeinden
 
-```{r aufgabe3-top5}
+
+``` r
 # Top-5-Gemeinden nach Produktion im letzten Jahr
-top5_gem <- prod_erneuerbar |>
-  filter(jahr == max(jahr)) |>
-  group_by(gemeinde) |>
+top5_gem &lt;- prod_erneuerbar |&gt;
+  filter(jahr == max(jahr)) |&gt;
+  group_by(gemeinde) |&gt;
   summarise(total_gwh = sum(produktion_mwh, na.rm = TRUE) / 1000,
-            .groups = "drop") |>
+            .groups = "drop") |&gt;
   slice_max(total_gwh, n = 5)
 
 # Horizontales Balkendiagramm
-top5_gem |>
+top5_gem |&gt;
   ggplot(aes(x = total_gwh,
              y = reorder(gemeinde, total_gwh))) +
   geom_col(fill = "#F5A623") +
@@ -352,8 +396,9 @@ top5_gem |>
 
 .panelset[
 .panel[.panel-name[geom_area]
-```{r geom-area-demo}
-prod_kanton |>
+
+``` r
+prod_kanton |&gt;
   ggplot(aes(x = jahr, y = produktion_gwh, fill = energietraeger)) +
   geom_area(alpha = 0.85) +
   scale_fill_manual(values = c(
@@ -366,7 +411,8 @@ prod_kanton |>
 ```
 ]
 .panel[.panel-name[Achsen]
-```{r skala-demo}
+
+``` r
 # Zahlen mit Tausendertrenner
 scale_y_continuous(
   labels = scales::label_number(big.mark = "'")
@@ -379,11 +425,12 @@ scale_y_continuous(
 ```
 ]
 .panel[.panel-name[Top-5]
-```{r top5-demo}
-prod_erneuerbar |>
-  filter(jahr == max(jahr)) |>
-  group_by(gemeinde) |>
-  summarise(total = sum(produktion_mwh, na.rm = TRUE)) |>
+
+``` r
+prod_erneuerbar |&gt;
+  filter(jahr == max(jahr)) |&gt;
+  group_by(gemeinde) |&gt;
+  summarise(total = sum(produktion_mwh, na.rm = TRUE)) |&gt;
   slice_max(total, n = 5)
 ```
 ]
@@ -418,9 +465,10 @@ prod_erneuerbar |>
 
 # Aufgabe 4: Datenvorbereitung
 
-```{r aufgabe4-prep}
+
+``` r
 # Schritt 1: Kategorie-Spalte hinzufügen (analog zu Aufgabe 2)
-verbr_kat <- verbrauch_kanton |>
+verbr_kat &lt;- verbrauch_kanton |&gt;
   mutate(
     kategorie = case_when(
       energietraeger %in% c("Heizöl", "Erdgas")                         ~ "Fossil",
@@ -428,15 +476,15 @@ verbr_kat <- verbrauch_kanton |>
                             "Fernwärme", "Sonne thermisch")              ~ "Erneuerbar",
       .default = "Sonstige"
     )
-  ) |>
-  group_by(jahr, kategorie) |>
+  ) |&gt;
+  group_by(jahr, kategorie) |&gt;
   summarise(verbrauch_gwh = sum(verbrauch_mwh, na.rm = TRUE) / 1000,
             .groups = "drop")
 ```
 
 **Prüfen:** `count(verbr_kat, kategorie)` — alle drei Kategorien vorhanden?
 
-**Tipp:** Anteil je Jahr berechnen mit `group_by(jahr) |> mutate(anteil = verbrauch_gwh / sum(verbrauch_gwh))`.
+**Tipp:** Anteil je Jahr berechnen mit `group_by(jahr) |&gt; mutate(anteil = verbrauch_gwh / sum(verbrauch_gwh))`.
 
 ---
 
@@ -445,8 +493,9 @@ verbr_kat <- verbrauch_kanton |>
 .pull-left[
 **Absolut (gestapelt):**
 
-```{r aufgabe4-stack}
-verbr_kat |>
+
+``` r
+verbr_kat |&gt;
   ggplot(aes(x = jahr,
              y = verbrauch_gwh,
              fill = kategorie)) +
@@ -459,8 +508,9 @@ Zeigt absolute Mengen — gut um Wachstum zu sehen.
 .pull-right[
 **Relativ (gefüllt):**
 
-```{r aufgabe4-fill}
-verbr_kat |>
+
+``` r
+verbr_kat |&gt;
   ggplot(aes(x = jahr,
              y = verbrauch_gwh,
              fill = kategorie)) +
@@ -477,14 +527,15 @@ verbr_kat |>
 
 # Aufgabe 4: Trendlinie Erneuerbar-Anteil
 
-```{r aufgabe4-linie}
+
+``` r
 # Anteil erneuerbar pro Jahr
-anteil_erneuerbar <- verbr_kat |>
-  group_by(jahr) |>
-  mutate(anteil_pct = verbrauch_gwh / sum(verbrauch_gwh) * 100) |>
+anteil_erneuerbar &lt;- verbr_kat |&gt;
+  group_by(jahr) |&gt;
+  mutate(anteil_pct = verbrauch_gwh / sum(verbrauch_gwh) * 100) |&gt;
   filter(kategorie == "Erneuerbar")
 
-anteil_erneuerbar |>
+anteil_erneuerbar |&gt;
   ggplot(aes(x = jahr, y = anteil_pct)) +
   geom_line(color = "#27AE60", linewidth = 1.2) +
   geom_point(color = "#27AE60", size = 3) +
@@ -514,9 +565,9 @@ Eigenversorgungsgrad = Erneuerbare Stromproduktion / Gesamter Gebäudeenergiever
 .pull-left[
 **Interpretation:**
 
-- **< 100 %**: Eigenbedarf nicht vollständig gedeckt
+- **&lt; 100 %**: Eigenbedarf nicht vollständig gedeckt
 - **= 100 %**: Vollständige Eigenversorgung
-- **> 100 %**: Überschussproduktion
+- **&gt; 100 %**: Überschussproduktion
 
 **Ziel:** Streudiagramm aller 80 Gemeinden mit Referenzlinie bei 100 % und Beschriftung der Ausreisser.
 ]
@@ -535,25 +586,26 @@ Eigenversorgungsgrad = Erneuerbare Stromproduktion / Gesamter Gebäudeenergiever
 
 # Aufgabe 5: Join-Logik
 
-```{r aufgabe5-join}
+
+``` r
 # Produktion aggregieren (letztes verfügbares Jahr)
-prod_gem <- prod_erneuerbar |>
-  filter(jahr == max(jahr)) |>
-  group_by(gemeinde_nr, gemeinde) |>
+prod_gem &lt;- prod_erneuerbar |&gt;
+  filter(jahr == max(jahr)) |&gt;
+  group_by(gemeinde_nr, gemeinde) |&gt;
   summarise(prod_gwh = sum(produktion_mwh, na.rm = TRUE) / 1000,
             .groups = "drop")
 
 # Verbrauch aggregieren
-verbr_gem <- verbrauch_gemeinde |>
-  filter(jahr == max(jahr)) |>
-  group_by(gemeinde_nr, gemeinde) |>
+verbr_gem &lt;- verbrauch_gemeinde |&gt;
+  filter(jahr == max(jahr)) |&gt;
+  group_by(gemeinde_nr, gemeinde) |&gt;
   summarise(verbr_gwh = sum(verbrauch_mwh, na.rm = TRUE) / 1000,
             .groups = "drop")
 
 # Join und Eigenversorgungsgrad berechnen
-evg <- prod_gem |>
-  left_join(verbr_gem, by = c("gemeinde_nr", "gemeinde")) |>
-  mutate(evg_pct = prod_gwh / verbr_gwh * 100) |>
+evg &lt;- prod_gem |&gt;
+  left_join(verbr_gem, by = c("gemeinde_nr", "gemeinde")) |&gt;
+  mutate(evg_pct = prod_gwh / verbr_gwh * 100) |&gt;
   arrange(desc(evg_pct))
 ```
 
@@ -563,16 +615,17 @@ evg <- prod_gem |>
 
 # Aufgabe 5: Beschriftung mit ggrepel
 
-```{r aufgabe5-ggrepel}
+
+``` r
 library(ggrepel)
 
 # Nur Top-5 und Bottom-5 beschriften
-ausreisser <- bind_rows(
+ausreisser &lt;- bind_rows(
   slice_max(evg, evg_pct, n = 5),
   slice_min(evg, evg_pct, n = 5)
 )
 
-evg |>
+evg |&gt;
   ggplot(aes(x = verbr_gwh, y = prod_gwh, label = gemeinde)) +
   geom_abline(slope = 1, intercept = 0,
               linetype = "dashed", color = "grey50") +
@@ -628,8 +681,9 @@ params:
 
 Im Bericht-Code:
 
-```{r bonus-filter}
-prod_gem <- prod_erneuerbar |>
+
+``` r
+prod_gem &lt;- prod_erneuerbar |&gt;
   filter(gemeinde == params$gemeinde)
 ```
 ]
@@ -637,9 +691,10 @@ prod_gem <- prod_erneuerbar |>
 .pull-right[
 **Render-Loop:**
 
-```{r bonus-walk}
-gemeinden <- read_csv2(url_a) |>
-  distinct(gemeinde) |> pull()
+
+``` r
+gemeinden &lt;- read_csv2(url_a) |&gt;
+  distinct(gemeinde) |&gt; pull()
 
 dir.create("berichte", showWarnings = FALSE)
 
@@ -687,3 +742,118 @@ purrr::walk(gemeinden, function(gem) {
 ]
 
 .footnote[Quelle: data.tg.ch – Amt für Daten und Statistik Kanton Thurgau]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create();
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

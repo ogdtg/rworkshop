@@ -116,10 +116,7 @@ xaringanExtra::use_tachyons()
 
 ```{r child='rmd/excel_schreiben.Rmd'}
 ```
----
 
-```{r child='rmd/praxisbeispiel.Rmd'}
-```
 ---
 
 ```{r child='rmd/rest_apis.Rmd'}
@@ -129,7 +126,9 @@ xaringanExtra::use_tachyons()
 ```{r child='rmd/databases.Rmd'}
 ```
 ---
-
+```{r child='rmd/praxisbeispiel2.Rmd'}
+```
+---
 
 
 

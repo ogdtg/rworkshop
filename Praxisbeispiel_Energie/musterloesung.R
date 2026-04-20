@@ -3,258 +3,346 @@
 # Quelle: data.tg.ch (div-energie-4, -5, -10, -12)
 # R-Workshop – Amt für Daten und Statistik, Kanton Thurgau
 # =============================================================================
-# Hinweis: Spaltennamen ggf. anpassen je nach effektivem CSV-Export
-# =============================================================================
 
 library(tidyverse)
-library(ggplot2)
 library(ggrepel)
+library(glue)
 
-url_a <- "https://data.tg.ch/api/explore/v2.1/catalog/datasets/div-energie-10/exports/csv?delimiter=%3B&lang=de&timezone=Europe%2FZurich"
-url_b <- "https://data.tg.ch/api/explore/v2.1/catalog/datasets/div-energie-5/exports/csv?delimiter=%3B&lang=de&timezone=Europe%2FZurich"
-url_c <- "https://data.tg.ch/api/explore/v2.1/catalog/datasets/div-energie-4/exports/csv?delimiter=%3B&lang=de&timezone=Europe%2FZurich"
-url_d <- "https://data.tg.ch/api/explore/v2.1/catalog/datasets/div-energie-12/exports/csv?delimiter=%3B&lang=de&timezone=Europe%2FZurich"
-
-
-# === AUFGABE 1: Daten laden und kennenlernen ===
-
-prod_erneuerbar    <- read_csv2(url_a)
-verbrauch_gemeinde <- read_csv2(url_b)
-verbrauch_kanton   <- read_csv2(url_c)
-heizsysteme        <- read_csv2(url_d)
-
-# Überblick über alle Datensätze auf einen Schlag
-walk(list(prod_erneuerbar, verbrauch_gemeinde, verbrauch_kanton, heizsysteme), glimpse)
-
-# --- 1a) Zeitraum prüfen ---
-prod_erneuerbar    |> count(jahr)
-verbrauch_gemeinde |> count(jahr)
-
-# --- 1b) Wie viele Gemeinden sind im Datensatz? ---
-verbrauch_gemeinde |> distinct(gemeinde) |> nrow()
-
-# --- 1c) Welche Energieträger kommen vor? ---
-prod_erneuerbar    |> distinct(energietraeger)
-verbrauch_gemeinde |> distinct(energietraeger)
+url_prod       <- "https://data.tg.ch/api/explore/v2.1/catalog/datasets/div-energie-10/exports/csv?delimiter=%3B&lang=de&timezone=Europe%2FZurich"
+url_verbr_gem  <- "https://data.tg.ch/api/explore/v2.1/catalog/datasets/div-energie-5/exports/csv?delimiter=%3B&lang=de&timezone=Europe%2FZurich"
+url_verbr_kant <- "https://data.tg.ch/api/explore/v2.1/catalog/datasets/div-energie-4/exports/csv?delimiter=%3B&lang=de&timezone=Europe%2FZurich"
+url_heiz       <- "https://data.tg.ch/api/explore/v2.1/catalog/datasets/div-energie-12/exports/csv?delimiter=%3B&lang=de&timezone=Europe%2FZurich"
 
 
-# === AUFGABE 2: Bereinigung und Kategorisierung ===
+# =============================================================================
+# AUFGABE 1: Daten laden und kennenlernen
+# =============================================================================
 
-# Leerzeichen in Zeichenketten entfernen – verhindert stille Matching-Fehler
-# Hinweis: Spaltennamen ggf. anpassen je nach effektivem CSV-Export
-prod_erneuerbar    <- prod_erneuerbar    |> mutate(across(where(is.character), str_trim))
-verbrauch_gemeinde <- verbrauch_gemeinde |> mutate(across(where(is.character), str_trim))
-verbrauch_kanton   <- verbrauch_kanton   |> mutate(across(where(is.character), str_trim))
-heizsysteme        <- heizsysteme        |> mutate(across(where(is.character), str_trim))
+prod_raw       <- read_csv2(url_prod)
+verbr_gem_raw  <- read_csv2(url_verbr_gem)
+verbr_kant_raw <- read_csv2(url_verbr_kant)
+heiz_raw       <- read_csv2(url_heiz)
 
-# --- 2a) Kategorie fossil/erneuerbar für Gemeindeebene ---
-# Hinweis: Spaltennamen ggf. anpassen je nach effektivem CSV-Export
-verbrauch_gemeinde <- verbrauch_gemeinde |>
-  mutate(
-    kategorie = case_when(
-      energietraeger %in% c("Heizöl", "Erdgas")                                   ~ "Fossil",
-      energietraeger %in% c("Holz", "Wärmepumpe", "Fernwärme", "Sonne thermisch") ~ "Erneuerbar",
-      .default = "Sonstige"
-    )
-  )
-
-# --- 2b) Kategorie fossil/erneuerbar für Kantonsebene ---
-# Hinweis: Spaltennamen ggf. anpassen je nach effektivem CSV-Export
-verbrauch_kanton <- verbrauch_kanton |>
-  mutate(
-    kategorie = case_when(
-      energietraeger %in% c("Heizöl", "Erdgas")                                   ~ "Fossil",
-      energietraeger %in% c("Holz", "Wärmepumpe", "Fernwärme", "Sonne thermisch") ~ "Erneuerbar",
-      .default = "Sonstige"
-    )
-  )
-
-# Kontrolle: alle Energieträger korrekt zugeordnet?
-verbrauch_gemeinde |> count(energietraeger, kategorie)
-verbrauch_kanton   |> count(energietraeger, kategorie)
-
-
-# === AUFGABE 3: Entwicklung erneuerbare Stromproduktion ===
-
-# --- 3a) Aggregation auf Kantonsebene ---
-# Hinweis: Spaltennamen ggf. anpassen je nach effektivem CSV-Export
-prod_kanton <- prod_erneuerbar |>
-  group_by(jahr, energietraeger) |>
-  summarise(produktion_mwh = sum(produktion_mwh, na.rm = TRUE), .groups = "drop")
-
-# Konsistente Farbpalette für alle Produktionsgrafiken
-farben_traeger <- c(
-  "Sonne"           = "#F5A623",
-  "Wasser"          = "#4A90D9",
-  "Biomasse/Biogas" = "#7ED321",
-  "Wind"            = "#9B9B9B"
+# Überblick
+map(
+  list(prod_raw, verbr_gem_raw, verbr_kant_raw, heiz_raw),
+  glimpse
 )
 
-# --- 3b) Liniengrafik: Entwicklung je Energieträger ---
-p_linie <- prod_kanton |>
-  ggplot(aes(x = jahr, y = produktion_mwh / 1000, color = energietraeger)) +
-  geom_line(linewidth = 1.2) +
-  geom_point(size = 2.5) +
-  scale_color_manual(values = farben_traeger) +
-  scale_y_continuous(labels = scales::label_number(suffix = " GWh")) +
+# Zeitraum und Gemeinden
+prod_raw      |> count(jahr)
+verbr_gem_raw |> distinct(gemeinde_name) |> nrow()
+
+# Spaltenstruktur anschauen – alle vier Datensätze liegen im Wide-Format vor
+# (eine Spalte pro Energieträger), müssen also noch ins Long-Format gebracht werden
+names(prod_raw)
+names(verbr_gem_raw)
+names(verbr_kant_raw)
+names(heiz_raw)
+
+
+# =============================================================================
+# AUFGABE 2: Bereinigung und Transformation ins Tidy-Format
+# =============================================================================
+
+# --- 2a) Produktion: Wide → Long ---
+# Viele Produktionsspalten sind als <chr> eingelesen (z.B. "0.98"), weil
+# manche Zellen leer sind. Wir wandeln sie explizit in numerisch um.
+prod <- prod_raw |>
+  mutate(across(
+    c(wasserkraft, biomasse_holz, biogasanlagen_landwirtschaft,
+      abfall_reststoffe, biogasanlagen_industrie, biogasanlagen_abwasser,
+      photovoltaik, wind),
+    as.numeric
+  )) |>
+  pivot_longer(
+    cols      = c(wasserkraft, biomasse_holz, biogasanlagen_landwirtschaft,
+                  abfall_reststoffe, biogasanlagen_industrie,
+                  biogasanlagen_abwasser, photovoltaik, wind),
+    names_to  = "energietraeger",
+    values_to = "produktion_gwh"
+  ) |>
+  filter(!is.na(produktion_gwh)) |>
+  # Leserliche Bezeichnungen
+  mutate(energietraeger = recode(energietraeger,
+                                 "wasserkraft"                   = "Wasser",
+                                 "biomasse_holz"                 = "Biomasse/Holz",
+                                 "biogasanlagen_landwirtschaft"  = "Biogas Landwirtschaft",
+                                 "abfall_reststoffe"             = "Abfall/Reststoffe",
+                                 "biogasanlagen_industrie"       = "Biogas Industrie",
+                                 "biogasanlagen_abwasser"        = "Biogas Abwasser",
+                                 "photovoltaik"                  = "Photovoltaik",
+                                 "wind"                          = "Wind"
+  )) |>
+  select(jahr, bfs_nr_gemeinde, gemeinde_name, einwohner,
+         energietraeger, produktion_gwh)
+
+# --- 2b) Verbrauch Gemeinde: Wide → Long ---
+verbr_gem <- verbr_gem_raw |>
+  mutate(across(
+    c(erdoelbrennstoffe, erdgas, elektrizitaet, holzenergie,
+      fernwaerme, umweltwaerme, solarwaerme, andere),
+    as.numeric
+  )) |>
+  pivot_longer(
+    cols      = c(erdoelbrennstoffe, erdgas, elektrizitaet, holzenergie,
+                  fernwaerme, umweltwaerme, solarwaerme, andere),
+    names_to  = "energietraeger",
+    values_to = "verbrauch_gwh"
+  ) |>
+  filter(!is.na(verbrauch_gwh)) |>
+  mutate(energietraeger = recode(energietraeger,
+                                 "erdoelbrennstoffe" = "Heizöl",
+                                 "erdgas"            = "Erdgas",
+                                 "elektrizitaet"     = "Elektrizität",
+                                 "holzenergie"       = "Holz",
+                                 "fernwaerme"        = "Fernwärme",
+                                 "umweltwaerme"      = "Umweltwärme/WP",
+                                 "solarwaerme"       = "Solarwärme",
+                                 "andere"            = "Andere"
+  )) |>
+  select(jahr, bfs_nr_gemeinde, gemeinde_name, einwohner,
+         energiebezugsflaeche, energietraeger, verbrauch_gwh)
+
+# --- 2c) Verbrauch Kanton: Wide → Long ---
+verbr_kant <- verbr_kant_raw |>
+  mutate(across(
+    c(erdoelbrennstoffe, erdgas, elektrizitaet, holzenergie,
+      fernwaerme, umweltwaerme, solarwaerme, andere),
+    as.numeric
+  )) |>
+  pivot_longer(
+    cols      = c(erdoelbrennstoffe, erdgas, elektrizitaet, holzenergie,
+                  fernwaerme, umweltwaerme, solarwaerme, andere),
+    names_to  = "energietraeger",
+    values_to = "verbrauch_mwh"   # Kantonsebene: Einheit ist MWh (nicht GWh)
+  ) |>
+  filter(!is.na(verbrauch_mwh)) |>
+  mutate(energietraeger = recode(energietraeger,
+                                 "erdoelbrennstoffe" = "Heizöl",
+                                 "erdgas"            = "Erdgas",
+                                 "elektrizitaet"     = "Elektrizität",
+                                 "holzenergie"       = "Holz",
+                                 "fernwaerme"        = "Fernwärme",
+                                 "umweltwaerme"      = "Umweltwärme/WP",
+                                 "solarwaerme"       = "Solarwärme",
+                                 "andere"            = "Andere"
+  )) |>
+  select(jahr, energietraeger, verbrauch_mwh)
+
+# --- 2d) Heizsysteme: Wide → Long ---
+heiz <- heiz_raw |>
+  pivot_longer(
+    cols      = c(oelfeuerungen, erdgasfeuerungen, elektroheizungen,
+                  holzfeuerungen, waermenetzanschluesse, waermepumpen,
+                  andere_erneuerbar, andere_nicht_erneuerbar),
+    names_to  = "heizsystem",
+    values_to = "anzahl"
+  ) |>
+  filter(!is.na(anzahl)) |>
+  mutate(heizsystem = recode(heizsystem,
+                             "oelfeuerungen"            = "Ölfeuerung",
+                             "erdgasfeuerungen"         = "Erdgas",
+                             "elektroheizungen"         = "Elektroheizung",
+                             "holzfeuerungen"           = "Holz",
+                             "waermenetzanschluesse"    = "Wärmenetz",
+                             "waermepumpen"             = "Wärmepumpe",
+                             "andere_erneuerbar"        = "Andere erneuerbar",
+                             "andere_nicht_erneuerbar"  = "Andere fossil"
+  )) |>
+  select(jahr, bfs_nr_gemeinde, gemeinde_name, heizsystem, anzahl)
+
+# Kontrolle
+verbr_gem  |> count(energietraeger)
+verbr_kant |> count(energietraeger)
+prod       |> count(energietraeger)
+heiz       |> count(heizsystem)
+
+
+# =============================================================================
+# AUFGABE 3: Entwicklung der erneuerbaren Stromproduktion
+# =============================================================================
+
+# --- 3a) Aggregation auf Kantonsebene ---
+prod_kanton <- prod |>
+  group_by(jahr, energietraeger) |>
+  summarise(produktion_gwh = sum(produktion_gwh, na.rm = TRUE), .groups = "drop")
+
+# Farbpalette
+farben_prod <- c(
+  "Photovoltaik"          = "#F5A623",
+  "Wasser"                = "#4A90D9",
+  "Biomasse/Holz"         = "#7ED321",
+  "Biogas Landwirtschaft" = "#8B5E3C",
+  "Biogas Abwasser"       = "#A0784A",
+  "Biogas Industrie"      = "#C49A6C",
+  "Abfall/Reststoffe"     = "#9B9B9B",
+  "Wind"                  = "#BDC3C7"
+)
+
+# --- 3b) Liniengrafik ---
+prod_kanton |>
+  ggplot(aes(x = jahr, y = produktion_gwh, color = energietraeger)) +
+  geom_line(linewidth = 1.1) +
+  geom_point(size = 2) +
+  scale_color_manual(values = farben_prod) +
   labs(
-    title    = "Erneuerbare Stromproduktion Kanton Thurgau",
-    subtitle = "Entwicklung nach Energieträger",
-    x        = NULL,
-    y        = "Produktion (GWh)",
-    color    = "Energieträger",
-    caption  = "Quelle: data.tg.ch (div-energie-10)"
+    title   = "Erneuerbare Stromproduktion Kanton Thurgau",
+    x       = NULL, y = "Produktion (GWh)", color = "Energieträger",
+    caption = "Quelle: data.tg.ch (div-energie-10)"
   ) +
   theme_minimal(base_size = 12)
 
-ggsave("Praxisbeispiel_Energie/plot_produktion_linie.png", p_linie, width = 9, height = 5)
-
-# --- 3c) Gestapeltes Flächendiagramm: Zusammensetzung über Zeit ---
-p_flaeche <- prod_kanton |>
-  ggplot(aes(x = jahr, y = produktion_mwh / 1000, fill = energietraeger)) +
+# --- 3c) Gestapeltes Flächendiagramm ---
+prod_kanton |>
+  ggplot(aes(x = jahr, y = produktion_gwh, fill = energietraeger)) +
   geom_area(alpha = 0.85, color = "white", linewidth = 0.3) +
-  scale_fill_manual(values = farben_traeger) +
-  scale_y_continuous(labels = scales::label_number(suffix = " GWh")) +
+  scale_fill_manual(values = farben_prod) +
   labs(
-    title    = "Erneuerbare Stromproduktion Kanton Thurgau",
-    subtitle = "Zusammensetzung nach Energieträger",
-    x        = NULL,
-    y        = "Produktion (GWh)",
-    fill     = "Energieträger",
-    caption  = "Quelle: data.tg.ch (div-energie-10)"
+    title   = "Zusammensetzung der erneuerbaren Stromproduktion",
+    x       = NULL, y = "Produktion (GWh)", fill = "Energieträger",
+    caption = "Quelle: data.tg.ch (div-energie-10)"
   ) +
   theme_minimal(base_size = 12)
 
-ggsave("Praxisbeispiel_Energie/plot_produktion_flaeche.png", p_flaeche, width = 9, height = 5)
+# --- 3d) Top 5 Gemeinden (letztes verfügbares Jahr) ---
+letztes_jahr_prod <- max(prod$jahr)
 
-# --- 3d) Top 5 Gemeinden im neuesten Erhebungsjahr ---
-# Hinweis: Spaltennamen ggf. anpassen je nach effektivem CSV-Export
-letztes_jahr_prod <- max(prod_erneuerbar$jahr)
-
-top5_gemeinden <- prod_erneuerbar |>
+prod |>
   filter(jahr == letztes_jahr_prod) |>
-  group_by(gemeinde_nr, gemeinde) |>
-  summarise(produktion_mwh = sum(produktion_mwh, na.rm = TRUE), .groups = "drop") |>
-  slice_max(produktion_mwh, n = 5)
-
-print(top5_gemeinden)
+  group_by(bfs_nr_gemeinde, gemeinde_name) |>
+  summarise(produktion_gwh = sum(produktion_gwh, na.rm = TRUE), .groups = "drop") |>
+  slice_max(produktion_gwh, n = 5)
 
 
-# === AUFGABE 4: Wärmeverbrauch – fossil vs. erneuerbar ===
+# =============================================================================
+# AUFGABE 4: Wärmeverbrauch – fossil vs. erneuerbar
+# =============================================================================
 
-# --- 4a) Verbrauch nach Kategorie und Jahr aggregieren ---
-# Hinweis: Spaltennamen ggf. anpassen je nach effektivem CSV-Export
-verbrauch_kat <- verbrauch_kanton |>
+# --- 4a) Kategorie zuweisen ---
+verbr_kant <- verbr_kant |>
+  mutate(kategorie = case_when(
+    energietraeger %in% c("Heizöl", "Erdgas")                              ~ "Fossil",
+    energietraeger %in% c("Holz", "Umweltwärme/WP", "Fernwärme",
+                          "Solarwärme")                                    ~ "Erneuerbar",
+    .default = "Sonstige"
+  ))
+
+verbr_gem <- verbr_gem |>
+  mutate(kategorie = case_when(
+    energietraeger %in% c("Heizöl", "Erdgas")                              ~ "Fossil",
+    energietraeger %in% c("Holz", "Umweltwärme/WP", "Fernwärme",
+                          "Solarwärme")                                    ~ "Erneuerbar",
+    .default = "Sonstige"
+  ))
+
+# Kontrolle
+verbr_kant |> count(energietraeger, kategorie)
+
+# --- 4b) Anteil erneuerbarer Wärme pro Jahr (Kanton) ---
+anteil_erneuerbar <- verbr_kant |>
   group_by(jahr, kategorie) |>
-  summarise(verbrauch_mwh = sum(verbrauch_mwh, na.rm = TRUE), .groups = "drop")
-
-# --- 4b) Anteil erneuerbarer Wärme berechnen ---
-anteil_erneuerbar <- verbrauch_kat |>
+  summarise(verbrauch_mwh = sum(verbrauch_mwh, na.rm = TRUE), .groups = "drop") |>
   group_by(jahr) |>
   mutate(anteil_pct = verbrauch_mwh / sum(verbrauch_mwh) * 100) |>
   ungroup()
 
-# Kennzahl für das aktuellste Jahr ausgeben
+# Aktuellster Wert
 anteil_erneuerbar |>
   filter(jahr == max(jahr), kategorie == "Erneuerbar") |>
   pull(anteil_pct) |>
   round(1) |>
-  cat("Anteil Erneuerbar (aktuellstes Jahr):", ., "%\n")
+  (\(x) cat("Anteil Erneuerbar:", x, "%\n"))()
 
-# Konsistente Farbpalette für Kategorie-Grafiken
+# --- 4c) Grafik: Anteilsentwicklung ---
 farben_kat <- c("Fossil" = "#C0392B", "Erneuerbar" = "#27AE60", "Sonstige" = "#95A5A6")
 
-# --- 4c) Gestapeltes Säulendiagramm: absolute Verbrauchsmengen ---
-p_verbrauch <- verbrauch_kat |>
-  ggplot(aes(x = jahr, y = verbrauch_mwh / 1000, fill = kategorie)) +
-  geom_col(position = "stack") +
-  scale_fill_manual(values = farben_kat) +
-  scale_y_continuous(labels = scales::label_number(suffix = " GWh")) +
-  labs(
-    title    = "Endenergieverbrauch Gebäude Kanton Thurgau",
-    subtitle = "Nach Kategorie (fossil / erneuerbar / sonstige)",
-    x        = NULL,
-    y        = "Verbrauch (GWh)",
-    fill     = "Kategorie",
-    caption  = "Quelle: data.tg.ch (div-energie-4)"
-  ) +
-  theme_minimal(base_size = 12)
-
-ggsave("Praxisbeispiel_Energie/plot_verbrauch_kat.png", p_verbrauch, width = 9, height = 5)
-
-# --- 4d) Anteilsentwicklung erneuerbar über Zeit ---
-p_anteil <- anteil_erneuerbar |>
+anteil_erneuerbar |>
   filter(kategorie == "Erneuerbar") |>
   ggplot(aes(x = jahr, y = anteil_pct)) +
   geom_line(linewidth = 1.2, color = "#27AE60") +
   geom_point(size = 3, color = "#27AE60") +
-  # y-Achse bei 0 verankern, damit Fortschritte nicht übertrieben wirken
-  scale_y_continuous(limits = c(0, NA), labels = scales::label_percent(scale = 1)) +
+  scale_y_continuous(limits = c(0, NA),
+                     labels = scales::label_percent(scale = 1)) +
   labs(
-    title    = "Anteil erneuerbarer Wärme am Gebäudeverbrauch",
+    title   = "Anteil erneuerbarer Wärme am Gebäudeverbrauch",
     subtitle = "Kanton Thurgau",
-    x        = NULL,
-    y        = "Anteil erneuerbar (%)",
-    caption  = "Quelle: data.tg.ch (div-energie-4)"
+    x       = NULL, y = "Anteil erneuerbar (%)",
+    caption = "Quelle: data.tg.ch (div-energie-4)"
   ) +
   theme_minimal(base_size = 12)
 
-ggsave("Praxisbeispiel_Energie/plot_anteil_erneuerbar.png", p_anteil, width = 9, height = 5)
+# --- 4d) Gemeinde mit höchstem Erneuerbar-Anteil (letztes Jahr) ---
+letztes_jahr_verbr <- max(verbr_gem$jahr)
+
+verbr_gem |>
+  filter(jahr == letztes_jahr_verbr) |>
+  group_by(bfs_nr_gemeinde, gemeinde_name, kategorie) |>
+  summarise(verbrauch_gwh = sum(verbrauch_gwh, na.rm = TRUE), .groups = "drop") |>
+  group_by(bfs_nr_gemeinde, gemeinde_name) |>
+  mutate(anteil_pct = verbrauch_gwh / sum(verbrauch_gwh) * 100) |>
+  filter(kategorie == "Erneuerbar") |>
+  ungroup() |>
+  slice_max(anteil_pct, n = 10)
 
 
-# === AUFGABE 5: Eigenversorgungsgrad der Gemeinden ===
+# =============================================================================
+# AUFGABE 5: Eigenversorgungsgrad der Gemeinden
+# =============================================================================
 
-# Letztes gemeinsames Jahr verwenden, damit beide Datensätze vergleichbar sind
-# Hinweis: Spaltennamen ggf. anpassen je nach effektivem CSV-Export
-letztes_jahr <- min(max(prod_erneuerbar$jahr), max(verbrauch_gemeinde$jahr))
+# Letztes gemeinsames Jahr
+letztes_jahr <- min(max(prod$jahr), max(verbr_gem$jahr))
 
-# --- 5a) Erneuerbare Stromproduktion pro Gemeinde ---
-# Hinweis: Spaltennamen ggf. anpassen je nach effektivem CSV-Export
-prod_gem <- prod_erneuerbar |>
+# --- 5a) Erneuerbare Produktion pro Gemeinde ---
+prod_gem <- prod |>
   filter(jahr == letztes_jahr) |>
-  group_by(gemeinde_nr, gemeinde) |>
-  summarise(produktion_mwh = sum(produktion_mwh, na.rm = TRUE), .groups = "drop")
+  group_by(bfs_nr_gemeinde, gemeinde_name) |>
+  summarise(produktion_gwh = sum(produktion_gwh, na.rm = TRUE), .groups = "drop")
 
-# --- 5b) Gesamter Gebäudeverbrauch pro Gemeinde ---
-# Hinweis: Spaltennamen ggf. anpassen je nach effektivem CSV-Export
-verbrauch_gem <- verbrauch_gemeinde |>
+# --- 5b) Gesamtverbrauch pro Gemeinde ---
+verbr_gem_total <- verbr_gem |>
   filter(jahr == letztes_jahr) |>
-  group_by(gemeinde_nr, gemeinde) |>
-  summarise(verbrauch_mwh = sum(verbrauch_mwh, na.rm = TRUE), .groups = "drop")
+  group_by(bfs_nr_gemeinde, gemeinde_name) |>
+  summarise(verbrauch_gwh = sum(verbrauch_gwh, na.rm = TRUE), .groups = "drop")
 
-# --- 5c) Join und Eigenversorgungsgrad berechnen ---
-# left_join, damit Gemeinden ohne Verbrauchsdaten sichtbar bleiben
+# --- 5c) Join & Eigenversorgungsgrad ---
+# Einheit Verbrauch: GWh (Gemeindeebene), Einheit Produktion: GWh → passt
 eigenversorgung <- prod_gem |>
-  left_join(verbrauch_gem, by = c("gemeinde_nr", "gemeinde")) |>
-  mutate(eigenversorgungsgrad = produktion_mwh / verbrauch_mwh * 100) |>
+  left_join(verbr_gem_total, by = c("bfs_nr_gemeinde", "gemeinde_name")) |>
+  mutate(eigenversorgungsgrad = produktion_gwh / verbrauch_gwh * 100) |>
   filter(!is.na(eigenversorgungsgrad))
 
-# --- 5d) Top 10 nach Eigenversorgungsgrad ---
+# --- 5d) Top 10 Ranking ---
 eigenversorgung |>
   arrange(desc(eigenversorgungsgrad)) |>
   slice_head(n = 10) |>
-  select(gemeinde, produktion_mwh, verbrauch_mwh, eigenversorgungsgrad) |>
-  mutate(across(where(is.numeric), round, 1)) |>
-  print()
+  select(gemeinde_name, produktion_gwh, verbrauch_gwh, eigenversorgungsgrad) |>
+  mutate(across(where(is.numeric), \(x) round(x, 1)))
 
-# --- 5e) Streudiagramm mit Beschriftung auffälliger Gemeinden ---
-p_scatter <- eigenversorgung |>
+# --- 5e) Grösse der Gemeinde: Anzahl Heizsysteme total als Proxy ---
+groesse <- heiz |>
+  filter(jahr == letztes_jahr) |>
+  group_by(bfs_nr_gemeinde, gemeinde_name) |>
+  summarise(anzahl_heizsysteme = sum(anzahl, na.rm = TRUE), .groups = "drop")
+
+eigenversorgung_plot <- eigenversorgung |>
+  left_join(groesse, by = c("bfs_nr_gemeinde", "gemeinde_name"))
+
+# --- 5f) Streudiagramm ---
+eigenversorgung_plot |>
   ggplot(aes(
-    x     = verbrauch_mwh / 1000,
-    y     = produktion_mwh / 1000,
-    label = gemeinde
+    x     = verbrauch_gwh,
+    y     = produktion_gwh,
+    label = gemeinde_name
   )) +
-  # Diagonale = 100 % Eigenversorgung: Produktion deckt Verbrauch genau
-  geom_abline(
-    slope     = 1, intercept = 0,
-    linetype  = "dashed", color = "grey50", linewidth = 0.8
-  ) +
+  # Diagonale = 100% Eigenversorgung
+  geom_abline(slope = 1, intercept = 0,
+              linetype = "dashed", color = "grey50", linewidth = 0.8) +
   geom_point(aes(color = eigenversorgungsgrad > 100), size = 2.5, alpha = 0.8) +
-  # Nur besonders auffällige Gemeinden beschriften, um Überladung zu vermeiden
   ggrepel::geom_label_repel(
     data        = \(d) filter(
       d,
-      eigenversorgungsgrad > 50 | produktion_mwh > quantile(produktion_mwh, 0.85)
+      eigenversorgungsgrad > 50 | produktion_gwh > quantile(produktion_gwh, 0.85)
     ),
     size         = 3,
     max.overlaps = 15,
@@ -265,42 +353,35 @@ p_scatter <- eigenversorgung |>
     labels = c("FALSE" = "< 100%",  "TRUE" = "≥ 100%"),
     name   = "Eigenversorgung"
   ) +
-  scale_x_continuous(labels = scales::label_number(suffix = " GWh")) +
-  scale_y_continuous(labels = scales::label_number(suffix = " GWh")) +
   labs(
     title    = "Eigenversorgungsgrad Thurgauer Gemeinden",
-    subtitle = glue::glue(
-      "Erneuerbare Stromproduktion vs. Gebäudeverbrauch ({letztes_jahr})"
-    ),
+    subtitle = glue("Erneuerbare Stromproduktion vs. Gebäudeverbrauch ({letztes_jahr})"),
     x        = "Gebäudeverbrauch (GWh)",
     y        = "Erneuerbare Stromproduktion (GWh)",
     caption  = "Strichlinie = 100% Eigenversorgung | Quelle: data.tg.ch"
   ) +
   theme_minimal(base_size = 12)
 
-ggsave("Praxisbeispiel_Energie/plot_eigenversorgung.png", p_scatter, width = 10, height = 7)
 
+# =============================================================================
+# AUFGABE 6 (BONUS): Parametrisierter Quarto-Bericht
+# =============================================================================
 
-# === AUFGABE 6 (BONUS): Parametrisierter Quarto-Bericht ===
-
-# Nur Gemeinden einbeziehen, die in beiden Datensätzen vorhanden sind
-# Hinweis: Spaltennamen ggf. anpassen je nach effektivem CSV-Export
-gemeinde_liste <- prod_erneuerbar |>
+# Gemeinden, die in beiden Datensätzen vorhanden sind
+gemeinde_liste <- prod |>
   inner_join(
-    verbrauch_gemeinde |> distinct(gemeinde_nr, gemeinde),
-    by = c("gemeinde_nr", "gemeinde")
+    verbr_gem |> distinct(bfs_nr_gemeinde, gemeinde_name),
+    by = c("bfs_nr_gemeinde", "gemeinde_name")
   ) |>
-  distinct(gemeinde_nr, gemeinde) |>
-  arrange(gemeinde)
+  distinct(bfs_nr_gemeinde, gemeinde_name) |>
+  arrange(gemeinde_name)
 
-cat("Berichte werden erstellt für", nrow(gemeinde_liste), "Gemeinden\n")
+cat("Berichte für", nrow(gemeinde_liste), "Gemeinden\n")
 
-# Ausgabeordner anlegen (existiert er bereits, keine Fehlermeldung)
 dir.create("Praxisbeispiel_Energie/berichte", recursive = TRUE, showWarnings = FALSE)
 
-# walk() statt map(), da wir Seiteneffekte (Dateien schreiben) wollen
-# und keinen Rückgabewert benötigen
-walk(gemeinde_liste$gemeinde, function(gem) {
+# walk() statt map(), da wir nur Seiteneffekte (Dateien schreiben) wollen
+walk(gemeinde_liste$gemeinde_name, function(gem) {
   quarto::quarto_render(
     input          = "Praxisbeispiel_Energie/gemeinde_bericht.qmd",
     output_file    = paste0(
@@ -310,5 +391,5 @@ walk(gemeinde_liste$gemeinde, function(gem) {
     ),
     execute_params = list(gemeinde = gem)
   )
-  cat("✓ Bericht erstellt:", gem, "\n")
+  cat("✓", gem, "\n")
 })

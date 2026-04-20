@@ -682,6 +682,32 @@ library(openxlsx)
 # Speichere die Datei unter rmd/Daten/openxlsx_table_DEIN_KÜRZEL.xlsx    #
 #############################################################################
 
+View(iris)
+
+wb <- createWorkbook()
+
+addWorksheet(wb,"Iris Data")
+
+writeData(wb,x = iris,sheet ="Iris Data" )
+
+style_muster <- createStyle(
+  fgFill="red",
+  fontColour = "white",
+  textDecoration = "bold"
+)
+
+addStyle(
+  wb,
+  sheet = "Iris Data",
+  style = style_muster,
+  rows = 1,
+  cols = 1:5,
+  gridExpand = TRUE
+)
+
+saveWorkbook(wb, "022026_rworkshop/musterloesung.xlsx",overwrite = TRUE)
+
+
 
 
 
