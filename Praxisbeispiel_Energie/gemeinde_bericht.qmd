@@ -1,0 +1,220 @@
+---
+title: "Energiebericht `r params$gemeinde`"
+subtitle: "Kanton Thurgau – Energiewende"
+date: today
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-title: "Inhalt"
+    embed-resources: true
+params:
+  gemeinde: "Frauenfeld"
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r setup}
+library(tidyverse)
+library(ggplot2)
+library(scales)
+library(glue)
+
+# URLs
+url_a <- "https://data.tg.ch/api/explore/v2.1/catalog/datasets/div-energie-10/exports/csv?delimiter=%3B&lang=de&timezone=Europe%2FZurich"
+url_b <- "https://data.tg.ch/api/explore/v2.1/catalog/datasets/div-energie-5/exports/csv?delimiter=%3B&lang=de&timezone=Europe%2FZurich"
+url_c <- "https://data.tg.ch/api/explore/v2.1/catalog/datasets/div-energie-4/exports/csv?delimiter=%3B&lang=de&timezone=Europe%2FZurich"
+url_d <- "https://data.tg.ch/api/explore/v2.1/catalog/datasets/div-energie-12/exports/csv?delimiter=%3B&lang=de&timezone=Europe%2FZurich"
+
+# Datensätze laden
+prod_erneuerbar    <- read_csv2(url_a)
+verbrauch_gemeinde <- read_csv2(url_b)
+verbrauch_kanton   <- read_csv2(url_c)
+heizsysteme        <- read_csv2(url_d)
+
+# Auf Gemeinde filtern
+prod_gem  <- prod_erneuerbar    |> filter(gemeinde == params$gemeinde)
+verbr_gem <- verbrauch_gemeinde |> filter(gemeinde == params$gemeinde)
+heiz_gem  <- heizsysteme        |> filter(gemeinde == params$gemeinde)
+
+# Schlüsselkennzahlen
+letztes_jahr_prod <- max(prod_gem$jahr, na.rm = TRUE)
+
+prod_total_letztes_jahr <- prod_gem |>
+  filter(jahr == letztes_jahr_prod) |>
+  summarise(total = sum(produktion_mwh, na.rm = TRUE)) |>
+  pull(total)
+
+verbrauch_total_letztes_jahr <- verbr_gem |>
+  filter(jahr == letztes_jahr_prod) |>
+  summarise(total = sum(verbrauch_mwh, na.rm = TRUE)) |>
+  pull(total)
+
+eigenversorgungsgrad <- prod_total_letztes_jahr / verbrauch_total_letztes_jahr * 100
+
+# Kantonaler Rang: Eigenversorgungsgrad aller Gemeinden berechnen
+evg_alle <- prod_erneuerbar |>
+  filter(jahr == letztes_jahr_prod) |>
+  group_by(gemeinde) |>
+  summarise(prod = sum(produktion_mwh, na.rm = TRUE), .groups = "drop") |>
+  left_join(
+    verbrauch_gemeinde |>
+      filter(jahr == letztes_jahr_prod) |>
+      group_by(gemeinde) |>
+      summarise(verbr = sum(verbrauch_mwh, na.rm = TRUE), .groups = "drop"),
+    by = "gemeinde"
+  ) |>
+  mutate(evg = prod / verbr * 100) |>
+  arrange(desc(evg)) |>
+  mutate(rang = row_number())
+
+kanton_rang <- evg_alle |>
+  filter(gemeinde == params$gemeinde) |>
+  pull(rang)
+
+n_gemeinden <- nrow(evg_alle)
+
+# Dominanter Energieträger (Produktion)
+dominanter_traeger <- prod_gem |>
+  filter(jahr == letztes_jahr_prod) |>
+  group_by(energietraeger) |>
+  summarise(total = sum(produktion_mwh, na.rm = TRUE), .groups = "drop") |>
+  slice_max(total, n = 1) |>
+  pull(energietraeger)
+
+# Häufigstes Heizsystem
+haeufigste_heizung <- heiz_gem |>
+  filter(jahr == max(jahr, na.rm = TRUE)) |>
+  slice_max(anzahl, n = 1) |>
+  pull(heizsystem)
+```
+
+## Kennzahlen
+
+```{r kennzahlen}
+kennzahlen <- tibble(
+  Kennzahl = c(
+    "Erneuerbare Stromproduktion (GWh)",
+    "Gebäudeverbrauch Energie (GWh)",
+    "Eigenversorgungsgrad (%)",
+    "Kantonaler Rang",
+    "Dominanter Energieträger (Produktion)",
+    "Häufigstes Heizsystem"
+  ),
+  Wert = c(
+    format(round(prod_total_letztes_jahr / 1000, 2),
+           big.mark = "'", nsmall = 2),
+    format(round(verbrauch_total_letztes_jahr / 1000, 2),
+           big.mark = "'", nsmall = 2),
+    paste0(round(eigenversorgungsgrad, 1), " %"),
+    paste0(kanton_rang, " / ", n_gemeinden),
+    dominanter_traeger,
+    haeufigste_heizung
+  )
+)
+
+knitr::kable(kennzahlen, align = c("l", "r"),
+             caption = paste0("Kennzahlen ", params$gemeinde,
+                              " – Jahr ", letztes_jahr_prod))
+```
+
+## Erneuerbare Stromproduktion
+
+```{r produktion-area}
+farben_prod <- c(
+  "Sonne"           = "#F5A623",
+  "Wasser"          = "#4A90D9",
+  "Biomasse/Biogas" = "#7ED321",
+  "Wind"            = "#9B9B9B"
+)
+
+prod_gem |>
+  mutate(produktion_gwh = produktion_mwh / 1000) |>
+  ggplot(aes(x = jahr, y = produktion_gwh, fill = energietraeger)) +
+  geom_area(alpha = 0.85) +
+  scale_fill_manual(values = farben_prod, name = "Energieträger") +
+  scale_x_continuous(breaks = scales::breaks_pretty()) +
+  scale_y_continuous(labels = scales::label_number(big.mark = "'")) +
+  labs(
+    title   = paste0("Erneuerbare Stromproduktion – ", params$gemeinde),
+    subtitle = "Aufgeteilt nach Energieträger",
+    x       = "Jahr",
+    y       = "Produktion (GWh)",
+    caption = "Quelle: data.tg.ch (div-energie-10)"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(legend.position = "bottom")
+```
+
+## Anteil erneuerbarer Wärme
+
+```{r erneuerbar-anteil}
+erneuerbar_traeger <- c("Holz", "Wärmepumpe", "Fernwärme", "Sonne thermisch")
+
+anteil_erneuerbar <- verbr_gem |>
+  group_by(jahr) |>
+  summarise(
+    total      = sum(verbrauch_mwh, na.rm = TRUE),
+    erneuerbar = sum(verbrauch_mwh[energietraeger %in% erneuerbar_traeger],
+                     na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  mutate(anteil_pct = erneuerbar / total * 100)
+
+anteil_erneuerbar |>
+  ggplot(aes(x = jahr, y = anteil_pct)) +
+  geom_line(color = "#27AE60", linewidth = 1.2) +
+  geom_point(color = "#27AE60", size = 2.5) +
+  scale_x_continuous(breaks = scales::breaks_pretty()) +
+  scale_y_continuous(
+    labels = scales::label_percent(scale = 1),
+    limits = c(0, NA)
+  ) +
+  labs(
+    title    = paste0("Anteil erneuerbarer Wärme – ", params$gemeinde),
+    subtitle = "Holz, Wärmepumpe, Fernwärme, Sonne thermisch",
+    x        = "Jahr",
+    y        = "Anteil am Wärmeverbrauch (%)",
+    caption  = "Quelle: data.tg.ch (div-energie-5)"
+  ) +
+  theme_minimal(base_size = 13)
+```
+
+## Interpretation
+
+```{r interpretation}
+fehlende_gwh <- round((verbrauch_total_letztes_jahr - prod_total_letztes_jahr) / 1000, 1)
+
+haupttext <- glue(
+  "Die Gemeinde {params$gemeinde} produziert mit erneuerbaren ",
+  "Energieträgern {round(eigenversorgungsgrad, 1)}% ihres Gebäudeenergiebedarfs ",
+  "und belegt damit im kantonalen Vergleich Rang {kanton_rang}."
+)
+
+zusatztext <- if (eigenversorgungsgrad > 100) {
+  "Sie produziert mehr erneuerbaren Strom als sie im Gebäudebereich verbraucht."
+} else {
+  glue("Um die vollständige Eigenversorgung zu erreichen, fehlen noch {fehlende_gwh} GWh.")
+}
+
+cat(haupttext, "\n\n", zusatztext)
+```
+
+---
+
+## Anhang: Alle Gemeinden rendern
+
+```{r alle-rendern, eval=FALSE}
+## Alle Gemeinden rendern ----
+gemeinden <- read_csv2(url_a) |> distinct(gemeinde) |> pull()
+dir.create("berichte", showWarnings = FALSE)
+purrr::walk(gemeinden, function(gem) {
+  quarto::quarto_render(
+    "Praxisbeispiel_Energie/gemeinde_bericht.qmd",
+    output_file    = paste0("berichte/Energiebericht_", gem, ".html"),
+    execute_params = list(gemeinde = gem)
+  )
+})
+```

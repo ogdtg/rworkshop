@@ -1,0 +1,437 @@
+---
+title: "Praxisaufgabe: Energiewende im Thurgau"
+author: "Felix Lorenz"
+date: "Workshop 2026"
+amt: "Amt für Daten und Statistik"
+stelle: ""
+output:
+  xaringan::moon_reader:
+    highlightStyle: github
+    highlightlines: true
+    highlightSpans: true
+    css: ["default","../img/styles_x.css"]
+---
+
+```{r setup-energie, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, dpi = 300, message = FALSE,
+                      warning = FALSE, eval = FALSE)
+```
+
+```{r xaringan-logo, echo=FALSE, eval=TRUE}
+xaringanExtra::use_logo(image_url = "../img/tg.jpg")
+```
+
+```{r xaringan-banner, echo=FALSE, eval=TRUE}
+xaringanExtra::use_banner(
+  bottom_center = paste0("\U00A9 ", rmarkdown::metadata$amt),
+  top_left      = paste0("<h6>", rmarkdown::metadata$amt, "</h6>"),
+  bottom_left   = rmarkdown::metadata$date,
+  exclude       = "title-slide"
+)
+```
+
+```{r xaringan-panelset, echo=FALSE, eval=TRUE}
+xaringanExtra::use_panelset(TRUE)
+```
+
+```{r xaringan-tachyons, echo=FALSE, eval=TRUE}
+xaringanExtra::use_tachyons()
+```
+
+---
+class: title-slide
+
+# Praxisaufgabe
+## Energiewende im Thurgau
+
+.pull-left[
+**Datenquelle:** data.tg.ch  
+*4 Datensätze, echte OGD-Daten*
+
+**Ziel:** Eigenversorgungsgrad der Thurgauer Gemeinden analysieren und automatisiert berichten
+]
+
+.pull-right[
+.center[
+```
+data.tg.ch
+    ↓  4 Datensätze (CSV)
+read_csv2()
+    ↓  Bereinigung
+case_when()
+    ↓  Analyse
+group_by() |> summarise()
+    ↓  Visualisierung
+ggplot2 + ggrepel
+    ↓  Bericht
+Quarto (parametrisiert)
+```
+]
+]
+
+---
+
+# Übersicht
+
+| # | Aufgabe | Zeit |
+|---|---------|------|
+| 1 | Daten laden und kennenlernen | ~15 Min. |
+| 2 | Bereinigung und Kategorisierung | ~15 Min. |
+| 3 | Entwicklung erneuerbare Stromproduktion | ~20 Min. |
+| 4 | Wärmeverbrauch: fossil vs. erneuerbar | ~20 Min. |
+| 5 | Eigenversorgungsgrad der Gemeinden | ~20 Min. |
+| ✨ | **Bonus:** Parametrisierter Quarto-Bericht | ~20 Min. |
+
+**Gesamtdauer:** ca. 90–120 Min.
+
+**Benötigte Packages:**
+```r
+library(tidyverse)
+library(ggplot2)
+library(ggrepel)   # für beschriftete Streudiagramme
+```
+
+---
+
+# Die Datensätze
+
+| Name | Dataset-ID | Inhalt | Ebene |
+|------|-----------|--------|-------|
+| `prod_erneuerbar` | `div-energie-10` | Erneuerbare Stromproduktion nach Energieträger | Gemeinde |
+| `verbrauch_gemeinde` | `div-energie-5` | Endenergieverbrauch Gebäude nach Energieträger | Gemeinde |
+| `verbrauch_kanton` | `div-energie-4` | Endenergieverbrauch Gebäude nach Energieträger | Kanton |
+| `heizsysteme` | `div-energie-12` | Anzahl Hauptheizsysteme | Gemeinde |
+
+**Daten laden:**
+```r
+url_a <- "https://data.tg.ch/api/explore/v2.1/catalog/datasets/div-energie-10/exports/csv?delimiter=%3B&lang=de&timezone=Europe%2FZurich"
+
+prod_erneuerbar <- read_csv2(url_a)
+```
+
+.footnote[Alle URLs in `aufgaben.R` vorausgefüllt · Beschreibung in `daten_schema.md`]
+
+---
+
+# Aufgabe 1: Daten laden und kennenlernen
+
+**Ziel:** Alle vier Datensätze einlesen und Struktur verstehen
+
+.pull-left[
+**Aufgaben:**
+- Vier Datensätze mit `read_csv2()` laden
+- Struktur mit `glimpse()` anzeigen
+- Zeitraum: welche Jahre sind vorhanden?
+- Welche Gemeinden / Energieträger?
+]
+
+.pull-right[
+**Wichtige Fragen:**
+- Wie viele Zeilen hat jeder Datensatz?
+- Welche Energieträger kommen in `prod_erneuerbar` vor?
+- Gibt es fehlende Werte?
+]
+
+---
+
+# Aufgabe 1: Hilfreiche Funktionen
+
+```r
+glimpse(prod_erneuerbar)         # Spalten und Typen anzeigen
+prod_erneuerbar |> count(jahr)   # Verteilung nach Jahr
+prod_erneuerbar |>
+  distinct(energietraeger)       # Eindeutige Energieträger
+```
+
+**Erwartete Energieträger:**
+
+| Datensatz | Energieträger |
+|-----------|--------------|
+| `prod_erneuerbar` | Sonne, Wasser, Biomasse/Biogas, Wind |
+| `verbrauch_gemeinde` | Heizöl, Erdgas, Holz, Wärmepumpe, Fernwärme, Elektrizität, Sonne thermisch, Übrige |
+
+.footnote[Tipp: Bei abweichenden Spaltennamen → `rename()` verwenden. Spaltenbeschreibung in `daten_schema.md`]
+
+---
+
+# Aufgabe 2: Bereinigung und Kategorisierung
+
+**Ziel:** Daten säubern und Energieträger klassifizieren
+
+.panelset[
+.panel[.panel-name[Was ist zu tun?]
+1. Fehlende Werte prüfen: `summarise(across(everything(), \(x) sum(is.na(x))))`
+2. Leerzeichen entfernen: `mutate(across(where(is.character), str_trim))`
+3. Neue Spalte `kategorie` erstellen mit `case_when()`
+]
+.panel[.panel-name[Klassifikation]
+| Kategorie | Energieträger |
+|-----------|--------------|
+| **Fossil** | Heizöl, Erdgas |
+| **Erneuerbar** | Holz, Wärmepumpe, Fernwärme, Sonne thermisch |
+| **Sonstige** | Elektrizität, Übrige |
+
+Die Einordnung von *Elektrizität* ist bewusst ambivalent — abhängig vom Strommix.
+]
+]
+
+---
+
+# Aufgabe 2: case_when Erinnerung
+
+```r
+verbrauch_gemeinde <- verbrauch_gemeinde |>
+  mutate(
+    kategorie = case_when(
+      energietraeger %in% c("Heizöl", "Erdgas")          ~ "Fossil",
+      energietraeger %in% c("Holz", "Wärmepumpe", ...)   ~ "Erneuerbar",
+      .default = "Sonstige"
+    )
+  )
+```
+
+**Beachte:** `.default =` ist die aktuelle dplyr-Syntax (ersetzt `TRUE ~`).
+
+**Prüfen:**
+```r
+verbrauch_gemeinde |> count(energietraeger, kategorie)
+# Jeder Energieträger sollte genau eine Kategorie haben
+```
+
+---
+
+# Aufgabe 3: Erneuerbare Stromproduktion
+
+**Ziel:** Wie hat sich die erneuerbare Stromproduktion im Kanton entwickelt?
+
+**Schritt für Schritt:**
+
+1. `group_by(jahr, energietraeger) |> summarise(...)` → Kantonsaggregation
+2. `geom_line()` → Entwicklung je Energieträger
+3. `geom_area()` → Gestapelte Flächen (Zusammensetzung)
+4. `slice_max(produktion_mwh, n = 5)` → Top-5-Gemeinden
+
+**Erwartetes Ergebnis:** Ein Liniendiagramm und ein Flächendiagramm, die zeigen, ob Solarenergie in den letzten Jahren zugenommen hat.
+
+---
+
+# Aufgabe 3: Visualisierungstipps
+
+.panelset[
+.panel[.panel-name[Liniengrafik]
+```r
+prod_kanton |>
+  ggplot(aes(x = jahr, y = produktion_mwh / 1000,
+             color = energietraeger)) +
+  geom_line(linewidth = 1.2) +
+  geom_point(size = 2.5) +
+  scale_y_continuous(
+    labels = scales::label_number(suffix = " GWh")) +
+  theme_minimal()
+```
+]
+.panel[.panel-name[Flächendiagramm]
+```r
+# geom_area() stapelt automatisch
+prod_kanton |>
+  ggplot(aes(x = jahr,
+             y = produktion_mwh / 1000,
+             fill = energietraeger)) +
+  geom_area(alpha = 0.85) +
+  theme_minimal()
+```
+Tipp: `position = "fill"` zeigt Anteile statt absolute Werte.
+]
+.panel[.panel-name[Farben]
+```r
+farben <- c(
+  "Sonne"          = "#F5A623",
+  "Wasser"         = "#4A90D9",
+  "Biomasse/Biogas" = "#7ED321",
+  "Wind"           = "#9B9B9B"
+)
+# + scale_color_manual(values = farben)
+# + scale_fill_manual(values = farben)
+```
+]
+]
+
+---
+
+# Aufgabe 4: Wärmeverbrauch fossil vs. erneuerbar
+
+**Ziel:** Wie hat sich der Anteil erneuerbarer Wärme entwickelt?
+
+.pull-left[
+**Schritte:**
+1. `group_by(jahr, kategorie) |> summarise(...)` auf `verbrauch_kanton`
+2. Anteil pro Jahr berechnen: `mutate(anteil_pct = ... / sum(...) * 100)`
+3. Säulendiagramm: fossil/erneuerbar/sonstige
+4. Liniengrafik: Anteil erneuerbar über Zeit
+]
+
+.pull-right[
+**Welches Diagramm wofür?**
+
+`geom_col(position = "stack")`  
+→ absolute Verbräuche
+
+`geom_col(position = "fill")`  
+→ Anteile (y von 0–1)
+
+`geom_line()` auf gefilterten Daten  
+→ Trendlinie Erneuerbar-Anteil
+]
+
+---
+
+# Aufgabe 4: Prozentwerte auf der y-Achse
+
+```r
+# Anteil berechnen (Werte in %, z.B. 32.5 für 32.5%)
+anteil_erneuerbar <- verbrauch_kat |>
+  group_by(jahr) |>
+  mutate(anteil_pct = verbrauch_mwh / sum(verbrauch_mwh) * 100)
+
+# Prozentskala auf der y-Achse
+scale_y_continuous(
+  labels = scales::label_percent(scale = 1),  # scale=1: Werte schon in %
+  limits = c(0, NA)
+)
+```
+
+**Beachte:** `scale = 1` bedeutet: Werte werden *nicht* mit 100 multipliziert (sie sind schon in Prozent).
+
+---
+
+# Aufgabe 5: Eigenversorgungsgrad
+
+**Konzept:**
+
+$$\text{Eigenversorgungsgrad} = \frac{\text{Erneuerbare Stromproduktion}}{\text{Gebäude-Energieverbrauch}} \times 100\%$$
+
+.pull-left[
+**Schritte:**
+1. Produktion und Verbrauch je Gemeinde aggregieren (gleiches Jahr!)
+2. `left_join()` der zwei Tabellen
+3. Eigenversorgungsgrad berechnen mit `mutate()`
+4. `arrange(desc(...))` → Ranking
+5. Streudiagramm mit ggrepel
+]
+
+.pull-right[
+**Warum `left_join()`?**
+
+Nicht alle Gemeinden haben Produktionsdaten — ein `left_join()` auf `prod_gem` behält nur Gemeinden, die auch Produktionsdaten haben.
+
+**Join-Schlüssel:**  
+`by = c("gemeinde_nr", "gemeinde")`
+]
+
+---
+
+# Aufgabe 5: Streudiagramm mit ggrepel
+
+```r
+eigenversorgung |>
+  ggplot(aes(x = verbrauch_mwh / 1000,
+             y = produktion_mwh / 1000,
+             label = gemeinde)) +
+  # 100%-Referenzlinie: Produktion = Verbrauch
+  geom_abline(slope = 1, intercept = 0,
+              linetype = "dashed", color = "grey60") +
+  geom_point(size = 2.5, alpha = 0.8) +
+  ggrepel::geom_label_repel(size = 3, max.overlaps = 12) +
+  theme_minimal()
+```
+
+**Interpretation:**
+- Punkte **oberhalb** der Strichlinie → Eigenversorgungsgrad > 100%
+- Punkte **unterhalb** → Gemeinde verbraucht mehr als sie produziert
+
+---
+
+# Bonus: Parametrisierter Quarto-Bericht
+
+**Ziel:** Ein Bericht für alle Gemeinden – mit 10 Zeilen Code!
+
+.panelset[
+.panel[.panel-name[Template-Params]
+```yaml
+# gemeinde_bericht.qmd
+---
+params:
+  gemeinde: "Frauenfeld"
+---
+```
+
+Im Bericht-Code:
+```r
+gem_daten <- prod_erneuerbar |>
+  filter(gemeinde == params$gemeinde)
+```
+]
+.panel[.panel-name[Render-Loop]
+```r
+gemeinde_liste <- prod_erneuerbar |>
+  distinct(gemeinde) |> pull()
+
+purrr::walk(gemeinde_liste, function(gem) {
+  quarto::quarto_render(
+    "Praxisbeispiel_Energie/gemeinde_bericht.qmd",
+    output_file    = paste0("berichte/", gem, ".html"),
+    execute_params = list(gemeinde = gem)
+  )
+})
+```
+`walk()` statt `map()`: wir wollen den Seiteneffekt (Datei schreiben), keinen Rückgabewert.
+]
+.panel[.panel-name[Tipp]
+**Erst testen, dann alle rendern:**
+```r
+# Nur eine Gemeinde:
+quarto::quarto_render(
+  "Praxisbeispiel_Energie/gemeinde_bericht.qmd",
+  execute_params = list(gemeinde = "Frauenfeld")
+)
+```
+Rendering dauert – zuerst für 1 Gemeinde testen, dann alle!
+]
+]
+
+---
+
+# Nächste Schritte
+
+.pull-left[
+**Was ihr heute gezeigt habt:**
+
+✅ Echte Open-Government-Daten laden  
+✅ Daten kategorisieren mit `case_when()`  
+✅ Trends visualisieren mit `geom_area()`  
+✅ Datensätze verknüpfen mit `left_join()`  
+✅ Beschriftete Streudiagramme  
+✅ Automatisierte Berichte mit Quarto
+
+**Das war** tidyverse von Anfang bis Ende —  
+auf echten Daten, mit echten Erkenntnissen.
+]
+
+.pull-right[
+**Weiterführende Ressourcen:**
+
+- `data.tg.ch` — weitere TG-Datensätze erkunden
+- `r4ds.hadley.nz` — R for Data Science
+- `quarto.org` — Berichte und Dashboards
+- `ggplot2.tidyverse.org` — Visualisierungen
+- `ggrepel` Package — für überlappungsfreie Labels
+
+**Dateien:**
+```
+Praxisbeispiel_Energie/
+  daten_schema.md      ← Datendokumentation
+  aufgaben.R           ← Eure Aufgaben
+  musterloesung.R      ← Lösungen
+  gemeinde_bericht.qmd ← Quarto-Template
+```
+]
