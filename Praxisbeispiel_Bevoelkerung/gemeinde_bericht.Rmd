@@ -1,0 +1,300 @@
+---
+title: "Bevölkerungsbericht `r params$gemeinde`"
+author: "Amt für Daten und Statistik, Kanton Thurgau"
+date: "`r format(Sys.Date(), '%d. %B %Y')`"
+output:
+  html_document:
+    theme: flatly
+    toc: true
+    toc_float: true
+params:
+  gemeinde: "Frauenfeld"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE,
+                      fig.width = 8, fig.height = 5)
+
+library(tidyverse)
+library(lubridate)
+library(glue)
+```
+
+```{r daten-laden}
+url_alter <- paste0(
+  "https://data.tg.ch/api/explore/v2.1/catalog/datasets/",
+  "sk-stat-67/exports/csv",
+  "?delimiter=%3B&lang=de&timezone=Europe%2FZurich"
+)
+
+bev_roh <- read_csv2(url_alter, show_col_types = FALSE)
+
+bev <- bev_roh |>
+  mutate(jahr = year(as.Date(jahr))) |>
+  select(
+    gemeinde          = gemeinde_name,
+    bezirk            = bezirk_name,
+    jahr,
+    geschlecht        = geschlecht_bezeichnung,
+    altersklasse      = alter5klassen_bezeichnung,
+    altersklasse_code = alter5klassen_code,
+    n                 = anzahl_personen
+  )
+
+altersklassen_geordnet <- bev |>
+  arrange(altersklasse_code) |>
+  distinct(altersklasse) |>
+  pull()
+
+bev <- bev |>
+  mutate(altersklasse = factor(altersklasse,
+                               levels  = altersklassen_geordnet,
+                               ordered = TRUE))
+
+# Synthetische Nationalitätsdaten
+set.seed(2024)
+gem_basis <- bev |>
+  distinct(gemeinde, bezirk) |>
+  mutate(basis = runif(n(), 0.08, 0.32))
+
+erstes_jahr  <- min(bev$jahr)
+letztes_jahr <- max(bev$jahr)
+
+bev_nat <- bev |>
+  group_by(gemeinde, bezirk, jahr) |>
+  summarise(total = sum(n), .groups = "drop") |>
+  left_join(gem_basis, by = c("gemeinde", "bezirk")) |>
+  mutate(
+    anteil_ausl = pmin(basis + (jahr - erstes_jahr) * 0.003 +
+                         rnorm(n(), 0, 0.006), 0.48),
+    auslaender  = round(total * anteil_ausl),
+    schweiz     = total - auslaender
+  ) |>
+  select(gemeinde, bezirk, jahr, auslaender, schweiz) |>
+  pivot_longer(cols      = c(schweiz, auslaender),
+               names_to  = "nationalitaet",
+               values_to = "anzahl") |>
+  mutate(nationalitaet = if_else(nationalitaet == "auslaender",
+                                 "Ausland", "Schweiz"))
+```
+
+```{r kennzahlen}
+gem        <- params$gemeinde
+gem_bezirk <- bev |> filter(gemeinde == gem) |> pull(bezirk) |> first()
+
+# Ausländeranteil
+ausl_gem <- bev_nat |>
+  filter(gemeinde == gem) |>
+  group_by(jahr) |>
+  summarise(
+    auslaender = sum(anzahl[nationalitaet == "Ausland"]),
+    total      = sum(anzahl),
+    .groups    = "drop"
+  ) |>
+  mutate(anteil_pct = round(auslaender / total * 100, 1))
+
+ausl_aktuell  <- ausl_gem |> filter(jahr == letztes_jahr) |> pull(anteil_pct)
+ausl_anfang   <- ausl_gem |> filter(jahr == erstes_jahr)  |> pull(anteil_pct)
+ausl_veraend  <- round(ausl_aktuell - ausl_anfang, 1)
+
+# Ausländeranteil Kanton
+ausl_kt_aktuell <- bev_nat |>
+  filter(jahr == letztes_jahr) |>
+  summarise(anteil_pct = round(
+    sum(anzahl[nationalitaet == "Ausland"]) / sum(anzahl) * 100, 1)
+  ) |>
+  pull(anteil_pct)
+
+# 65+-Anteil
+anteil_65plus_gem <- bev |>
+  filter(gemeinde == gem) |>
+  mutate(gruppe = if_else(altersklasse_code >= 14, "65+", "unter 65")) |>
+  group_by(jahr, gruppe) |>
+  summarise(n = sum(n), .groups = "drop") |>
+  group_by(jahr) |>
+  mutate(anteil_pct = round(n / sum(n) * 100, 1)) |>
+  filter(gruppe == "65+")
+
+anteil_65_aktuell <- anteil_65plus_gem |>
+  filter(jahr == letztes_jahr) |>
+  pull(anteil_pct)
+
+anteil_65_anfang  <- anteil_65plus_gem |>
+  filter(jahr == erstes_jahr) |>
+  pull(anteil_pct)
+
+bev_total <- bev |>
+  filter(gemeinde == gem, jahr == letztes_jahr) |>
+  summarise(total = sum(n)) |>
+  pull(total)
+```
+
+## Gemeinde `r gem` – Bezirk `r gem_bezirk`
+
+Dieser Bericht gibt einen Überblick über die Bevölkerungsentwicklung der Gemeinde
+**`r gem`** (Bezirk `r gem_bezirk`) für den Zeitraum `r erstes_jahr`–`r letztes_jahr`.
+Die Daten stammen aus dem Open-Government-Data-Portal des Kantons Thurgau
+([data.tg.ch, Datensatz sk-stat-67](https://data.tg.ch/explore/dataset/sk-stat-67)).
+
+---
+
+## Kennzahlen `r letztes_jahr`
+
+| Kennzahl | Wert |
+|---|---|
+| Wohnbevölkerung | `r format(bev_total, big.mark = "'")` Personen |
+| Ausländeranteil | `r ausl_aktuell` % |
+| Ausländeranteil Kanton TG | `r ausl_kt_aktuell` % |
+| Anteil Bevölkerung 65+ | `r anteil_65_aktuell` % |
+
+---
+
+## Ausländeranteil
+
+Im Jahr `r letztes_jahr` betrug der Ausländeranteil in `r gem`
+**`r ausl_aktuell` %**. Im Jahr `r erstes_jahr` lag er bei `r ausl_anfang` %,
+was einer Veränderung von **`r ifelse(ausl_veraend > 0, paste0("+", ausl_veraend), ausl_veraend)` Prozentpunkten**
+im Beobachtungszeitraum entspricht.
+
+Im Vergleich dazu liegt der kantonale Durchschnitt bei `r ausl_kt_aktuell` %.
+
+```{r plot-auslaender}
+# Vergleichswerte Bezirk & Kanton über Zeit
+ausl_bez <- bev_nat |>
+  filter(bezirk == gem_bezirk) |>
+  group_by(jahr) |>
+  summarise(
+    anteil_bez = sum(anzahl[nationalitaet == "Ausland"]) / sum(anzahl),
+    .groups    = "drop"
+  )
+
+ausl_kt <- bev_nat |>
+  group_by(jahr) |>
+  summarise(
+    anteil_kt = sum(anzahl[nationalitaet == "Ausland"]) / sum(anzahl),
+    .groups   = "drop"
+  )
+
+vergleich_long <- ausl_gem |>
+  select(jahr, anteil_gem = anteil_pct) |>
+  mutate(anteil_gem = anteil_gem / 100) |>
+  left_join(ausl_bez, by = "jahr") |>
+  left_join(ausl_kt,  by = "jahr") |>
+  pivot_longer(cols      = c(anteil_gem, anteil_bez, anteil_kt),
+               names_to  = "ebene",
+               values_to = "anteil") |>
+  mutate(
+    ebene = case_when(
+      ebene == "anteil_gem" ~ gem,
+      ebene == "anteil_bez" ~ glue("Bezirk {gem_bezirk}"),
+      ebene == "anteil_kt"  ~ "Kanton TG"
+    ),
+    ebene = factor(ebene, levels = c(gem,
+                                     glue("Bezirk {gem_bezirk}"),
+                                     "Kanton TG"))
+  )
+
+ggplot(vergleich_long, aes(x = jahr, y = anteil,
+                            colour   = ebene,
+                            linetype = ebene)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2.5) +
+  scale_colour_manual(
+    values = setNames(c("#003366", "#6699CC", "grey55"),
+                      c(gem, glue("Bezirk {gem_bezirk}"), "Kanton TG"))
+  ) +
+  scale_linetype_manual(
+    values = setNames(c("solid", "dashed", "dotted"),
+                      c(gem, glue("Bezirk {gem_bezirk}"), "Kanton TG"))
+  ) +
+  scale_y_continuous(labels = scales::label_percent(),
+                     limits = c(0, NA)) +
+  labs(
+    title   = glue("Ausländeranteil – {gem}"),
+    subtitle = glue("Vergleich mit Bezirk {gem_bezirk} und Kanton TG"),
+    x       = NULL,
+    y       = "Ausländeranteil",
+    colour  = NULL, linetype = NULL,
+    caption = "Quelle: data.tg.ch (sk-stat-67)"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "bottom")
+```
+
+---
+
+## Bevölkerung 65+
+
+Im Jahr `r letztes_jahr` waren **`r anteil_65_aktuell` %** der Bevölkerung von
+`r gem` 65 Jahre oder älter. Im Jahr `r erstes_jahr` betrug dieser Anteil
+`r anteil_65_anfang` %.
+
+```{r plot-65plus}
+ggplot(anteil_65plus_gem, aes(x = jahr, y = anteil_pct)) +
+  geom_line(linewidth = 1, colour = "#CC3300") +
+  geom_point(size = 2.5, colour = "#CC3300") +
+  scale_y_continuous(labels = scales::label_percent(scale = 1, suffix = " %"),
+                     limits = c(0, NA)) +
+  labs(
+    title   = glue("Anteil Bevölkerung 65+ – {gem}"),
+    x       = NULL,
+    y       = "Anteil 65+",
+    caption = "Quelle: data.tg.ch (sk-stat-67)"
+  ) +
+  theme_minimal(base_size = 12)
+```
+
+---
+
+## Altersstruktur `r letztes_jahr`
+
+```{r plot-pyramide}
+pyramide <- bev |>
+  filter(gemeinde == gem, jahr == letztes_jahr) |>
+  group_by(altersklasse, geschlecht) |>
+  summarise(n = sum(n), .groups = "drop") |>
+  mutate(n_plot = if_else(geschlecht == "Männlich", -n, n))
+
+ggplot(pyramide, aes(x = n_plot, y = altersklasse, fill = geschlecht)) +
+  geom_col() +
+  scale_x_continuous(labels = \(x) scales::number(abs(x))) +
+  scale_fill_manual(values = c("Männlich" = "#336699", "Weiblich" = "#CC6677")) +
+  labs(
+    title   = glue("Bevölkerungspyramide – {gem} ({letztes_jahr})"),
+    x       = "Anzahl Personen",
+    y       = NULL,
+    fill    = NULL,
+    caption = "Quelle: data.tg.ch (sk-stat-67)"
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(legend.position = "bottom")
+```
+
+---
+
+*Bericht erstellt am `r format(Sys.Date(), "%d.%m.%Y")` mit R und RMarkdown.*
+*Datenquelle: Kanton Thurgau, Amt für Daten und Statistik – [data.tg.ch](https://data.tg.ch)*
+
+```{r render-alle-gemeinden, eval=FALSE, include=TRUE}
+# ── Demo: Bericht für alle Gemeinden erstellen ────────────────────────────────
+# Dieser Block wird beim normalen Rendern NICHT ausgeführt (eval=FALSE).
+# Er zeigt, wie man mit walk() einen HTML-Bericht pro Gemeinde erzeugt.
+
+library(tidyverse)
+
+gemeinden <- bev |> distinct(gemeinde) |> pull()
+
+dir.create("Praxisbeispiel_Bevoelkerung/berichte", recursive = TRUE,
+           showWarnings = FALSE)
+
+walk(gemeinden, function(gem) {
+  dateiname <- str_replace_all(gem, "[^A-Za-z0-9äöüÄÖÜ]", "_")
+  rmarkdown::render(
+    input       = "Praxisbeispiel_Bevoelkerung/gemeinde_bericht.Rmd",
+    output_file = glue("Praxisbeispiel_Bevoelkerung/berichte/Bericht_{dateiname}.html"),
+    params      = list(gemeinde = gem),
+    quiet       = TRUE
+  )
+  cat("✓ Bericht erstellt:", gem, "\n")
+})
+```
